@@ -1,0 +1,50 @@
+package com.myapp.model;
+
+import java.util.HashMap;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.myapp.dto.BoardDTO;
+
+
+
+@Service
+public class BoardServiceImpl implements BoardService {
+    
+	@Autowired
+	private BoardRepository repository;
+
+    @Override
+    public void insert(BoardDTO board) {
+    	repository.dao_insert(board);
+    }
+
+    @Override
+    public List<BoardDTO> findAll(HashMap<String, Object> hm) {
+        return repository. dao_findAll(hm);
+    }
+
+    @Override
+    public BoardDTO findByNum(int num) {
+        return repository. dao_findByNum(num);
+    }
+
+    @Override
+    public void update(BoardDTO board) {
+        repository.dao_update(board);
+    }
+
+    @Override
+    public void delete(int num) {
+        repository.dao_delete(num);
+    }
+
+    @Override
+    public int getCount(HashMap<String, Object> hm) {
+        return repository.getCount(hm);
+    }
+
+  
+}

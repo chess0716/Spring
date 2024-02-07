@@ -1,0 +1,45 @@
+package com.myapp.mapper;
+
+import java.util.HashMap;
+import java.util.List;
+
+import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
+
+import com.myapp.dto.BoardDTO;
+import com.myapp.dto.FileBoardDTO;
+
+@Mapper
+public interface BoardMapper {
+ 
+    @Insert("insert into fileboard(title, writer, content, fileimage) "
+            + " values(#{title}, #{writer}, #{content}, #{fileimage})")
+    public void fileInsert(FileBoardDTO fboard);
+
+    @Select("select * from fileboard")
+    public List<FileBoardDTO> fileList();
+
+    @Insert("insert into board(title, writer, content) values(#{title}, #{writer}, #{content})")
+    public void insert(BoardDTO board);
+
+    public List<BoardDTO> findAll(HashMap<String, Object> hm);
+    
+    public int count(HashMap<String, Object> hm);
+
+    @Select("select * from board where num=#{num}")
+    public BoardDTO findByNum(int num);
+
+    @Update("update board set title=#{title}, content=#{content}, regdate=now() where num=#{num}")
+    public void update(BoardDTO board);
+
+    @Delete("delete from board where num=#{num}")
+    public void delete(int num);
+
+    @Update("update board set hitcount = hitcount + 1 where num=#{num}")
+    public void upReadCount(int num);
+
+    @Update("update board set replyCnt = r

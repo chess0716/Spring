@@ -1,0 +1,11 @@
+package com.myapp.model;
+
+import com.myapp.dto.MemberDTO;
+
+public interface MemberService {
+	
+	public void join(MemberDTO member);
+	memberMapper.join(member);
+	return null;
+
+}

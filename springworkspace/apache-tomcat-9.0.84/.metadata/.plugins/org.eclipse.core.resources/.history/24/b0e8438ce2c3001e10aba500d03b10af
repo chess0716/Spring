@@ -1,0 +1,39 @@
+package com.myspring.service;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.myspring.dto.CommentDTO;
+import com.myspring.mapper.CommentMapper;
+
+@Service
+public class CommentService  {
+	@Autowired
+	private CommentService commentService;
+
+	
+	public void insert(CommentDTO comment) {
+		commentService.insert(comment);
+		
+	}
+
+	
+	public List<CommentDTO> list(int bnum) {
+		
+		return commentService.list(bnum);
+	}
+
+	
+	public void delete(int cnum) {
+		
+		commentService.delete(cnum);
+	}
+
+	
+	public  CommentDTO read(int cnum) {
+		return commentService.read(cnum);
+	}
+
+}

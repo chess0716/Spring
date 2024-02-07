@@ -1,0 +1,18 @@
+package com.myapp.model;
+
+import java.util.List;
+
+import com.myapp.dto.CommentDTO;
+
+public interface CommentService {
+	//ì¶”ê?
+	public void insert(CommentDTO comment);
+	//? „ì²´ë³´ê¸?
+	public List<CommentDTO> getList(int bnum);
+	//?‚­? œ
+	public void delete(int cnum);
+	//ê°œìˆ˜
+	public int getReplyCnt(int bnum);
+	
+
+}

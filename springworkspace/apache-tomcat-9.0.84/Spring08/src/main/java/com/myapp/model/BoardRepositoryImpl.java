@@ -1,0 +1,76 @@
+package com.myapp.model;
+
+import java.util.HashMap;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+
+import com.myapp.dto.BoardDTO;
+import com.myapp.dto.FileBoardDTO;
+import com.myapp.mapper.BoardMapper;
+
+@Repository
+public class BoardRepositoryImpl implements BoardRepository {
+ @Autowired
+ private BoardMapper boardMapper;
+	@Override
+	public void dao_insert(BoardDTO board) {
+		boardMapper.insert(board);
+		
+	}
+
+	@Override
+	public List<BoardDTO> dao_findAll(HashMap<String, Object> hm) {
+		// TODO Auto-generated method stub
+		return boardMapper.findAll(hm);
+	}
+
+	@Override
+	public BoardDTO dao_findByNum(int num) {
+		// TODO Auto-generated method stub
+		return boardMapper.findByNum(num);
+	}
+
+	@Override
+	public void dao_update(BoardDTO board) {
+		boardMapper.update(board);
+		
+	}
+
+	@Override
+	public void dao_delete(int num) {
+		boardMapper.delete(num);
+		
+	}
+
+	@Override
+	public int getCount(HashMap<String, Object> hm) {
+		// TODO Auto-generated method stub
+		return boardMapper.count(hm);
+	}
+
+	@Override
+	public void dao_upReadCount(int num) {
+		boardMapper.upReadCount(num);
+		
+	}
+
+	@Override
+	public void dao_fileInsert(FileBoardDTO fboard) {
+	    boardMapper.fileInsert(fboard);
+	}
+
+	@Override
+	public List<FileBoardDTO> dao_fileList() {
+		  
+		
+		  HashMap<String, Object> hm = new HashMap<>();
+		   return boardMapper.boardList(hm);
+	
+	}
+	
+
+
+}

@@ -1,0 +1,12 @@
+package com.mysecurity.domain;
+
+import org.springframework.security.core.userdetails.User;
+
+public class UserRepository {
+
+	public User findByUsername(String username) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}

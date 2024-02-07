@@ -1,0 +1,45 @@
+package com.myspring.service;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.myspring.dto.CommentDTO;
+import com.myspring.mapper.BoardMapper;
+import com.myspring.mapper.CommentMapper;
+
+@Service
+public class CommentService  {
+	@Autowired
+	private CommentMapper commentMapper;
+	
+	@Autowired
+	private BoardMapper boardMapper;
+	
+	@Transactional
+	public void insert(CommentDTO comment) {
+		commentMapper.insert(comment);
+		boardMapper.updateReplyCnt(comment.getBnum(), 1);
+		
+	}
+
+	
+	public List<CommentDTO> list(int bnum) {
+		
+		return commentMapper.list(bnum);
+	}
+
+	
+	public void delete(int cnum) {
+		
+		commentMapper.delete(cnum);
+	}
+
+	
+	public  CommentDTO read(int cnum) {
+		return commentMapper.read(cnum);
+	}
+
+}

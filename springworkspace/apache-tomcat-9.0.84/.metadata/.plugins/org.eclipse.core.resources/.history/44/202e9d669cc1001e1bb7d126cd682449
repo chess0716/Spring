@@ -1,0 +1,47 @@
+package com.myapp.mapper;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
+
+import com.myapp.dto.BoardDTO;
+
+
+@Mapper
+public interface BoardMapper {
+    // 추가
+    public void insert(BoardDTO board);
+    
+    // 전체보기
+    @Select("SELECT * FROM board")
+    List<BoardDTO>findAll();
+
+    // 상세보기
+    @Select("SELECT * FROM board WHERE num = #{num}")
+    BoardDTO view(int num);
+
+    // 수정
+    @Update("UPDATE board SET title = #{title}, writer = #{writer}, content = #{content}, regdate = #{regdate} WHERE num = #{num}")
+    void update(BoardDTO board);
+
+    // 삭제
+    @Delete("DELETE FROM board WHERE num = #{num}")
+    void delete(int num);
+
+    // 개수
+    @Select("SELECT COUNT(*) FROM board")
+    int count();
+    
+    // 조회수 증가
+    @Update("UPDATE board SET hitcount = hitcount + 1 WHERE num = #{num}")
+    void hitcount(int num);
+  //replyCnt 증감
+  	@Update("update board set replyCnt = replyCnt + #{amount} where num=#{bnum}")
+     public void replyCnt(@Param("bnum") int  bnum, 
+  		   @Param("amount")    int amount);
+}
+

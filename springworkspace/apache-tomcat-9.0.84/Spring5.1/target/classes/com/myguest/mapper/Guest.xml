@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper 
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="com.myguest.mapper.Guest">
+
+<insert id="insertGuest" parameterType="com.myspring.model.Guest">
+insert into guest(name, content, grade,created, ipAddr) values(#{name}, #{content},#{grade}, now(),#{ipaddr})
+</insert>
+</mapper>

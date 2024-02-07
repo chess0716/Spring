@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Spring Security 설정 파일 -->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-5.4.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+   <!-- 비밀번호 암호화를 위한 BCryptPasswordEncoder 빈 등록 -->
+   <bean id="bcryptPasswordEncoder" 
+   class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>
+   
+   <!-- 사용자 정의 UserDetailsService 빈 등록 -->
+	<bean id="customUserDetailsService"
+	    class="com.mysecurity.domain.CustomUserDetailsService" />
+	    
+	<!-- 로그인 성공 핸들러를 위한 CustomLoginSuccess 빈 등록 -->  
+	<bean id="customLoginSuccess" 
+	  class="com.mysecurity.domain.CustomLoginSuccess"/>  
+
+	<!-- Spring Security 설정 -->
+	<security:http>
+		<!-- 로그인 페이지 및 로그인 성공 후 핸들러 설정 -->
+		<security:form-login  login-page="/customLogin"  
+		authentication-success-handler-ref="customLoginSuccess" />
+		
+		<!-- CSRF 보호 비활성화 -->
+		<security:csrf disabled="true"/>
+		<security:intercept-url pattern="/all" access="permitAll"/>
+	</security:http>
+
+	<!-- 사용자의 인증을 관리하는 Authentication Manager 설정 -->
+	<security:authentication-manager>
+		<!-- 사용자 정보 제공을 위한 UserDetailsService 설정 -->
+		<security:authentication-provider
+			user-service-ref="customUserDetailsService">
+			<!-- 비밀번호 인코더 설정 -->
+			<security:password-encoder ref ="bcryptPasswordEncoder"/> 
+		</security:authentication-provider>
+	</security:authentication-manager>
+
+</beans>
+

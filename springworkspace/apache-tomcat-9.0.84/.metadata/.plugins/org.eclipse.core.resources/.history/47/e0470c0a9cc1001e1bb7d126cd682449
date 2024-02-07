@@ -1,0 +1,86 @@
+package com.myboard.app08;
+
+import java.util.HashMap;
+import java.util.Locale;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.myapp.dto.BoardDTO;
+import com.myapp.dto.MemberDTO;
+import com.myapp.model.BoardService;
+import com.myapp.model.MemberService;
+
+@Controller
+public class HomeController {
+	@Autowired
+	private MemberService memberService;
+    @Autowired
+    private BoardService boardService;
+    private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
+
+    @GetMapping("/")
+    public String home(Locale locale, Model model) {
+        logger.info("Welcome home! The client locale is {}.", locale);
+        return "boardInsert";
+    }
+
+    @GetMapping("insert")
+    public String insertForm() {
+        return "boardInsert";
+    }
+
+    @PostMapping("insert")
+    public String insert(BoardDTO board) {
+        boardService.insert(board);
+        return "redirect:list";
+    }
+
+    @GetMapping("list")
+    public String list(Model model) {
+        model.addAttribute("boards", boardService.findAll(null));
+        return "boardList";
+    }
+
+    @GetMapping("view/{num}")
+    public String view(@PathVariable int num, Model model) {
+        model.addAttribute("board", boardService.findByNum(num));
+        return "view";
+    }
+
+    @PostMapping("update")
+    public String update(@PathVariable int num, BoardDTO board) {
+        board.setNum(num);
+        boardService.update(board);
+        return "redirect:list";
+    }
+
+    @GetMapping("delete/{num}")
+    public String delete(@PathVariable int num) {
+        boardService.delete(num);
+        return "redirect:list";
+    }
+
+    @PostMapping("join")
+    @ResponseBody
+    public String join(@RequestBody MemberDTO member) {
+    	memberService.join(member);
+    	return "success";
+    }
+}
+
+
+	
+	
+	
+	
+	
+

@@ -1,0 +1,17 @@
+package com.myapp.dto;
+
+import java.util.Date;
+
+import lombok.Data;
+
+@Data
+public class BoardDTO {
+	//번호, 제목, 작성자, 내용, 작성일, 조회수, 댓글개수
+	private int num;
+	private String title;
+	private String writer;
+	private String content;
+	private Date regdate;
+	private int hitcount;
+	private int replyCnt;
+}

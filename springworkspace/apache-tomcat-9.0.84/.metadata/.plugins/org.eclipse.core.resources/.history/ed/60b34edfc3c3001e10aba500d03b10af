@@ -1,0 +1,28 @@
+package com.myspring.app09;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.myspring.service.BoardDTO;
+import com.myspring.service.BoardService;
+
+@RequestMapping("/board/*")
+@Controller
+public class BoardController {
+    @Autowired
+    private BoardService boardService;
+
+    @GetMapping("insert")
+    public String insert() {
+        return "insert";
+    }
+
+    @PostMapping("insert")
+    public String insert(BoardDTO board) {
+        boardService.insert(board);
+        return "redirect:/app09"; // Assuming "/app09" is your home page URL
+    }
+}

@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Copy element &apos;Guest.java&apos; to &apos;com.myspring.app051.HomeController.java&apos;&#x0D;&#x0A;- Original project: &apos;Spring05&apos;&#x0D;&#x0A;- Destination element: &apos;com.myspring.app051.HomeController.java&apos;&#x0D;&#x0A;- Original element: &apos;com.myspring.model.Guest.java&apos;" description="Copy compilation unit" destination="=Spring5.1/src\/main\/java=/optional=/true=/=/maven.pomderived=/true=/&lt;com.myspring.app051{HomeController.java" element1="/src\/main\/java=/optional=/true=/=/maven.pomderived=/true=/&lt;com.myspring.model{Guest.java" files="0" flags="589830" folders="0" id="org.eclipse.jdt.ui.copy" policy="org.eclipse.jdt.ui.copyResources" stamp="1705893535215" units="1" version="1.0"/>
+</session>

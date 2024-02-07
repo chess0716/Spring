@@ -1,0 +1,39 @@
+package com.mysecurity.domain;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+
+import com.myspring.dto.CustomUser;
+import com.myspring.dto.MemberDTO;
+import com.myspring.mapper.MemberMapper;
+
+@Service
+public class CustomUserDetailsService implements UserDetailsService {
+    @Autowired
+    private MemberMapper memberMapper;
+
+    // UserDetailsService 인터페이스의 메서드를 구현
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        // 사용자 이름(username)을 이용하여 MemberMapper를 통해 사용자 정보를 데이터베이스에서 읽어옴
+        MemberDTO member = memberMapper.read(username);
+        
+        // 사용자 정보가 없을 경우 UsernameNotFoundException 발생
+        if (member == null) {
+            throw new UsernameNotFoundException("User not found with username: " + username);
+        }
+
+        // MemberDTO를 CustomUser 객체로 변환하여 UserDetails 타입으로 반환
+        // CustomUser는 Spring Security의 UserDetails 인터페이스를 구현한 클래스로, 사용자 정보를 보유하고 있음
+        CustomUser user = new CustomUser(member);
+
+        // 디버깅을 위해 사용자 정보와 변환된 CustomUser 객체를 출력
+        System.out.println("MemberDTO: " + member);
+        System.out.println("CustomUser: " + user);
+        
+        return user;
+    }
+}

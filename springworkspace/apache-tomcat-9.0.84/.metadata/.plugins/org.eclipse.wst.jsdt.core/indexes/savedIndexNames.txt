@@ -1,0 +1,16 @@
+INDEX VERSION 1.4+C:\Users\it\Desktop\sts\sts-3.9.18.RELEASE\dropins\springworkspace\apache-tomcat-9.0.84\.metadata\.plugins\org.eclipse.wst.jsdt.core\indexes
+4004845775.index
+2409582696.index
+3004295029.index
+4121731089.index
+2754525324.index
+668439093.index
+15757987.index
+378929618.index
+4162243401.index
+3001729848.index
+3380489946.index
+4110080077.index
+2321012521.index
+2893374621.index
+4244071185.index

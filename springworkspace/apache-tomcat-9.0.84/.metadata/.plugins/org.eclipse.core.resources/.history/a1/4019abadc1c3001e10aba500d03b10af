@@ -1,0 +1,22 @@
+package com.myspring.service;
+
+
+
+import org.springframework.stereotype.Service;
+
+
+
+
+@Service
+public class BoardServiceImpl implements BoardService {
+
+	@Override
+	public void insert(BoardDTO baord) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	
+
+}

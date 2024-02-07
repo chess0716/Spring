@@ -1,0 +1,5 @@
+package com.mysecurity.domain;
+
+public class CustomLoginSuccess {
+
+}

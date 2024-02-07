@@ -1,0 +1,8 @@
+package com.myspring.app09;
+
+import org.junit.runner.RunWith;
+
+@RunWith(SpringUnit4ClassRunner.class)
+public class MemberTest {
+	
+}

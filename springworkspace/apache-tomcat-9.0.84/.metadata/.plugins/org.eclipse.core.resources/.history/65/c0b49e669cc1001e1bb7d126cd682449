@@ -1,0 +1,12 @@
+package com.myapp.mapper;
+
+import org.apache.ibatis.annotations.Mapper;
+
+import com.myapp.dto.MemberDTO;
+
+@Mapper
+public interface MemberMapper {
+	
+	public void join(MemberDTO member);
+
+}

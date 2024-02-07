@@ -1,0 +1,26 @@
+package com.myspring.service;
+
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.myspring.service.BoardRepository;
+
+
+
+
+@Service
+public class BoardServiceImpl implements BoardService {
+	 @Autowired
+	 private BoardRepository boardRepository;
+	@Override
+	public void insert(BoardDTO board) {
+		boardRepository.dao_insert(board);
+		
+	}
+
+
+	
+
+}

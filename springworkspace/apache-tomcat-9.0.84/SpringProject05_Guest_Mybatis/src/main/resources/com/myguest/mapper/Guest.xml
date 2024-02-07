@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper 
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="com.myguest.mapper.Guest">
+    <sql id="search">
+        <where>
+            <if test="word != null and field == 'name'">
+                AND name LIKE CONCAT('%', #{word}, '%')
+            </if>
+            <!-- 수정된 부분: 'content'로 변경 -->
+            <if test="word != null and field == 'content'">
+                AND content LIKE CONCAT('%', #{word}, '%')
+            </if>
+        </where>
+    </sql>
+    <insert id="insertGuest" parameterType="com.myspring.model.Guest">
+        insert into guest(name, content, grade, created, ipaddr) values(#{name}, #{content}, #{grade}, now(), #{ipaddr})
+    </insert>
+
+    <select id="listGuest" parameterType="java.util.Map" resultType="com.myspring.model.Guest">
+        SELECT * FROM guest
+        <include refid="search"></include>
+    </select>
+
+    <!-- 검색-->
+    <select id="searchGuest" parameterType="java.util.Map" resultType="com.myspring.model.Guest">
+    SELECT * FROM guest
+    <include refid="search"></include>
+</select>
+
+
+    <select id="countGuest" parameterType="java.util.Map" resultType="int">
+        SELECT COUNT(*) FROM guest
+        <include refid="search"></include>
+    </select>
+
+    <select id="viewGuest" resultType="com.myspring.model.Guest">
+        SELECT * FROM guest WHERE num=#{num}
+    </select>
+
+    <delete id="deleteGuest">
+        DELETE FROM guest WHERE num=#{num}
+    </delete>
+
+    <update id="updateGuest" parameterType="com.myspring.model.Guest">
+        UPDATE guest SET name=#{name}, content=#{content}, grade=#{grade}, created=now(), ipaddr=#{ipaddr} WHERE num=#{num}
+    </update>
+</mapper>
+

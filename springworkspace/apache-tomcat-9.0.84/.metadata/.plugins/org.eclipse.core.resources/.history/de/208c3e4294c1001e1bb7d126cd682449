@@ -1,0 +1,17 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ include file="include/header.jsp" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ page session="false" %>
+<html>
+<head>
+	<title>Admin</title>
+</head>
+<body>
+<div class="container mt-3">
+<h1> Admin </h1>
+<p>principal : <sec:authentication property="principal"/></p>
+<p>Member: <sec:authentication property="principal.member"/></p>
+</div>
+
+</body>
+</html>

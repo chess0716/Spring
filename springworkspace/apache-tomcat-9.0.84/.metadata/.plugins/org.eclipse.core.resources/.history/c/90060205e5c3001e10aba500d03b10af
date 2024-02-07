@@ -1,0 +1,42 @@
+package com.myspring.app09;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
+
+import com.myspring.dto.CommentDTO;
+import com.myspring.dto.CustomUser;
+import com.myspring.service.CommentService;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/reply/*")
+public class CommentController {
+
+    @Autowired
+    private CommentService commentService;
+
+    // ´ñ±Û Ãß°¡
+    @PostMapping("commentInsert")
+    public String insert(@RequestBody CommentDTO comment) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        CustomUser user = (CustomUser)auth.getPrincipal();
+        comment.setUserid(user.getUsername());
+        commentService.insert(comment);
+        return "success";
+    }
+
+    @GetMapping("commentList/{num}")
+    public List<CommentDTO> list(@PathVariable int num) {
+        return commentService.list(num);
+    }
+
+    @DeleteMapping("delete/{cnum}")
+    public int delete(@PathVariable int cnum) {
+        commentService.delete(cnum);
+        return cnum;
+    }
+}
+

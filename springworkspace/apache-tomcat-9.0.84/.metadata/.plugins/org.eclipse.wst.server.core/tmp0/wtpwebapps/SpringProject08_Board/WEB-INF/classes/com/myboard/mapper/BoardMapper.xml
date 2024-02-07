@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper 
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.myapp.mapper.BoardMapper">
+<sql id="search">
+	<where>
+		<if test="word!=null and field=='writer'">
+		   writer like CONCAT('%', #{word}, '%')
+		</if>
+		<if test="word!=null and field=='title'">
+		   title like CONCAT('%', #{word}, '%')
+		</if>
+	</where>
+</sql>
+
+<select id="findAll" resultType="com.myapp.dto.BoardDTO">
+select * from board 
+<include refid="search"></include>
+order by num desc  limit  #{pageStart} , #{pageSize}
+</select>
+
+<select id="count" resultType="int">
+select count(*) from board
+<include refid="search"></include>
+</select>
+</mapper>

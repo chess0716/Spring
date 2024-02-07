@@ -1,0 +1,23 @@
+package com.myspring.service;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.myspring.mapper.BoardMapper;
+
+@Service
+public class BoardService  {
+    
+    @Autowired
+    private BoardMapper boardMapper;
+    
+    public void insert(BoardDTO board) {
+        boardMapper.insert(board);
+    }
+    public List<BoardDTO> findAll() {
+        // 여기에서는 더미 데이터 대신 실제로 저장된 게시글 목록을 데이터베이스에서 가져와 반환해야 합니다.
+        return boardMapper.findAll();
+    }
+}

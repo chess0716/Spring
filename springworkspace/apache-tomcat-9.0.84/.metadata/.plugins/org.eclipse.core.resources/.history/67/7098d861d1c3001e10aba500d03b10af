@@ -1,0 +1,5 @@
+package com.myspring.mapper;
+
+public class CommentMapper {
+
+}

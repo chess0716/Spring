@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper 
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+
+<mapper namespace="com.myspring.Guest">
+   <insert id="insertGuest" parameterType="com.myspring.model.Guest">
+insert into guest(name, content, grade,created, ipAddr) values(#{name}, #{content},#{grade}, now(),#{ipaddr})
+</insert>
+    <!-- 전체보기 -->
+    <select id="gList" resultType="com.myspring.model.Guest">
+        SELECT * FROM person;
+    </select>
+</mapper>

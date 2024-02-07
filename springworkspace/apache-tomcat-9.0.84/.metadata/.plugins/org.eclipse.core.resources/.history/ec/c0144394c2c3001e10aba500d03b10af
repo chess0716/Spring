@@ -1,0 +1,8 @@
+package com.myspring.service;
+
+public interface BoardService {
+	//Ãß°¡
+	public void insert(BoardDTO baord);
+
+	
+}

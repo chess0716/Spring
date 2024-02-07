@@ -1,0 +1,24 @@
+package com.myspring.service;
+
+import java.util.HashMap;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+
+import com.myspring.mapper.BoardMapper;
+
+@Repository
+public class BoardRepositoryImpl implements BoardRepository {
+ @Autowired
+ private BoardMapper boardMapper;
+	@Override
+	public void dao_insert(BoardDTO board) {
+		boardMapper.insert(board);
+		
+	}
+
+
+
+}
