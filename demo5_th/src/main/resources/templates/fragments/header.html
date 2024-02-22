@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<div th:fragment="header">
+	<nav class="navbar navbar-expand-sm bg-info navbar-dark">
+		<div class="container">
+			<ul class="navbar-nav mr-auto">
+				<li class="nav-item"><a class="nav-link" href="/">Demo55_TH</a></li>
+				<li class="nav-item"><a class="nav-link" href="/insert">BoardInsert</a>
+				</li>
+				<li class="nav-item"><a class="nav-link" href="/list">BoardList</a></li>
+			</ul>
+
+			<ul class="navbar-nav" th:if="${session.sMember ==null }">
+				<li class="nav-item"><a class="nav-link" href="/member/login">로그인</a></li>
+				<li class="nav-item"><a class="nav-link" href="/member/join">회원가입</a></li>
+			</ul>
+
+			<ul class="navbar-nav" th:if="${session.sMember}">
+				<li class="nav-item"><a class="nav-link" href="/member/logout">로그아웃</a></li>
+				<li class="nav-item"><a class="nav-link" href="/member/mlist">회원목록</a></li>
+			</ul>
+		</div>
+	</nav>
+</div>
+
+
+
+
