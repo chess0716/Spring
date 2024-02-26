@@ -1,0 +1,25 @@
+<!-- Header -->
+<header id="header">
+    <div class="inner">
+        <!-- Logo -->
+        <a href="index" class="logo">
+            <span class="symbol"><img th:src="@{/images/logo.svg}" alt="" /></span><span class="title">코딩쿠킹</span>
+        </a>
+        <!-- Nav -->
+        <nav>
+            <ul class="menu-list">
+                <li><a th:href="@{/index}">Home</a></li>
+                <li><a th:href="@{/request/request_list}">요청 게시판</a></li>
+                <!-- Spring Security를 이용한 로그인 상태에 따라 다르게 표시 -->
+                <sec:authorize access="isAuthenticated()">
+                    <li><a th:href="@{/insert}">글 작성</a></li>
+                    <li><a th:href="@{/member/logout}">로그아웃</a></li>
+                </sec:authorize>
+                <sec:authorize access="isAnonymous()">
+                    <li><a th:href="@{/member/login}">로그인</a></li>
+                    <li><a th:href="@{/member/register}">회원가입</a></li>
+                </sec:authorize>
+            </ul>
+        </nav>
+    </div>
+</header>
