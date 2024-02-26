@@ -1,25 +1,32 @@
 <!-- Header -->
 <header id="header">
     <div class="inner">
+		
         <!-- Logo -->
         <a href="index" class="logo">
             <span class="symbol"><img th:src="@{/images/logo.svg}" alt="" /></span><span class="title">코딩쿠킹</span>
         </a>
+     
         <!-- Nav -->
         <nav>
-            <ul class="menu-list">
-                <li><a th:href="@{/index}">Home</a></li>
-                <li><a th:href="@{/request/request_list}">요청 게시판</a></li>
-                <!-- Spring Security를 이용한 로그인 상태에 따라 다르게 표시 -->
-                <sec:authorize access="isAuthenticated()">
-                    <li><a th:href="@{/insert}">글 작성</a></li>
-                    <li><a th:href="@{/member/logout}">로그아웃</a></li>
-                </sec:authorize>
-                <sec:authorize access="isAnonymous()">
-                    <li><a th:href="@{/member/login}">로그인</a></li>
-                    <li><a th:href="@{/member/register}">회원가입</a></li>
-                </sec:authorize>
-            </ul>
-        </nav>
+    <ul class="menu-list">
+        <li><a href="/index">Home</a></li>
+        <li><a href="/request/request_list">요청 게시판</a></li>
+        
+        <!-- 운영자 계정으로 로그인한 경우에만 "글 작성" 표시 -->
+        <li sec:authorize="hasRole('ROLE_ADMIN')"><a href="/insert">글 작성</a></li>
+        
+        <!-- 로그인한 경우에는 "로그아웃" 표시, 그렇지 않은 경우에는 "로그인" 표시 -->
+        <li sec:authorize="isAuthenticated()"><a href="/logout">로그아웃</a></li>
+        <li sec:authorize="!isAuthenticated()"><a href="/member/login">로그인</a></li>
+        
+        <li><a href="/member/register">회원가입</a></li>
+        <li><a href="#menu">Menu</a></li>
+    </ul>
+</nav>
+
     </div>
 </header>
+
+
+

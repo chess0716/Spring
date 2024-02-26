@@ -14,7 +14,7 @@ public class CommentService {
 
     private final CommentMapper commentMapper;
 
-    @Autowired
+   
     public CommentService(CommentMapper commentMapper) {
         this.commentMapper = commentMapper;
     }

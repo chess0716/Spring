@@ -4,7 +4,8 @@
 	html5up.net | @ajlkn
 	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
 -->
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+	 xmlns:src="http://www.thymeleaf.org/extras/spring-security">
 	<head>
 		<title>당신의 한 끼를 계산해드립니다</title>
 		<meta charset="utf-8" />
@@ -16,7 +17,37 @@
 		<!-- Wrapper -->
 			<div id="wrapper">
  <!-- Include Header -->
-        <div th:replace="include/header :: header"></div>
+      <!-- Header -->
+<header id="header">
+    <div class="inner">
+		
+        <!-- Logo -->
+        <a href="index" class="logo">
+            <span class="symbol"><img th:src="@{/images/logo.svg}" alt="" /></span><span class="title">코딩쿠킹</span>
+        </a>
+     
+        <!-- Nav -->
+        <nav>
+    <ul class="menu-list">
+        <li><a href="/index">Home</a></li>
+        <li><a href="/request/request_list">요청 게시판</a></li>
+        
+        <!-- 운영자 계정으로 로그인한 경우에만 "글 작성" 표시 -->
+        <li sec:authorize="hasRole('ROLE_ADMIN')"><a href="/insert">글 작성</a></li>
+        
+        <!-- 로그인한 경우에는 "로그아웃" 표시, 그렇지 않은 경우에는 "로그인" 표시 -->
+        <li sec:authorize="isAuthenticated()"><a href="/logout">로그아웃</a></li>
+        <li sec:authorize="!isAuthenticated()"><a href="/member/login">로그인</a></li>
+        
+        <li><a href="/member/register">회원가입</a></li>
+        <li><a href="#menu">Menu</a></li>
+    </ul>
+</nav>
+
+    </div>
+</header>
+
+
 
 		<!-- Include Header -->
 
@@ -64,7 +95,16 @@
 						</div>
 					</div>
 
-				 <div th:replace="include/footer :: footer"></div>
+			<footer id="footer">
+    <div class="inner">
+  
+   
+        <ul class="copyright">
+            <li>&copy; Untitled. All rights reserved</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+        </ul>
+    </div>
+</footer>
+
 
 			</div>
 

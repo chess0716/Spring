@@ -2,17 +2,17 @@ package com.ccp4.service;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ccp4.dto.BoardDTO;
 import com.ccp4.mapper.BoardMapper;
 
-import lombok.RequiredArgsConstructor;
-
 @Service
-@RequiredArgsConstructor
+
 public class BoardService {
-	public final BoardMapper boardMapper;
+	@Autowired
+	public  BoardMapper boardMapper;
 	
 	//메인
 	public List<BoardDTO> getAllBoards(){

@@ -2,17 +2,17 @@ package com.ccp4.service;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ccp4.dto.RequestBoard;
 import com.ccp4.mapper.RequestBoardMapper;
 
-import lombok.RequiredArgsConstructor;
-
 @Service
-@RequiredArgsConstructor
+
 public class RequestBoardSevice {
-	private final RequestBoardMapper rbMapper;
+	@Autowired
+	private RequestBoardMapper rbMapper;
 	
 	// 요청 게시글 추가
 	public void insert(RequestBoard rboard) {
