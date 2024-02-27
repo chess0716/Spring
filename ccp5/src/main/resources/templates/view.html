@@ -1,0 +1,116 @@
+<!DOCTYPE HTML>
+<!--
+    Phantom by HTML5 UP
+    html5up.net | @ajlkn
+    Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Generic - Phantom by HTML5 UP</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" th:href="@{/assets/css/main.css}" />
+    <noscript><link rel="stylesheet" th:href="@{/assets/css/noscript.css}" /></noscript>
+</head>
+<body class="is-preload">
+<!-- Wrapper -->
+<div id="wrapper">
+
+    <!-- Header -->
+    <header id="header" th:replace="include/header :: header"></header>
+
+    <!-- Menu -->
+    <nav id="menu">
+        <h2>Menu</h2>
+        <ul>
+            <li><a th:href="@{/}">Home</a></li>
+            <li><a th:href="@{/view}">Ipsum veroeros</a></li>
+            <li><a th:href="@{/view}">Tempus etiam</a></li>
+            <li><a th:href="@{/view.html}">Consequat dolor</a></li>
+            <li><a th:href="@{/elements.html}">Elements</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main -->
+    <div id="main">
+        <div class="inner">
+            <h1>Generic Page</h1>
+            <span class="image main"><img th:src="@{/images/pic13.jpg}" alt="" /></span>
+            <p>Donec eget ex magna. Interdum et malesuada fames ac ante ipsum primis in faucibus. Pellentesque venenatis dolor imperdiet dolor mattis sagittis. Praesent rutrum sem diam, vitae egestas enim auctor sit amet. Pellentesque leo mauris, consectetur id ipsum sit amet, fergiat. Pellentesque in mi eu massa lacinia malesuada et a elit. Donec urna ex, lacinia in purus ac, pretium pulvinar mauris. Curabitur sapien risus, commodo eget turpis at, elementum convallis elit. Pellentesque enim turpis, hendrerit tristique.</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis dapibus rutrum facilisis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Etiam tristique libero eu nibh porttitor fermentum. Nullam venenatis erat id vehicula viverra. Nunc ultrices eros ut ultricies condimentum. Mauris risus lacus, blandit sit amet venenatis non, bibendum vitae dolor. Nunc lorem mauris, fringilla in aliquam at, euismod in lectus. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. In non lorem sit amet elit placerat maximus. Pellentesque aliquam maximus risus, vel venenatis mauris vehicula hendrerit.</p>
+            <p>Interdum et malesuada fames ac ante ipsum primis in faucibus. Pellentesque venenatis dolor imperdiet dolor mattis sagittis. Praesent rutrum sem diam, vitae egestas enim auctor sit amet. Pellentesque leo mauris, consectetur id ipsum sit amet, fersapien risus, commodo eget turpis at, elementum convallis elit. Pellentesque enim turpis, hendrerit tristique lorem ipsum dolor.</p>
+        </div>
+    </div>
+
+    <!-- 댓글 추가 및 목록 -->
+    <div id="commentSection" th:if="${loggedInUser}">
+        <div id="commentForm" th:if="${loggedInUser.auth == 'USER'}">
+            <h2>댓글 추가</h2>
+            <input type="text" id="writer" placeholder="작성자"><br>
+            <textarea id="content" placeholder="내용"></textarea><br>
+            <input type="button" value="댓글 추가" onclick="addComment()">
+        </div>
+
+        <div id="adminControls" th:if="${loggedInUser.auth == 'ADMIN'}">
+            <button onclick="editPage()">페이지 수정</button>
+            <button onclick="deletePage()">페이지 삭제</button>
+        </div>
+
+        <h2>댓글 목록</h2>
+        <div id="commentList"></div>
+    </div>
+
+<script>
+function addComment() {
+    var writer = document.getElementById("writer").value;
+    var content = document.getElementById("content").value;
+    var bnum = 1; // 게시물 번호 설정, 예시로 1로 설정
+    
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "/comments/" + bnum, true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            alert("댓글이 추가되었습니다.");
+            getComments();
+        }
+    };
+    var commentData = {
+        writer: writer,
+        content: content
+    };
+    xhr.send(JSON.stringify(commentData));
+}
+
+function getComments() {
+    var bnum = 1; // 게시물 번호 설정, 예시로 1로 설정
+    
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", "/comments/" + bnum, true);
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            var comments = JSON.parse(xhr.responseText);
+            displayComments(comments);
+        }
+    };
+    xhr.send();
+}
+
+function displayComments(comments) {
+    var commentList = document.getElementById("commentList");
+    commentList.innerHTML = ""; // 기존 댓글 목록 초기화
+    
+    comments.forEach(function(comment) {
+        var commentDiv = document.createElement("div");
+        commentDiv.innerHTML = "<strong>" + comment.writer + "</strong>: " + comment.content;
+        commentList.appendChild(commentDiv);
+    });
+}
+
+// 페이지 로드 시 댓글 목록 가져오기
+getComments();
+</script>
+	 <footer id="footer" th:replace="include/footer :: footer"></footer>
+
+</body>
+</html>
