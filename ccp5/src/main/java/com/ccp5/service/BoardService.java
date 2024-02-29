@@ -1,96 +1,68 @@
 package com.ccp5.service;
 
-import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import com.ccp5.dto.Board;
-import com.ccp5.dto.Comment;
-import com.ccp5.dto.User;
-import com.ccp5.repository.BoardRepository;
+import com.ccp5.dto.BoardDTO;
+import com.ccp5.dto.IngrBoard;
+import com.ccp5.repository.BoardRepsitory;
+import com.ccp5.repository.IngrListRepository;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
-@Transactional(readOnly = true)  // Transaction 을 수동으로 처리
 @Service
 @RequiredArgsConstructor
 public class BoardService {
-	private final BoardRepository boardRepository;
-	
-	
+	public final BoardRepsitory boardRepo;
+	public final IngrListRepository ilRepo;
 
-	public Page<Board> findAll(String field, String word, Pageable pageable){
-		Page<Board> lists = boardRepository.findAll(pageable);
-		if(field.equals("title")) {
-			lists = boardRepository.findByTitleContaining(word, pageable);
-		}else if(field.equals("content")) {
-			lists=boardRepository.findByContentContaining(word, pageable);
+	// 메인
+	public List<BoardDTO> getAllBoards() {
+		// JPA Repository 사용
+		return boardRepo.findAll();
+	}
+
+	// 뷰
+	public BoardDTO getBoardByNum(int num) {
+		// JPA Repository 사용
+		return boardRepo.findById(num).orElse(null);
+	}
+
+	// 레시피 작성
+	public void insertBoard(BoardDTO board) {
+		// JPA Repository 사용
+		boardRepo.save(board);
+	}
+
+	// 레시피 수정
+	@Transactional
+	public void updateIngredientForms(List<IngrBoard> ingredientForms) {
+		for (IngrBoard ingrBoard : ingredientForms) {
+			ilRepo.deleteByTitle(ingrBoard.getTitle());
 		}
-		return lists;
+		ilRepo.deleteByNull();
 		
+		List<IngrBoard> filteredIngredientForms = ingredientForms.stream().filter(ingrBoard -> ingrBoard.getUnit() != 0)
+				.collect(Collectors.toList());
+		ilRepo.saveAll(filteredIngredientForms);
+	}
+	@Transactional
+	public void updateRecipeForm(BoardDTO recipeForm) {
+		boardRepo.save(recipeForm);
 	}
 	
-	//전체보기(페이징)
-	public Page<Board> findAll(Pageable pageable){
-		return boardRepository.findAll(pageable);
+	// 레시피 삭제
+	@Transactional
+	public void deleteRecipe(int num) {
+		boardRepo.deleteById(num);		
 	}
-	//전체보기(기본)
-	public List<Board> list(){
-		return boardRepository.findAll();
-	}
-	//개수(검색)
-	public long count(String field, String word) {
-		long count = boardRepository.count();
-		if(field.equals("title")) {
-			count = boardRepository.cntTitleSearch(word);
-		}else if(field.equals("content")) {
-			count=boardRepository.cntContentSearch(word);
+	@Transactional
+	public void deleteIngredientForms(List<IngrBoard> ingredientForms) {
+		for (IngrBoard ingrBoard : ingredientForms) {
+			ilRepo.deleteByTitle(ingrBoard.getTitle());
 		}
-		
-		return count;
-		
 	}
-	//개수
-	public long count() {
-		return boardRepository.count();
-	}
-	//상세보기
-	@Transactional
-	public Board view(long num) {
-		//조회수 증가
-		Board board = boardRepository.findById(num).get();
-		board.setHitcount(board.getHitcount()+1);
-		return board ;
-	}
-	//삭제
-	@Transactional
-	public void delete(long num) {
-		boardRepository.deleteById(num);
-	}
-	//수정 ==>더티체킹
-	@Transactional
-	public void update(Board board) {
-		Board b = boardRepository.findById(board.getNum()).get();
-		b.setTitle(board.getTitle());
-		b.setContent(board.getContent());
-		b.setRegdate(new Date());
-		
-	}
-	
-	@Transactional
-    public void updateReplyCnt(Long boardNum) {
-        Board board = boardRepository.findById(boardNum).orElse(null);
-        if (board != null) {
-            List<Comment> comments = board.getComments();
-            int replyCnt = comments != null ? comments.size() : 0;
-            board.setReplyCnt(replyCnt);
-            boardRepository.save(board);
-        }
-    }
-
-
 }

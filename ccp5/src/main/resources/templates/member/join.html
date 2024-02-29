@@ -3,7 +3,10 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>회원가입</title>
+    <title>Login</title>
+    <!-- 기타 메타데이터 및 스크립트 -->
+
+    <!-- 외부 CSS 파일 연결 -->
     <link rel="stylesheet" href="/assets/css/main.css">
 </head>
 
@@ -22,67 +25,24 @@
             <li><a th:href="@{/elements.html}">Elements</a></li>
         </ul>
     </nav>
-
-    <div class="container mt-3">
-        <form id="joinForm" action="/member/join" method="post">
-            <div class="mb-3 mt-3">
-                <label for="username">User Name:</label> <input type="text" class="form-control" id="username" placeholder="Enter username" name="username">
-            </div>
-            <div class="mb-3 mt-3">
-                <label for="password">Password:</label> <input type="password" class="form-control" id="password" placeholder="Enter password" name="password">
-            </div>
-            <div class="mb-3 mt-3">
-                <label for="email">Email:</label> <input type="text" class="form-control" id="email" placeholder="Enter email" name="email">
-            </div>
-            <button type="submit" class="btn btn-primary">회원가입</button>
-        </form>
+   
+    <h2>회원가입</h2>
+   <form action="/member/join" method="post">
+    <div>
+        <label for="username">ID:</label>
+        <input type="text" id="username" name="username" required>
     </div>
+    <div>
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+    </div>
+    <div>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+    </div>
+    <button type="submit">가입하기</button>
+</form>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            $("#joinForm").submit(function(event) {
-                event.preventDefault();
-                if ($("#username").val() === "") {
-                    alert("아이디를 입력하세요");
-                    $("#username").focus();
-                    return false;
-                }
-                if ($("#password").val() === "") {
-                    alert("비밀번호를 입력하세요");
-                    $("#password").focus();
-                    return false;
-                }
-                if ($("#email").val() === "") {
-                    alert("이메일을 입력하세요");
-                    $("#email").focus();
-                    return false;
-                }
-                $.ajax({
-                    type: "POST",
-                    url: "/member/join",
-                    contentType: "application/json",
-                    data: JSON.stringify({
-                        username: $("#username").val(),
-                        password: $("#password").val(),
-                        email: $("#email").val()
-                    }),
-                    success: function(response) {
-                        if (response === "success") {
-                            alert("회원가입 성공");
-                            window.location.href = "/member/login";
-                        } else if (response === "fail") {
-                            alert("아이디 중복");
-                            $("#username").val("");
-                        }
-                    },
-                    error: function() {
-                        alert("회원가입 실패");
-                    }
-                });
-            });
-        });
-    </script>
+    <p>이미 계정이 있으신가요? <a href="/member/login">로그인</a></p>
 </body>
-
 </html>

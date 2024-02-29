@@ -1,6 +1,6 @@
 package com.ccp5.dto;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -13,38 +13,33 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+
+
 
 @Entity (name="tbl_comment4")
 @Data
 public class Comment {
-	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long cnum;
-	private String content;
-	@CreationTimestamp
-	@Temporal (TemporalType.TIMESTAMP)
-	@Column(name="regdate")
-	@JsonFormat(pattern = "yyyy-mm-dd",timezone = "Asia/Seoul")
-	private Date regdate;
-	
-	//User
-	@ManyToOne
-	@JoinColumn (name="user_id")
-	private User user;
-	
-	//Board
-	@ManyToOne
-	@JoinColumn (name ="bnum")
-	private Board board;
-	
-	
-	
-	
-	
-	
-	
+
+		
+	 @Id
+	    @GeneratedValue(strategy = GenerationType.IDENTITY)
+	    private Long cnum;
+	    
+	    @ManyToOne
+	    @JoinColumn(name="username")
+	    private User writer;
+	    
+	    private String content;
+	    
+	    @CreationTimestamp
+	    @Column(name="regdate")
+	    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
+	    private LocalDateTime regdate;
+	    
+	    @ManyToOne
+	    @JoinColumn(name ="bnum")
+	    private BoardDTO board;
+		
+	    
 }

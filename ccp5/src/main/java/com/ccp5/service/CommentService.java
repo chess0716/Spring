@@ -1,32 +1,28 @@
 package com.ccp5.service;
 
-import java.util.List;
-
-import org.springframework.stereotype.Service;
-
 import com.ccp5.dto.Comment;
 import com.ccp5.repository.CommentRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-import lombok.RequiredArgsConstructor;
+import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 public class CommentService {
-    private final CommentRepository commentRepository;
-    private final BoardService boardService;
 
-    public void insert(Comment comment) {
-        commentRepository.save(comment);
-        boardService.updateReplyCnt(comment.getBoard().getNum());
-        
+    @Autowired
+    private  CommentRepository commentRepository;
+
+
+    public CommentService(CommentRepository commentRepository) {
+        this.commentRepository = commentRepository;
     }
 
-    public List<Comment> list(long bnum) {
-        return commentRepository.findByBnum(bnum);
+    public List<Comment> getAllComments() {
+        return commentRepository.findAll();
     }
 
-    public void delete(long cnum) {
-        commentRepository.deleteById(cnum);
+    public Comment createComment(Comment comment) {
+        return commentRepository.save(comment);
     }
-   
 }

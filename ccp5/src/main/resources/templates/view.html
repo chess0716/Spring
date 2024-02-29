@@ -6,111 +6,140 @@
 -->
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Generic - Phantom by HTML5 UP</title>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-    <link rel="stylesheet" th:href="@{/assets/css/main.css}" />
-    <noscript><link rel="stylesheet" th:href="@{/assets/css/noscript.css}" /></noscript>
+<title>Generic - Phantom by HTML5 UP</title>
+<meta charset="utf-8" />
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, user-scalable=no" />
+<link rel="stylesheet" th:href="@{/assets/css/main.css}" />
+<noscript>
+	<link rel="stylesheet" th:href="@{/assets/css/noscript.css}" />
+</noscript>
 </head>
 <body class="is-preload">
-<!-- Wrapper -->
-<div id="wrapper">
+	<!-- Wrapper -->
+	<div id="wrapper">
 
-    <!-- Header -->
-    <header id="header" th:replace="include/header :: header"></header>
+		<!-- Header -->
+		<header id="header" th:replace="include/header :: header"></header>
 
-    <!-- Menu -->
-    <nav id="menu">
-        <h2>Menu</h2>
-        <ul>
-            <li><a th:href="@{/}">Home</a></li>
-            <li><a th:href="@{/view}">Ipsum veroeros</a></li>
-            <li><a th:href="@{/view}">Tempus etiam</a></li>
-            <li><a th:href="@{/view.html}">Consequat dolor</a></li>
-            <li><a th:href="@{/elements.html}">Elements</a></li>
-        </ul>
-    </nav>
+		<!-- Menu -->
+		<nav id="menu">
+			<h2>Menu</h2>
+			<ul>
+				<li><a th:href="@{/}">Home</a></li>
+				<li><a th:href="@{/view}">Ipsum veroeros</a></li>
+				<li><a th:href="@{/view}">Tempus etiam</a></li>
+				<li><a th:href="@{/view.html}">Consequat dolor</a></li>
+				<li><a th:href="@{/elements.html}">Elements</a></li>
+			</ul>
+		</nav>
 
-    <!-- Main -->
-    <div id="main">
-        <div class="inner">
-            <h1>Generic Page</h1>
-            <span class="image main"><img th:src="@{/images/pic13.jpg}" alt="" /></span>
-            <p>Donec eget ex magna. Interdum et malesuada fames ac ante ipsum primis in faucibus. Pellentesque venenatis dolor imperdiet dolor mattis sagittis. Praesent rutrum sem diam, vitae egestas enim auctor sit amet. Pellentesque leo mauris, consectetur id ipsum sit amet, fergiat. Pellentesque in mi eu massa lacinia malesuada et a elit. Donec urna ex, lacinia in purus ac, pretium pulvinar mauris. Curabitur sapien risus, commodo eget turpis at, elementum convallis elit. Pellentesque enim turpis, hendrerit tristique.</p>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis dapibus rutrum facilisis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Etiam tristique libero eu nibh porttitor fermentum. Nullam venenatis erat id vehicula viverra. Nunc ultrices eros ut ultricies condimentum. Mauris risus lacus, blandit sit amet venenatis non, bibendum vitae dolor. Nunc lorem mauris, fringilla in aliquam at, euismod in lectus. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. In non lorem sit amet elit placerat maximus. Pellentesque aliquam maximus risus, vel venenatis mauris vehicula hendrerit.</p>
-            <p>Interdum et malesuada fames ac ante ipsum primis in faucibus. Pellentesque venenatis dolor imperdiet dolor mattis sagittis. Praesent rutrum sem diam, vitae egestas enim auctor sit amet. Pellentesque leo mauris, consectetur id ipsum sit amet, fersapien risus, commodo eget turpis at, elementum convallis elit. Pellentesque enim turpis, hendrerit tristique lorem ipsum dolor.</p>
-        </div>
-    </div>
+		<!-- Main -->
+		<div id="main">
+			<div class="content mt-3">
+				<form action="/submit_recipe" method="post" class="recipe-form">
+					<div class="mb-3 mt-3">
+						<label for="title">TITLE</label> <input type="text"
+							class="form-control" id="title" name="title" readonly="readonly"
+							th:value="${board.title}" />
+					</div>
+					<div class="mb-3">
+						<label for="writer">WRITER</label> <input type="text"
+							class="form-control" id="writer" name="writer"
+							readonly="readonly" th:value="${board.writer}" />
+					</div>
+					<div class="mb-3 mt-3">
+						<label for="content">CONTENT</label>
+						<textarea class="form-control" rows="10" id="content"
+							name="content" readonly="readonly" th:text="${board.content}"></textarea>
+					</div>
+				</form>
+				<div th:if="${#authorization.expression('hasRole(''ADMIN'')')}"></div>
+				<button type="button" class="btn btn-primary" id="btnUpdate" th:attr="data-board-num=${board.num}">수정</button>
+				<button type="button" class="btn btn-primary" id="btnDelete" th:attr="data-board-num=${board.num}">삭제</button>
+				</div>
+			</div>
+		</div>
 
-    <!-- 댓글 추가 및 목록 -->
-    <div id="commentSection" th:if="${loggedInUser}">
-        <div id="commentForm" th:if="${loggedInUser.auth == 'USER'}">
-            <h2>댓글 추가</h2>
-            <input type="text" id="writer" placeholder="작성자"><br>
-            <textarea id="content" placeholder="내용"></textarea><br>
-            <input type="button" value="댓글 추가" onclick="addComment()">
-        </div>
+		 <div th:if="${#authorization.expression('isAuthenticated()')}">
+                <h1>댓글 작성</h1>
+                <form id="commentForm">
+                    <label for="username">사용자명:</label>
+                    <input type="text" id="username" name="username"><br><br>
+                    <label for="content">내용:</label><br>
+                    <textarea id="content" name="content" rows="4" cols="50"></textarea><br><br>
+                    <button type="submit">댓글 작성</button>
+                </form>
+            </div>
+            <div th:unless="${#authorization.expression('isAuthenticated()')}">
+                <p>댓글을 작성하려면 로그인하세요.</p>
+            </div>
 
-        <div id="adminControls" th:if="${loggedInUser.auth == 'ADMIN'}">
-            <button onclick="editPage()">페이지 수정</button>
-            <button onclick="deletePage()">페이지 삭제</button>
-        </div>
+            <!-- Comment List -->
+            <h1>댓글 목록</h1>
+            <ul id="commentList">
+                <!-- 댓글 목록은 JavaScript로 동적으로 채워질 예정입니다. -->
+            </ul>
+              <footer id="footer" th:replace="include/footer :: footer"></footer>
+		<script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+		<script>
+	    $(document).ready(function () {
+            console.log("페이지가 로드되었습니다.");
+            loadComments();
+        });
 
-        <h2>댓글 목록</h2>
-        <div id="commentList"></div>
-    </div>
-
-<script>
-function addComment() {
-    var writer = document.getElementById("writer").value;
-    var content = document.getElementById("content").value;
-    var bnum = 1; // 게시물 번호 설정, 예시로 1로 설정
-    
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", "/comments/" + bnum, true);
-    xhr.setRequestHeader("Content-Type", "application/json");
-    xhr.onreadystatechange = function() {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-            alert("댓글이 추가되었습니다.");
-            getComments();
+        function loadComments() {
+            console.log("댓글 목록을 불러오는 중입니다.");
+            $.get("/comments", function (comments) {
+                console.log("서버에서 받아온 댓글 목록:", comments);
+                comments.forEach(function (comment) {
+                    addCommentToList(comment);
+                });
+            });
         }
-    };
-    var commentData = {
-        writer: writer,
-        content: content
-    };
-    xhr.send(JSON.stringify(commentData));
-}
 
-function getComments() {
-    var bnum = 1; // 게시물 번호 설정, 예시로 1로 설정
-    
-    var xhr = new XMLHttpRequest();
-    xhr.open("GET", "/comments/" + bnum, true);
-    xhr.onreadystatechange = function() {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-            var comments = JSON.parse(xhr.responseText);
-            displayComments(comments);
+        function addCommentToList(comment) {
+            console.log("댓글을 목록에 추가합니다:", comment);
+            var writer = comment.writer ? comment.writer.username : "Unknown"; // 작성자 정보가 있는 경우 작성자명을 사용하고, 없는 경우 "Unknown"으로 표시
+            var listItem = $("<li>").text("작성자: " + writer + ", 내용: " + comment.content);
+            $("#commentList").append(listItem);
         }
-    };
-    xhr.send();
-}
 
-function displayComments(comments) {
-    var commentList = document.getElementById("commentList");
-    commentList.innerHTML = ""; // 기존 댓글 목록 초기화
-    
-    comments.forEach(function(comment) {
-        var commentDiv = document.createElement("div");
-        commentDiv.innerHTML = "<strong>" + comment.writer + "</strong>: " + comment.content;
-        commentList.appendChild(commentDiv);
-    });
-}
+        $("#commentForm").submit(function (event) {
+            event.preventDefault();
 
-// 페이지 로드 시 댓글 목록 가져오기
-getComments();
-</script>
-	 <footer id="footer" th:replace="include/footer :: footer"></footer>
+            var formData = {
+                username: $("#username").val(),
+                content: $("#content").val()
+            };
 
+            $.ajax({
+                type: "POST",
+                contentType: "application/json",
+                url: "/comments",
+                data: JSON.stringify(formData),
+                dataType: "json",
+                success: function (comment) {
+                    addCommentToList(comment);
+                    $("#username").val("");
+                    $("#content").val("");
+                },
+                error: function (error) {
+                    console.error("댓글 작성에 실패하였습니다:", error);
+                }
+            });
+        });
+
+        function editPage() {
+            // 페이지 수정 기능 구현
+            console.log("페이지 수정 기능");
+        }
+
+        function deletePage() {
+            // 페이지 삭제 기능 구현
+            console.log("페이지 삭제 기능");
+        }
+		</script>
+		<footer id="footer" th:replace="include/footer :: footer"></footer>
 </body>
 </html>

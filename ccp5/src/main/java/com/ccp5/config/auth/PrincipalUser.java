@@ -62,4 +62,9 @@ public class PrincipalUser  implements UserDetails{
 		return true;
 	}
 
+	public User User() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

@@ -2,55 +2,36 @@ package com.ccp5.controller;
 
 import java.util.List;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ccp5.config.auth.PrincipalUser;
-import com.ccp5.dto.Board;
 import com.ccp5.dto.Comment;
-import com.ccp5.service.BoardService;
 import com.ccp5.service.CommentService;
 
-import lombok.RequiredArgsConstructor;
-
 @RestController
-@RequestMapping("/reply/*")
-@RequiredArgsConstructor
+@RequestMapping("/comments")
 public class CommentController {
-    private final CommentService commentService;
-    private final BoardService boardService;
-    @GetMapping("commentList/{num}")
-    public ResponseEntity<List<Comment>> list(@PathVariable long num) {
-        List<Comment> comments = commentService.list(num);
-        return new ResponseEntity<>(comments, HttpStatus.OK);
+	 @Autowired
+    private CommentService commentService;
+
+   
+    public CommentController(CommentService commentService) {
+        this.commentService = commentService;
     }
 
-    @PostMapping("commentInsert/{num}")
-    public ResponseEntity<String> insert(
-            @PathVariable long num,
-            @RequestBody Comment comment,
-            @AuthenticationPrincipal PrincipalUser principal) {
-        Board b = new Board();
-        b.setNum(num);
-        comment.setBoard(b);
-        comment.setUser(principal.getUser());
-        commentService.insert(comment);
-        
-        boardService.updateReplyCnt(num);
-        return new ResponseEntity<>("ok", HttpStatus.OK);
+    @GetMapping
+    public List<Comment> getAllComments() {
+        return commentService.getAllComments();
     }
-  
-    @DeleteMapping("delete/{cnum}")
-    public long delete(@PathVariable long cnum) {
-        commentService.delete(cnum);
-        return cnum;
+
+    @PostMapping
+    @PreAuthorize("isAuthenticated()")
+    public Comment createComment(@RequestBody Comment comment) {
+        return commentService.createComment(comment);
     }
 }

@@ -1,43 +1,60 @@
 package com.ccp5.controller;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import java.util.List;
 
-import com.ccp5.dto.User;
-import com.ccp5.repository.UserRepository;
-import com.ccp5.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
+import com.ccp5.dto.BoardDTO;
+import com.ccp5.dto.IngrBoard;
+import com.ccp5.service.BoardService;
+import com.ccp5.service.IngrListService;
 
 import lombok.RequiredArgsConstructor;
 
 @Controller
-@RequestMapping("/member")
 @RequiredArgsConstructor
-
 public class HomeController {
-    private final UserService userService;
-    private final UserRepository userRepository;
 
-    @GetMapping("/login")
-    public String login() {
-        return "member/login";
+    @Autowired
+    private BoardService boardService;
+    @Autowired
+    private IngrListService ilService;
+    
+    @GetMapping({"/", "/index"})
+    public String index(Model model) {
+        List<BoardDTO> boards = boardService.getAllBoards();
+        model.addAttribute("boards", boards);
+        return "index";
     }
 
-    @GetMapping("/join")
-    public String joinForm() {
-        return "member/join";
+    @GetMapping("/view/{num}")
+    public String view(@PathVariable("num") int num, Model model) {
+     
+        BoardDTO board = boardService.getBoardByNum(num);
+        model.addAttribute("board", board);
+        return "view";
     }
-
-    @PostMapping("/join")
-    @ResponseBody
-    public String join(@RequestBody User user) {
-        if (userRepository.findByUsername(user.getUsername()) != null) {
-            return "fail";
-        }
-        userService.join(user);
-        return "success";
+    
+    // 레시피 등록
+    @GetMapping("/insert")
+    public String inerst(Model model) {
+    	model.addAttribute("categories", ilService.category());
+    	return "insert";
     }
+    
+    // 레시피 수정폼
+    @GetMapping("/update/{num}")
+    public String update(@PathVariable int num, Model model) {
+        BoardDTO board = boardService.getBoardByNum(num);
+        List<IngrBoard> ingrBoards = ilService.findByTitle(board.getTitle());
+        model.addAttribute("categories", ilService.category());
+        model.addAttribute("iboard", ingrBoards);
+        model.addAttribute("board", board);
+        return "update";
+    }
+    
 }

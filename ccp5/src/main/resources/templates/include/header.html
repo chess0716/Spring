@@ -14,7 +14,7 @@
         <li><a href="/request/request_list">요청 게시판</a></li>
         
         <!-- 운영자 계정으로 로그인한 경우에만 "글 작성" 표시 -->
-        <li sec:authorize="hasRole('ROLE_ADMIN')"><a href="/insert">글 작성</a></li>
+        <li ><a href="/insert">글 작성</a></li>
         
         <!-- 로그인한 경우에는 "로그아웃" 표시, 그렇지 않은 경우에는 "로그인" 표시 -->
         <li sec:authorize="isAuthenticated()"><a href="/logout">로그아웃</a></li>
