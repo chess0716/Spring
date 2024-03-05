@@ -1,0 +1,328 @@
+User
+<!DOCTYPE HTML>
+<!--
+    Phantom by HTML5 UP
+    html5up.net | @ajlkn
+    Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Generic - Phantom by HTML5 UP</title>
+<meta charset="utf-8" />
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, user-scalable=no" />
+<link rel="stylesheet" th:href="@{/assets/css/main.css}" />
+<noscript>
+	<link rel="stylesheet" th:href="@{/assets/css/noscript.css}" />
+</noscript>
+</head>
+<body class="is-preload">
+	<!-- Wrapper -->
+	<div id="wrapper">
+
+		<!-- Header -->
+		<header id="header" th:replace="include/header :: header"></header>
+
+		<!-- Menu -->
+		<nav id="menu">
+			<h2>Menu</h2>
+			<ul>
+				<li><a th:href="@{/}">Home</a></li>
+				<li><a th:href="@{/view}">Ipsum veroeros</a></li>
+				<li><a th:href="@{/view}">Tempus etiam</a></li>
+				<li><a th:href="@{/view.html}">Consequat dolor</a></li>
+				<li><a th:href="@{/elements.html}">Elements</a></li>
+			</ul>
+		</nav>
+
+		<!-- Main -->
+		<div id="main">
+			<div class="content mt-3">
+				<form action="/submit_recipe" method="post" class="recipe-form">
+					<div class="mb-3 mt-3">
+						<label for="title">TITLE</label> <input type="text"
+							class="form-control" id="title" name="title" readonly="readonly"
+							th:value="${board.title}" />
+					</div>
+					<div class="mb-3">
+						<label for="writer">WRITER</label> <input type="text"
+							class="form-control" id="writer" name="writer"
+							readonly="readonly" th:value="${board.writer}" />
+					</div>
+					<div class="mb-3 mt-3">
+						<label for="content">CONTENT</label>
+						<textarea class="form-control" rows="10" id="content"
+							name="content" readonly="readonly" th:text="${board.content}"></textarea>
+					</div>
+					<div class="mb-3 mt-3">
+						<label for="content">INGREDIENTS</label>
+						<table class="table">
+							<thead>
+								<tr>
+									<th>Name</th>
+									<th>Unit</th>
+									<th>Checkbox</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="ingr : ${ingrBoards}">
+									<td th:text="${ingr.name}"></td>
+									<td><span th:if="${ingr.unit} &lt; 100"
+										th:text="${ingr.unit + ' 개'}"></span> <span
+										th:if="${ingr.unit} >= 100" th:text="${ingr.unit + ' g'}"></span>
+									</td>
+									<td><button type="button" class="btn btn-primary CheckBox"
+											data-row-id="row_${rowStat.index}"
+											th:attr="data-board-num=${board.num}">미보유</button></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div class="mb-3 mt-3">
+						<label for="content">TOTALPRICE</label>
+						<textarea class="form-control" id="total" name="total"
+							readonly="readonly" th:text="${total+' 원'}"></textarea>
+					</div>
+				</form>
+				<div th:if="${#authorization.expression('hasRole(''ADMIN'')')}"></div>
+				<button type="button" class="btn btn-primary" id="btnUpdate"
+					th:attr="data-board-num=${board.num}">수정</button>
+				<button type="button" class="btn btn-primary" id="btnDelete"
+					th:attr="data-board-num=${board.num}">삭제</button>
+			</div>
+		</div>
+	</div>
+
+	<div th:if="${#authorization.expression('isAuthenticated()')}">
+    <h1>댓글 작성</h1>
+    <form id="commentForm" method="post">
+        <label for="content">내용:</label><br>
+        <textarea id="content" name="content" rows="4" cols="50"></textarea>
+        <br> <br>
+        <button type="submit">댓글 작성</button>
+    </form>
+</div>
+<div th:unless="${#authorization.expression('isAuthenticated()')}">
+    <p>댓글을 작성하려면 로그인하세요.</p>
+</div>
+
+
+<!-- Comment List -->
+<h1>댓글 목록</h1>
+<ul id="commentList">
+    <!-- 댓글 목록은 JavaScript로 동적으로 채워질 예정입니다. -->
+</ul>
+<script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+<script>
+$(document).ready(function() {
+    console.log("페이지가 로드되었습니다.");
+    loadComments();
+
+    $('#commentForm').on('submit', function(e) {
+        e.preventDefault(); // 폼 기본 제출 막기
+        var formData = new FormData(this);
+        $.ajax({
+            type: 'POST',
+            url: '/comments',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                console.log("댓글이 성공적으로 작성되었습니다.");
+                loadComments(); // 댓글 목록을 다시 불러와서 업데이트
+            },
+            error: function(error) {
+                console.log('댓글 작성 실패', error);
+            }
+        });
+    });
+});
+// 댓글 목록을 로드하는 함수
+    function loadComments() {
+        console.log("댓글 목록을 불러오는 중입니다.");
+        $.get("/comments", function(comments) {
+            console.log("서버에서 받아온 댓글 목록:", comments);
+            $("#commentList").empty(); // 댓글 목록을 초기화
+            comments.forEach(function(comment) {
+                addCommentToList(comment);
+            });
+        });
+    }
+
+function addCommentToList(comment) {
+    console.log("댓글을 목록에 추가합니다:", comment);
+    var writer = comment.writer ? comment.writer.username : "Unknown";
+    var listItem = $("<li>").text(
+            "작성자: " + writer + ", 내용: " + comment.content);
+    var editButton = $("<button>").text("수정").click(function() {
+        editComment(comment);
+    });
+    var deleteButton = $("<button>").text("삭제").click(function() {
+        deleteComment(comment.cnum);
+    });
+    listItem.append(editButton, deleteButton);
+    $("#commentList").append(listItem);
+}
+
+function editComment(comment) {
+    var newContent = prompt("댓글을 수정하세요:", comment.content);
+    if (newContent != null) {
+        comment.content = newContent;
+        $.ajax({
+            type: "PUT",
+            url: "/comments/" + comment.cnum,
+            contentType: "application/json",
+            data: JSON.stringify(comment),
+            success: function(updatedComment) {
+                console.log("댓글이 성공적으로 수정되었습니다.", updatedComment);
+                loadComments(); // 댓글 목록을 다시 불러와서 업데이트
+            },
+            error: function(error) {
+                console.error("댓글 수정에 실패하였습니다:", error);
+            }
+        });
+    }
+}
+
+function deleteComment(cnum) {
+    var confirmation = confirm("정말로 삭제하시겠습니까?");
+    if (confirmation) {
+        $.ajax({
+            type: "DELETE",
+            url: "/comments/" + cnum,
+            success: function() {
+                console.log("댓글이 성공적으로 삭제되었습니다.");
+                loadComments(); // 댓글 목록을 다시 불러와서 업데이트
+            },
+            error: function(error) {
+                console.error("댓글 삭제에 실패하였습니다:", error);
+            }
+        });
+    }
+}
+		// 수정 버튼 클릭 시
+		$("#btnUpdate").click(function() {
+			// 확인 다이얼로그 출력
+			if (!confirm("정말 수정할까요?")) {
+				return false;
+			}
+			// 수정할 게시물 번호 가져오기
+			var boardNum = $(this).data("board-num");
+			// 수정 페이지로 이동
+			location.href = "/update/" + boardNum;
+		});
+
+		// 삭제 버튼 클릭
+		$("#btnDelete").click(
+				function() {
+					// 확인 다이얼로그 출력
+					if (!confirm("정말 삭제할까요?")) {
+						return false;
+					}
+					var boardNum = $(this).data("board-num");
+					$.ajax({
+						type : "DELETE",
+						url : "/delete/" + boardNum,
+						success : function(resp) {
+							alert("삭제 성공")
+							location.href = "/index";
+						},
+						error : function(e) {
+							alert("삭제 실패" + e)
+						}
+					});
+
+					var formsData = []; // 모든 폼 데이터를 저장할 배열
+
+					// 재료 폼 데이터를 객체로 변환하여 배열에 추가
+					$('.ingredient-form').each(
+							function() {
+								var Iform = {
+									title : $('#title').val(),
+									categoryId : $(this).find(
+											'select[name="categoryId"]').val(),
+									name : $(this).find('select[name="name"]')
+											.val(),
+									unit : $(this)
+											.find('textarea[name="unit"]')
+											.val()
+								};
+								formsData.push(Iform);
+							});
+
+					// JSON 형식으로 변환
+					var jsonData1 = JSON.stringify(formsData);
+
+					// AJAX 요청
+					$.ajax({
+						url : '/submit_all_forms-delete', // 서버 엔드포인트
+						method : 'DELETE',
+						contentType : "application/json;charset=utf-8", // JSON 형식으로 전송
+						data : jsonData1,
+						success : function(response) {
+							// 성공 시 처리할 내용
+							console.log(response);
+							// 페이지를 리다이렉트
+							window.location.href = '/index'; // 리다이렉트할 페이지의 경로
+						},
+						error : function(xhr, status, error) {
+							// 에러 처리
+							console.error(xhr.responseText);
+						}
+					});
+				});
+
+		// 보유/미보유 버튼 클릭 시
+		$(".CheckBox")
+				.click(
+						function() {
+							var buttonText = $(this).text();
+							var ingredientPriceString = $(this).closest("tr")
+									.find(".unit").text().trim(); // 재료 가격 추출
+							var ingredientName = $(this).closest("tr").find(
+									"td:first").text().trim(); // 재료 이름 추출
+							var boardNum = $(this).data("board-num");
+
+							// 보유 상태인지 여부에 따라 데이터 구성
+							var formData = {
+								ingredientName : ingredientName,
+								isOwned : buttonText === "보유",
+								boardNum: boardNum
+							};
+
+							// AJAX를 사용하여 서버에 데이터 전송
+							$
+									.ajax({
+										type : "POST",
+										contentType : "application/json;charset=utf-8",
+										url : "/updatePrice/"+boardNum, // 서버 엔드포인트
+										data : JSON.stringify(formData), // JSON 데이터로 변환하여 전송
+										success : function(price) {
+											// 성공 시 총 가격을 업데이트
+											var currentTotal = parseInt($(
+													"#total").text().replace(
+													" 원", ""));
+											var updatedTotal = buttonText === "보유" ? currentTotal
+													- price
+													: currentTotal - price;
+											$("#total").text(
+													updatedTotal + " 원");
+										},
+										error : function(error) {
+											console.error("가격 업데이트 실패:", error);
+										}
+									});
+
+							// 버튼 텍스트 변경
+							if (buttonText === "미보유") {
+								$(this).text("보유");
+								formData.isOwned = true; // 버튼 텍스트가 "미보유"일 때는 isOwned를 true로 설정
+							} else if (buttonText === "보유") {
+								$(this).text("미보유");
+								formData.isOwned = false; // 버튼 텍스트가 "보유"일 때는 isOwned를 false로 설정
+							}
+						});
+	</script>
+	<footer id="footer" th:replace="include/footer :: footer"></footer>
+</body>
+</html>
