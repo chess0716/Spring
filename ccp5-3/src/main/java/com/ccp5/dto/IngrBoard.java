@@ -24,9 +24,7 @@ public class IngrBoard {
     private int unit;
     
     private String imageUrl;
-    public IngrBoard() {
-        // 기본 생성자 내용 (생략 가능)
-    }
+   
     public int getId() {
 		return id;
 	}

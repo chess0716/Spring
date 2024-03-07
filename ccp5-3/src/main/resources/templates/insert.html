@@ -8,6 +8,11 @@
 <!-- 외부 CSS 파일 연결 -->
 <link rel="stylesheet" href="/assets/css/main.css">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+        body {
+            margin: 10%;
+        }
+    </style>
 </head>
 
 <body>
@@ -16,15 +21,15 @@
 
 	<!-- 메뉴 -->
 	<nav id="menu">
-		<h2>메뉴</h2>
-		<ul>
-			<li><a th:href="@{/}">홈</a></li>
-			<li><a th:href="@{/view}">Ipsum veroeros</a></li>
-			<li><a th:href="@{/view}">Tempus etiam</a></li>
-			<li><a th:href="@{/view.html}">Consequat dolor</a></li>
-			<li><a th:href="@{/elements.html}">요소</a></li>
-		</ul>
-	</nav>
+			<h2>Menu</h2>
+			<ul>
+				<li><a th:href="@{/index}">구이/찜</a></li>
+				<li><a th:href="@{/view}">찌개/탕</a></li>
+				<li><a th:href="@{/view}">분식</a></li>
+				<li><a th:href="@{/view}">면류</a></li>
+				<li><a th:href="@{/elements.html}">밥류/볶음</a></li>
+			</ul>
+		</nav>
 <div class="content mt-3">
     <form id="recipeForm" action="/submit_recipe" method="post" enctype="multipart/form-data" class="recipe-form">
         <div class="mb-3 mt-3">
@@ -41,30 +46,44 @@
             <input type="file" class="form-control" id="image" name="image">
         </div>
         <!-- 서브밋 버튼 추가 -->
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="submit" class="btn btn-primary">사진 업로드</button>
     </form>
 </div>
 		</form>
 	</div>
 	<div id="basicFormSection">
 		<form action="/insert_ingr" method="post" class="ingredient-form">
-			<select name="categoryId">
-				<option value="">카테고리 선택</option>
-				<option th:each="category : ${categories}"
-					th:value="${category}" th:text="${category}"></option>
-			</select> <select class="mb-3 col" name="name">
-				<option value="">이름 선택</option>
-			</select> <label for="unit">수량(개/g)</label>
-			<textarea id="unit" name="unit"></textarea>
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col">
+						<label for="categoryId">카테고리</label>
+						<select name="categoryId">
+							<option value="">카테고리 선택</option>
+							<option th:each="category : ${categories}" th:value="${category}"
+								th:text="${category}"></option>
+						</select>
+					</div>
+					<div class="col">
+						<label for="name">식재료</label>
+						<select class="mb-3 col" name="name">
+							<option value="">이름 선택</option>
+						</select>
+					</div>
+					<div class="col">
+						<label for="unit">수량(개/g)</label>
+						<textarea id="unit" name="unit"></textarea>
+					</div>
+				</div>
+			</div>
 			<button class="btn btn-primary addForm">+</button>
 		</form>
 	</div>
+
 
 	<div id="newFormsSection"></div>
 
 	<button id="submit-all">모든 폼 제출</button>
 
-</body>
 <script>
     $(document)
         .ready(
@@ -216,7 +235,6 @@
         });
     });
 
-    // 폼 제출 시 Fetch API를 사용하여 서버로 이미지 파일을 전송
     document.querySelector('.recipe-form').addEventListener('submit', function(e) {
         e.preventDefault(); // 폼의 기본 제출 동작을 방지
 
@@ -228,12 +246,14 @@
         .then(response => response.text()) // 응답을 텍스트로 변환
         .then(result => {
             console.log(result); // 결과 처리 (예: 성공 메시지 출력)
-            // 여기에 성공 시 필요한 로직 추가 (예: 폼 초기화, 성공 알림 등)
+            alert('사진이 성공적으로 업로드되었습니다.'); // 성공 알림
+            // 여기에 성공 시 필요한 로직 추가 (예: 폼 초기화)
         })
         .catch(error => {
             console.error('Error:', error); // 오류 처리
         });
     });
+
 </script>
 
 </html>

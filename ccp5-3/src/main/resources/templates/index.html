@@ -20,21 +20,44 @@
 <body class="is-preload">
 	<!-- Wrapper -->
 	<div id="wrapper">
-		<!-- Include Header -->
-		<div th:replace="include/header :: header"></div>
+		<header id="header">
+    <div class="inner" >
+		
+      <a href="index" class="logo" style="margin-right: 8%;">
+    <span class="symbol"><img th:src="@{/images/logo.svg}" alt="" /></span><span class="title">코딩쿠킹</span>
+</a>
 
-		<!-- Include Header -->
+        <!-- Nav -->
+        <nav>
+    <ul class="menu-list">
+        <li><a href="/index">Home</a></li>
+        <li sec:authorize="isAuthenticated()"><a href="/request/request_list">요청 게시판</a></li>
+        
+       
+         <li sec:authorize="isAuthenticated()"><a href="/insert">글 작성</a></li>
+        
+        <!-- 로그인한 경우에는 "로그아웃" 표시, 그렇지 않은 경우에는 "로그인" 표시 -->
+        <li sec:authorize="isAuthenticated()"><a href="/logout">로그아웃</a></li>
+        <li sec:authorize="!isAuthenticated()"><a href="/member/login">로그인</a></li>
+        
+        <li><a href="/member/join">회원가입</a></li>
+        <li><a href="#menu">Menu</a></li>
+    </ul>
+</nav>
+
+    </div>
+</header>
 
 		<!--  Menu-->
 
 		<nav id="menu">
 			<h2>Menu</h2>
 			<ul>
-				<li><a th:href="@{/index}">Home</a></li>
-				<li><a th:href="@{/view}">Ipsum veroeros</a></li>
-				<li><a th:href="@{/view}">Tempus etiam</a></li>
-				<li><a th:href="@{/view}">Consequat dolor</a></li>
-				<li><a th:href="@{/elements.html}">Elements</a></li>
+				<li><a th:href="@{/index}">구이/찜</a></li>
+				<li><a th:href="@{/view}">찌개/탕</a></li>
+				<li><a th:href="@{/view}">분식</a></li>
+				<li><a th:href="@{/view}">면류</a></li>
+				<li><a th:href="@{/elements.html}">밥류/볶음</a></li>
 			</ul>
 		</nav>
 
@@ -44,24 +67,27 @@
 			<div class="inner">
 				<header>
 					<h1>
-						당신의 한 끼를 계산해드립니다<br />
+						당신의 한 끼는 얼마일까요?<br />
 					</h1>
 
-					<p>레시피를 클릭하면 레시피와 관련된 요리 방법 및 요리의 재료 재료의 가격을 계산해서 알려드립니다!</p>
+					<h2 style=" font-weight: bold;">1인 가구 및 소수 가정을 위한 레시피 공유 커뮤니티</h2>
 
-				</header>
+		</header>
+		<div class="image-container">
+    <img th:src="@{/images/display.jpg}" alt="이미지_설명">
+</div>
 				<section class="tiles">
-					<article th:each="board : ${boards}" class="style1"
-						style="margin-bottom: 50px;">
-						<span class="image"> <img
-							th:src="@{'/images/pic0' + (${board.num} % 12 ) + '.jpg'}"
-							alt="" />
-						</span> <a th:href="'/view/' + ${board.num}">
-							<h2 th:text="${board.title}"></h2>
-							
-						</a>
-					</article>
-				</section>
+    <article th:each="board : ${boards}" class="style1"
+        style="margin-bottom: 50px; "> <!-- 여기에 margin-right 속성 추가 -->
+        <span class="image">
+            <img th:src="@{'/images/pic0' + (${board.num} % 12 ) + '.jpg'}" alt="" />
+        </span> 
+        <a th:href="'/view/' + ${board.num}">
+            <h2 th:text="${board.title}"></h2>
+        </a>
+    </article>
+</section>
+
 
 			</div>
 

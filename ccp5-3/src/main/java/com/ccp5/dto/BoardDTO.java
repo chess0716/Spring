@@ -34,6 +34,7 @@ public class BoardDTO {
     @ManyToOne
     private User writer;
     
+    @Column(columnDefinition = "TEXT")
     private String content;
     
     @CreationTimestamp

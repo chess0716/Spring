@@ -9,6 +9,11 @@
 <!-- 외부 CSS 파일 연결 -->
 <link rel="stylesheet" href="/assets/css/main.css">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            margin: 10%;
+        }
+    </style>
 </head>
 
 <body>
@@ -47,36 +52,62 @@
 	</div>
 	<div id="basicFormSection">
 		<form action="/insert_ingr" method="post" class="ingredient-form">
-			<select name="categoryId">
-				<option value="">카테고리 선택</option>
-				<option th:each="category : ${categories}" th:value="${category}"
-					th:text="${category}"></option>
-			</select> <select class="mb-3 col" name="name">
-				<option value="">이름 선택</option>
-			</select> <label for="unit">수량(개/g)</label>
-			<textarea id="unit" name="unit"></textarea>
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col">
+						<label for="categoryId">카테고리</label> <select name="categoryId">
+							<option value="">카테고리 선택</option>
+							<option th:each="category : ${categories}" th:value="${category}"
+								th:text="${category}"></option>
+						</select>
+					</div>
+					<div class="col">
+						<label for="name">식재료</label><select class="mb-3 col" name="name">
+							<option value="">이름 선택</option>
+						</select>
+					</div>
+					<div class="col">
+						<label for="unit">수량(개/g)</label>
+						<textarea id="unit" name="unit"></textarea>
+					</div>
+				</div>
+			</div>
 			<button class="btn btn-primary addForm">+</button>
 		</form>
 	</div>
 	<div id="newFormsSection">
 		<th:block th:each="ingrBoard : ${iboard}">
 			<form action="/insert_ingr" method="post" class="ingredient-form">
-				<select name="categoryId">
-					<option value="">카테고리 선택</option>
-					<option th:each="category : ${categories}" th:value="${category}"
-						th:selected="${category == ingrBoard.category}"
-						th:text="${category}"></option>
-				</select> <select class="mb-3 col" name="name">
-					<option value="">이름 선택</option>
-					<option th:each="name : ${ingrBoard.name}" th:value="${name}"
-						th:selected="${name == ingrBoard.name}" th:text="${name}"></option>
-				</select> <label for="unit">수량(개/g)</label>
-				<textarea id="unit" name="unit" th:text="${ingrBoard.unit}"></textarea>
+				<div class="container-fluid">
+					<div class="row">
+						<div class="col">
+							<label for="categoryId">카테고리</label> <select name="categoryId">
+								<option value="">카테고리 선택</option>
+								<option th:each="category : ${categories}"
+									th:value="${category}"
+									th:selected="${category == ingrBoard.category}"
+									th:text="${category}"></option>
+							</select>
+						</div>
+						<div class="col">
+							<label for="name">식재료</label><select class="mb-3 col" name="name">
+								<option value="">이름 선택</option>
+								<option th:each="name : ${ingrBoard.name}" th:value="${name}"
+									th:selected="${name == ingrBoard.name}" th:text="${name}"></option>
+							</select>
+						</div>
+						<div class="col">
+							<label for="unit">수량(개/g)</label>
+							<textarea id="unit" name="unit" th:text="${ingrBoard.unit}"></textarea>
+						</div>
+					</div>
+				</div>
 				<button class="btn btn-primary addForm">+</button>
 				<button class="btn btn-secondary removeForm">-</button>
 			</form>
 		</th:block>
 	</div>
+
 
 	<div id="newFormsSection"></div>
 

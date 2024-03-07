@@ -85,12 +85,12 @@ public class BoardService {
 	public void updateRecipeForm(BoardDTO recipeForm) {
 		boardRepo.save(recipeForm);
 	}
-	
 	// 레시피 삭제
-	@Transactional
-	public void deleteRecipe(int num) {
-		boardRepo.deleteById(num);		
-	}
+		@Transactional
+		public void deleteRecipe(int num, String title) {
+			boardRepo.deleteById(num);
+			ilRepo.deleteByTitle(title);
+		}
 	@Transactional
 	public void deleteIngredientForms(List<IngrBoard> ingredientForms) {
 		for (IngrBoard ingrBoard : ingredientForms) {
@@ -127,9 +127,6 @@ public class BoardService {
 	        return "/images/" + fileName;
 	    }
 
-	public void deleteRecipe(int num, String title) {
 	
-		
-	}
 	}
 

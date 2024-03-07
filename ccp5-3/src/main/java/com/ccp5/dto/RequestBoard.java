@@ -21,7 +21,7 @@ public class RequestBoard {
 	private int num;
 	private String title;
 	private String writer;
-	private String Content;
+	private String content;
 	private Date regdate;
 	public int getNum() {
 		return num;
@@ -42,10 +42,10 @@ public class RequestBoard {
 		this.writer = writer;
 	}
 	public String getContent() {
-		return Content;
+		return content;
 	}
 	public void setContent(String content) {
-		Content = content;
+		this.content = content;
 	}
 	public Date getRegdate() {
 		return regdate;
