@@ -74,10 +74,10 @@ class InsertActivity : AppCompatActivity() {
             } else if (categoryId == null) {
                 Toast.makeText(this, "Please select a category", Toast.LENGTH_SHORT).show()
             } else {
-                // 모든 입력 폼을 제출하는 함수 호출
+
                 submitAllForms()
 
-                // 레시피를 제출하는 함수 호출, 이때 카테고리 ID를 파라미터로 전달
+
                 submitRecipe(categoryId)
 
             }
