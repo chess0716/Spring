@@ -28,7 +28,8 @@ public class BoardDTO {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int num;
-    private String category;
+    @ManyToOne
+    private Category category;
     private String title;
     
     @ManyToOne
@@ -57,9 +58,11 @@ public class BoardDTO {
     // Transient field for image file
     @Transient
     private transient MultipartFile image;
-public BoardDTO() {
+    
+    public BoardDTO() {
         
     }
+    
     // Image URL getter
     public String getImageUrl() {
         return imageUrl;
@@ -69,7 +72,6 @@ public BoardDTO() {
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
-  
 
     // 이미지 필드 게터
     public MultipartFile getImage() {
@@ -89,13 +91,6 @@ public BoardDTO() {
         this.num = num;
     }
 
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }
 
     public String getTitle() {
         return title;
@@ -158,8 +153,9 @@ public BoardDTO() {
     public String toString() {
         return "BoardDTO{" +
                 "num=" + num +
+                ", category='" + category + '\'' +
                 ", title='" + title + '\'' +
-                ", writer='" + writer + '\'' +
+                ", writer='" + writer.getUsername() + '\'' +
                 ", content='" + content + '\'' +
                 ", regdate=" + regdate +
                 ", hitcount=" + hitcount +
@@ -167,5 +163,4 @@ public BoardDTO() {
                 ", totalprice=" + totalprice +
                 '}';
     }
-
 }
