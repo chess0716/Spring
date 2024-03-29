@@ -2,6 +2,7 @@ package com.example.ccp
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.ccp.databinding.ActivityLoginBinding
@@ -9,6 +10,7 @@ import com.example.ccp.model.LoginRequest
 import com.example.ccp.model.LoginResponse
 import com.example.ccp.service.UserService
 import com.example.ccp.util.RetrofitClient
+import com.example.ccp.util.SharedPreferencesHelper
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -51,10 +53,23 @@ class LoginActivity : AppCompatActivity() {
                 response: Response<LoginResponse?>
             ) {
                 if (response.isSuccessful) {
+                    val loginResponse = response.body()
+
+                    // 로그인 성공 시 사용자 정보 로깅
+                    loginResponse?.let { // loginResponse가 null이 아닐 때 실행
+                        Log.d("LoginActivity", "로그인 성공 - 사용자 정보:")
+                        Log.d("LoginActivity", "Username: ${it.username}")
+                        Log.d("LoginActivity", "Token: ${it.token}")
+
+                        // 사용자 정보를 SharedPreferences에 저장
+                        SharedPreferencesHelper.saveUsername(this@LoginActivity, it.username ?: "")
+                        SharedPreferencesHelper.saveToken(this@LoginActivity, it.token ?: "")
+                    }
+
                     Toast.makeText(this@LoginActivity, "로그인 성공", Toast.LENGTH_SHORT).show()
-                    // 로그인이 성공하면 MainActivity로 이동하고, 로그인 상태를 전달
+
+                    // 로그인이 성공하면 MainActivity로 이동
                     val intent = Intent(this@LoginActivity, MainActivity::class.java)
-                    intent.putExtra("isLoggedIn", true)
                     startActivity(intent)
                     finish() // 로그인 액티비티 종료
                 } else {
