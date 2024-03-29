@@ -2,6 +2,7 @@ package com.example.ccp.service
 
 import com.example.ccp.model.BoardDTO
 import com.example.ccp.model.Category
+import com.example.ccp.model.IngrBoard
 import com.example.ccp.model.LoginRequest
 import com.example.ccp.model.LoginResponse
 import com.example.ccp.model.User
@@ -38,6 +39,12 @@ interface ApiService : UserService {
     override fun login(@Body loginRequest: LoginRequest?): Call<LoginResponse?>?
     @GET("/api/boards/search")
     fun searchBoards(@Query("title") title: String): Call<List<BoardDTO>>
+    // 게시물 내 재료 목록을 가져오는 메서드 추가
+    @GET("/api/boards/{num}/ingredients")
+    fun getIngredientsForBoard(@Path("num") num: Int): Call<List<IngrBoard>>
 
+    // 게시물 내 총 가격 데이터를 가져오기
+    @GET("/api/boards/{num}/totalPrice")
+    fun getTotalPrice(@Path("num") num: Int): Call<Int>
 
 }

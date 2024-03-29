@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -37,7 +38,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var boardAdapter: BoardAdapter
     private lateinit var apiService: ApiService
     private var categoryMap: Map<String, Long> = emptyMap()
-
+    // 0329 로그인 후 로그아웃 버튼 변경 설정
+    var isLoggedIn = false
     private val insertActivityResultLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
@@ -60,7 +62,17 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this@MainActivity, InsertActivity::class.java)
             insertActivityResultLauncher.launch(intent) // IntentActivity 시작
         }
+        // 0329 로그인 후 로그아웃 버튼 변경 설정
+        // 이전에 저장된 로그인 상태를 가져와서 적용
+        isLoggedIn = intent.getBooleanExtra("isLoggedIn", false)
 
+        setSupportActionBar(binding.appBarMain.toolbar)
+
+        binding.appBarMain.fab.setOnClickListener { view ->
+            Toast.makeText(this@MainActivity, "FAB Clicked", Toast.LENGTH_SHORT).show()
+            val intent = Intent(this@MainActivity, InsertActivity::class.java)
+            startActivity(intent)
+        }
 
         // 회원가입 액티비티 이동
         binding.appBarMain.signupButton.setOnClickListener {
@@ -68,12 +80,20 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        // 로그인 액티비티 이동
+        // 0329 로그인 후 로그아웃 버튼 변경 설정
+        // 로그인 버튼 클릭 리스너 설정
         binding.appBarMain.loginButton.setOnClickListener {
             val intent = Intent(this@MainActivity, LoginActivity::class.java)
             startActivity(intent)
         }
-
+        // 0329 로그인 후 로그아웃 버튼 변경 설정
+        // 로그아웃 버튼 클릭 리스너 설정
+        binding.appBarMain.logoutButton.setOnClickListener {
+            // 로그아웃 처리
+            isLoggedIn = false
+            // 갱신된 로그인 상태에 따라 버튼 표시 변경
+            updateButtonVisibility()
+        }
         val drawerLayout: DrawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
         val navController = findNavController(R.id.nav_host_fragment_content_main)
@@ -123,7 +143,9 @@ class MainActivity : AppCompatActivity() {
             val searchQuery = binding.editTextSearch.text.toString()
             searchBoards(searchQuery)
         }
-
+        // 0329 로그인 후 로그아웃 버튼 변경 설정
+        // 앱이 최초로 시작될 때 로그인 상태에 따라 버튼 표시 변경
+        updateButtonVisibility()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -136,18 +158,34 @@ class MainActivity : AppCompatActivity() {
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 
+    // 0329
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.action_settings -> {
-                // 설정 메뉴 아이템 클릭 시 실행할 코드
+            R.id.MyPage_set -> {
+                // MyPage 설정 메뉴 아이템 클릭 시 실행할 코드
                 true
             }
-
+            R.id.Request_set -> {
+                // Request 설정 메뉴 아이템 클릭 시 실행할 코드
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
 
     }
-
+    // 0329 로그인 후 로그아웃 버튼 변경 설정
+    // 로그인 상태에 따라 버튼 표시 변경 함수
+    private fun updateButtonVisibility() {
+        if (isLoggedIn) {
+            // 로그인 상태일 때
+            binding.appBarMain.loginButton.visibility = View.GONE
+            binding.appBarMain.logoutButton.visibility = View.VISIBLE
+        } else {
+            // 로그아웃 상태일 때
+            binding.appBarMain.loginButton.visibility = View.VISIBLE
+            binding.appBarMain.logoutButton.visibility = View.GONE
+        }
+    }
     private fun loadCategoryMap() {
         ingrService.getAllCategories().enqueue(object : Callback<List<Category>> {
             override fun onResponse(

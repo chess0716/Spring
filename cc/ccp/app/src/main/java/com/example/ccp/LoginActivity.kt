@@ -31,6 +31,14 @@ class LoginActivity : AppCompatActivity() {
         binding.btnLogin.setOnClickListener {
             val username = binding.etIDLogin.text.toString()
             val password = binding.etPWLogin.text.toString()
+
+            // 0329 유효성 검사 추가
+            // 사용자 입력 유효성 검사
+            if (username.isEmpty() || password.isEmpty()) {
+                Toast.makeText(this@LoginActivity, "아이디 또는 비밀번호를 입력하세요.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
             val loginRequest = LoginRequest(username, password)
             loginUser(loginRequest)
         }
@@ -44,8 +52,9 @@ class LoginActivity : AppCompatActivity() {
             ) {
                 if (response.isSuccessful) {
                     Toast.makeText(this@LoginActivity, "로그인 성공", Toast.LENGTH_SHORT).show()
-                    // 로그인이 성공하면 메인 액티비티로 이동
+                    // 로그인이 성공하면 MainActivity로 이동하고, 로그인 상태를 전달
                     val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                    intent.putExtra("isLoggedIn", true)
                     startActivity(intent)
                     finish() // 로그인 액티비티 종료
                 } else {

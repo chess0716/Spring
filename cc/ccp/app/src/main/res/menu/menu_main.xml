@@ -2,8 +2,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/MyPage_set"
         android:orderInCategory="100"
-        android:title="@string/action_settings"
+        android:title="Request"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/Request_set"
+        android:orderInCategory="100"
+        android:title="MyPage"
+        app:showAsAction="never"
+        />
 </menu>

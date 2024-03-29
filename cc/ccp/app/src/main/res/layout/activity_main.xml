@@ -20,9 +20,10 @@
             android:id="@+id/imageView"
             android:layout_width="match_parent"
             android:layout_height="200dp"
+            android:layout_below="@id/toolbar"
+            android:layout_marginTop="55dp"
             android:scaleType="centerCrop"
             android:src="@drawable/display"
-            android:layout_below="@id/toolbar"
             tools:ignore="NotSibling" />
 
 
@@ -45,6 +46,7 @@
 
         <Button
             android:id="@+id/btnSearch"
+            android:backgroundTint="@color/beige"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/editTextSearch"
@@ -75,14 +77,7 @@
     <!-- RelativeLayout 종료 -->
 
     <!-- 네비게이션 뷰 -->
-    <com.google.android.material.navigation.NavigationView
-        android:id="@+id/nav_view"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:fitsSystemWindows="true"
-        app:headerLayout="@layout/nav_header_main"
-        app:menu="@menu/activity_main_drawer" />
+
 
 
 </androidx.drawerlayout.widget.DrawerLayout>

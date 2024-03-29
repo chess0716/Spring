@@ -21,20 +21,37 @@
 
             <!-- 추가된 로그인 버튼 -->
             <androidx.appcompat.widget.AppCompatButton
-                android:background="@color/beige"
+                android:background="@drawable/rounded_button_background"
                 android:id="@+id/login_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
                 android:layout_marginEnd="8dp"
                 android:text="로그인"
-                android:textColor="@android:color/black"
+                android:textColor="@android:color/white"
                 android:textSize="20sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:visibility="visible"
+                android:shadowRadius="20"/>
+
+            <!-- 추가된 로그아웃 버튼 -->
+            <androidx.appcompat.widget.AppCompatButton
+                android:background="@drawable/rounded_button_background"
+                android:id="@+id/logout_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginEnd="8dp"
+                android:text="로그아웃"
+                android:textColor="@android:color/white"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:visibility="gone"
+                />
 
             <!-- 추가된 회원가입 버튼 -->
             <androidx.appcompat.widget.AppCompatButton
-                android:background="@color/beige"
+                android:background="@drawable/rounded_button_background"
                 android:id="@+id/signup_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -42,7 +59,7 @@
                 android:layout_marginEnd="8dp"
                 android:layout_toLeftOf="@id/login_button"
                 android:text="회원가입"
-                android:textColor="@color/black"
+                android:textColor="@color/white"
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
@@ -60,6 +77,6 @@
         android:layout_marginEnd="@dimen/fab_margin"
         android:layout_marginBottom="16dp"
         app:srcCompat="@android:drawable/ic_input_add"
-        android:backgroundTint="@color/beige" />
+        android:backgroundTint="@color/beige_200" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

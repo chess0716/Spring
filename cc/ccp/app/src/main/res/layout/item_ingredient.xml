@@ -6,28 +6,30 @@
     android:orientation="horizontal"
     android:padding="8dp">
 
-    <!-- 카테고리 선택 -->
-    <Spinner
-        android:id="@+id/categorySpinner"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:prompt="@string/category_prompt" />
-
-    <!-- 식재료 선택 -->
-    <Spinner
-        android:id="@+id/ingredientSpinner"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:prompt="@string/ingredient_prompt" />
-
-    <!-- 수량 입력 -->
     <EditText
-        android:id="@+id/quantityEditText"
+        android:id="@+id/ingrName"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
+        android:layout_weight="2"
+        android:ems="10"
+        android:focusableInTouchMode="false"
+        android:inputType="text"
+        android:longClickable="false" />
+
+    <EditText
+        android:id="@+id/ingrUnit"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
         android:layout_weight="1"
-        android:hint="Quantity"
-        android:inputType="number" />
+        android:ems="10"
+        android:focusableInTouchMode="false"
+        android:inputType="text"
+        android:longClickable="false" />
+
+    <Switch
+        android:id="@+id/ingrGet"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_weight="1"
+        android:text="미보유" />
 </LinearLayout>
