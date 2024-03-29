@@ -43,7 +43,7 @@ public class UserController {
     }
 
 
-    @GetMapping("/api/login") // 로그인 페이지 경로 수정
+    @GetMapping("/api/login")
     public String login() {
         logger.info("Accessing login page"); // 로그 출력
         return "member/login";

@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.ccp5.dto.BoardDTO;
+import com.ccp5.dto.User;
 
 @Repository
 public interface BoardRepository extends JpaRepository<BoardDTO, Integer> {
@@ -22,4 +23,6 @@ public interface BoardRepository extends JpaRepository<BoardDTO, Integer> {
     List<BoardDTO> findByTitleContaining(String title);
     
     List<BoardDTO> findByCategoryId(Long categoryId);
+    
+    List<BoardDTO> findByWriter(User writer);
 }

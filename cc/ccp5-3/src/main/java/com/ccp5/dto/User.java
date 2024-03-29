@@ -29,30 +29,32 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor 
 public class User implements UserDetails {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    
-    @Column(nullable = false)
-    private String username;
-    private String name;
-    private String password;
-    
-    private String email;
-    
-    @Enumerated(EnumType.STRING)
-    private Role role;
-    
-    @OneToMany(mappedBy = "writer")
-    @JsonIgnore
-    private Collection<BoardDTO> boards;
-    
-    // UserDetails methods
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        // 권한을 SimpleGrantedAuthority로 변환하여 반환
-        return Collections.singletonList(new SimpleGrantedAuthority(role.name()));
-    }
+	 @Id
+	    @GeneratedValue(strategy = GenerationType.IDENTITY)
+	    private Long id;
+
+	    @Column(nullable = false, unique = true)
+	    private String username;
+
+	    private String name;
+
+	    @JsonIgnore
+	    private String password;
+
+	    private String email;
+
+	    @Enumerated(EnumType.STRING)
+	    private Role role;
+
+	    @OneToMany(mappedBy = "writer")
+	    @JsonIgnore
+	    private Collection<BoardDTO> boards;
+
+	    // UserDetails methods
+	    @Override
+	    public Collection<? extends GrantedAuthority> getAuthorities() {
+	        return Collections.singletonList(new SimpleGrantedAuthority(role.name()));
+	    }
 
     @Override
     public String getPassword() {

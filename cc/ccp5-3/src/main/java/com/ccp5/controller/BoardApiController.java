@@ -16,8 +16,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ccp5.dto.BoardDTO;
+import com.ccp5.dto.IngrBoard;
 import com.ccp5.repository.BoardRepository;
 import com.ccp5.service.BoardService;
+import com.ccp5.service.IngrListService;
+import com.ccp5.service.IngrListService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -31,6 +34,9 @@ public class BoardApiController {
 	BoardRepository boardRepository;
     @Autowired
     private BoardService boardService;
+    @Autowired
+	private IngrListService ilService;
+
     @GetMapping("/search")
     public ResponseEntity<List<BoardDTO>> searchBoards(@RequestParam String title) {
         // 검색 로직 구현
@@ -68,6 +74,29 @@ public class BoardApiController {
             return ResponseEntity.notFound().build();
         }
     }
+ // 모바일로 재료 리스트 데이터 보내기
+ 	@GetMapping("/{num}/ingredients")
+ 	public ResponseEntity<List<IngrBoard>> getIngredientsForBoard(@PathVariable int num) {
+ 		BoardDTO board = boardService.getBoardByNum(num);
+ 		List<IngrBoard> ingrBoards = ilService.findByTitle(board.getTitle());
+ 		if (ingrBoards != null && !ingrBoards.isEmpty()) {
+ 			return ResponseEntity.ok(ingrBoards);
+ 		} else {
+ 			return ResponseEntity.notFound().build();
+ 		}
+ 	}
+
+	// 모바일로 총 가격 데이터 보내기
+	@GetMapping("/{num}/totalPrice")
+	public ResponseEntity<Integer> getTotalPrice(@PathVariable int num) {
+		Integer totalPrice = boardRepository.calculateTotalPriceByNum(num);
+		if (totalPrice != null) {
+			return ResponseEntity.ok(totalPrice);
+		} else {
+			return ResponseEntity.notFound().build();
+		}
+	}
+
 
     @PostMapping
     public ResponseEntity<Void> insertBoard(@RequestBody BoardDTO boardDTO) {

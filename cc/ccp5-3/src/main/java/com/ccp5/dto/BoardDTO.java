@@ -12,6 +12,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
@@ -33,7 +34,8 @@ public class BoardDTO {
     private String title;
     
     @ManyToOne
-    private User writer;
+    @JoinColumn(name = "user_id")
+    private User writer; // 게시글 작성자
     
     @Column(columnDefinition = "TEXT")
     private String content;
