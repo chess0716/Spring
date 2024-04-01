@@ -25,10 +25,6 @@ data class LoginRequest(
     var password: String
 )
 
-data class LoginResponse(
-    var message: String,
-    val username: String?,
-    val token: String?
-)
+
 
 

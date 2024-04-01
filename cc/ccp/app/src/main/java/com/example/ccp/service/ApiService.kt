@@ -4,7 +4,7 @@ import com.example.ccp.model.BoardDTO
 import com.example.ccp.model.Category
 import com.example.ccp.model.IngrBoard
 import com.example.ccp.model.LoginRequest
-import com.example.ccp.model.LoginResponse
+
 import com.example.ccp.model.User
 import com.example.ccp.model.UserResponse
 import okhttp3.ResponseBody
@@ -35,8 +35,7 @@ interface ApiService : UserService {
     @POST("/api/join")
     override fun join(@Body user: User?): Call<UserResponse?>?
 
-    @POST("/api/login")
-    override fun login(@Body loginRequest: LoginRequest?): Call<LoginResponse?>?
+
     @GET("/api/boards/search")
     fun searchBoards(@Query("title") title: String): Call<List<BoardDTO>>
     // 게시물 내 재료 목록을 가져오는 메서드 추가

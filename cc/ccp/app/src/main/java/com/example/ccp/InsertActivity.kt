@@ -26,6 +26,7 @@ import com.example.ccp.model.IngrBoard
 import com.example.ccp.service.ApiResponse
 
 import com.example.ccp.util.RetrofitClient
+import com.example.ccp.util.SharedPreferencesHelper
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -56,6 +57,9 @@ class InsertActivity : AppCompatActivity() {
         loadRecipeCategories()
 
         loadCategories()
+        val username = SharedPreferencesHelper.getUsername(this)
+
+        Log.d("InsertActivity", "Logged in as: $username")
 
         binding.btnAddForm.setOnClickListener {
             addNewForm()
@@ -373,21 +377,27 @@ class InsertActivity : AppCompatActivity() {
         Log.e("InsertActivity", message, throwable)
         Toast.makeText(this@InsertActivity, "Network error occurred. Please check your internet connection.", Toast.LENGTH_SHORT).show()
     }
+
+
+
+
+
     private fun submitRecipe(categoryId: Long) {
+        val username = SharedPreferencesHelper.getUsername(this@InsertActivity) ?: ""
+        Log.d("SubmitRecipe", "Username: $username")
         imageUrl?.let { uri ->
             val titlePart = createPartFromString(binding.etTitle.text.toString())
             val contentPart = createPartFromString(binding.etContent.text.toString())
             val categoryIdPart = createPartFromString(categoryId.toString())
+            val usernamePart = createPartFromString(username)
             val imagePart = prepareFilePart("image", uri)
-
-            RetrofitClient.ingrService.submitRecipe(titlePart, contentPart, categoryIdPart, imagePart)
+            Log.d("SubmitRecipe", "Usernamepart: $usernamePart")
+            RetrofitClient.ingrService.submitRecipe(titlePart, contentPart, categoryIdPart, imagePart,usernamePart)
                 .enqueue(object : Callback<String> {
                     override fun onResponse(call: Call<String>, response: Response<String>) {
                         if (response.isSuccessful) {
-                            // 성공 처리 로직
                             Toast.makeText(this@InsertActivity, "Recipe submitted successfully", Toast.LENGTH_SHORT).show()
                         } else {
-                            // 실패 처리 로직
                             Toast.makeText(this@InsertActivity, "Failed to submit the recipe", Toast.LENGTH_SHORT).show()
                         }
                     }

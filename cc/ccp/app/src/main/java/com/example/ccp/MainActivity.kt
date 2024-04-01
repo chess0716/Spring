@@ -1,6 +1,7 @@
 package com.example.ccp
 
 
+
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -19,7 +20,6 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.ccp.adapter.BoardAdapter
 import com.example.ccp.databinding.ActivityMainBinding
 import com.example.ccp.model.BoardDTO
