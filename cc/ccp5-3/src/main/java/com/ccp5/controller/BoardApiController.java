@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ccp5.dto.BoardDTO;
 import com.ccp5.dto.IngrBoard;
+import com.ccp5.dto.UpdatePriceRequest;
 import com.ccp5.repository.BoardRepository;
 import com.ccp5.service.BoardService;
 import com.ccp5.service.IngrListService;
@@ -104,26 +105,24 @@ public class BoardApiController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @PostMapping("/updatePrice/{boardNum}")
+    @PostMapping("/{boardNum}/calculatePrice")
     @ResponseBody
-    public Integer updatePrice(@RequestBody Map<String, Object> requestBody, @PathVariable int boardNum) {
-        // 요청으로부터 재료 이름과 버튼 텍스트를 가져옴
-        String ingredientName = (String) requestBody.get("ingredientName");
-        boolean isOwned = (boolean) requestBody.get("isOwned");
-        System.out.println("ingredientName : "+ingredientName);
-        System.out.println("isOwned : "+isOwned);
-        
-        // 버튼 텍스트가 '보유'인 경우에 해당하는 재료의 이름과 단위를 가져와 리포지토리의 쿼리에 전달하여 총 가격 계산
+    public ResponseEntity<Integer> updatePrice(@RequestBody UpdatePriceRequest updatePriceRequest, @PathVariable int boardNum) {
+        String ingredientName = updatePriceRequest.getIngredientName();
+        boolean isOwned = updatePriceRequest.isOwned();
+        System.out.println("ingredientName : " + ingredientName);
+        System.out.println("isOwned : " + isOwned);
+
+        Integer price;
         if (!isOwned) {
-            // 해당 재료의 총 가격을 계산하는 쿼리 실행
-            Integer price = boardRepository.calculateTotalPriceByIngredientName(ingredientName, boardNum);
-            System.out.println("totalprice : " + price);
-            return price;
+            price = boardRepository.calculateTotalPriceByIngredientName(ingredientName, boardNum);
+        } else {
+            price = boardRepository.calculateTotalPriceByIngredientName(ingredientName, boardNum) * -1;
         }
-        Integer price = boardRepository.calculateTotalPriceByIngredientName(ingredientName, boardNum) * -1;
-        System.out.println(price);
-        return price; // 보유 상태가 아닌 경우는 아직 처리하지 않음
+        System.out.println("totalprice : " + price);
+        return ResponseEntity.ok(price);
     }
+
 
 
     @GetMapping("/category/{categoryId}")

@@ -1,6 +1,7 @@
 package com.ccp5.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ccp5.dto.MypageDTO;
 import com.ccp5.service.MypageService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
 @RequestMapping("/api/mypage")
@@ -17,18 +19,37 @@ public class MypageApiController {
     @Autowired
     private MypageService mypageService;
 
+    // ObjectMapper 인스턴스 생성
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
     // 전체 마이페이지 정보 조회
     @GetMapping("/{userId}")
-    public ResponseEntity<MypageDTO> getMypageInfo(@PathVariable Long userId) {
-        MypageDTO mypageInfo = mypageService.getMypageInfo(userId);
-        return ResponseEntity.ok(mypageInfo);
+    public ResponseEntity<String> getMypageInfo(@PathVariable Long userId) {
+        try {
+            MypageDTO mypageInfo = mypageService.getMypageInfo(userId);
+            // MypageDTO 객체를 JSON 문자열로 변환
+            String jsonResponse = objectMapper.writeValueAsString(mypageInfo);
+            return ResponseEntity.ok(jsonResponse);
+        } catch (Exception e) {
+            e.printStackTrace();
+            // JSON 변환 과정에서 예외 발생 시, 오류 메시지와 함께 500 상태 코드 반환
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("JSON processing error");
+        }
     }
 
     // 사용자가 작성한 게시글 목록 조회
     @GetMapping("/{userId}/posts")
-    public ResponseEntity<?> getUserPosts(@PathVariable Long userId) {
-        return ResponseEntity.ok(mypageService.getUserPosts(userId));
+    public ResponseEntity<String> getUserPosts(@PathVariable Long userId) {
+        try {
+            Object posts = mypageService.getUserPosts(userId);
+            String jsonResponse = objectMapper.writeValueAsString(posts);
+            return ResponseEntity.ok(jsonResponse);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("JSON processing error");
+        }
     }
+
 
     // 사용자가 찜한 게시글 목록 조회
     @GetMapping("/{userId}/favorites")
