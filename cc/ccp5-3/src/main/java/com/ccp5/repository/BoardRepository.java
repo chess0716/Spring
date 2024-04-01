@@ -16,9 +16,17 @@ public interface BoardRepository extends JpaRepository<BoardDTO, Integer> {
 	Integer calculateTotalPriceByNum(@Param("num") int num);
 	
 	// 해당 재료의 총 가격을 계산하는 메소드 추가
-    @Query(value = "SELECT SUM(ROUND(b.unit * (c.cost / c.unit), -1)) FROM board a ,ingredients_board b, data c where a.title = b.title and b.name = c.name and a.num=:num and c.name = :ingredientName",
-            nativeQuery = true)
-    Integer calculateTotalPriceByIngredientName(@Param("ingredientName") String ingredientName, @Param("num") int num);
+	@Query(value = "SELECT SUM(ROUND(b.unit * (c.cost / c.unit), -1)) FROM board a ,ingredients_board b, data c where a.title = b.title and b.name = c.name and a.num=:num and c.name = :ingredientName", nativeQuery = true)
+	Integer calculateTotalPriceByIngredientName(@Param("ingredientName") String ingredientName, @Param("num") int num);
+
+	@Query(value = "SELECT SUM(ROUND(b.unit * (c.cost / c.unit), -1)) + SUM(CASE WHEN c.name = :ingredientName THEN ROUND(b.unit * (c.cost / c.unit), -1) ELSE 0 END) FROM board a, ingredients_board b, data c WHERE a.title = b.title AND b.name = c.name AND a.num = :num", nativeQuery = true)
+	Integer addPriceByIngredientName(@Param("num") int num, @Param("ingredientName") String ingredientName);
+
+	@Query(value = "SELECT SUM(ROUND(b.unit * (c.cost / c.unit), -1)) - SUM(CASE WHEN c.name = :ingredientName THEN ROUND(b.unit * (c.cost / c.unit), -1) ELSE 0 END) FROM board a, ingredients_board b, data c WHERE a.title = b.title AND b.name = c.name AND a.num = :num", nativeQuery = true)
+	Integer subtractPriceByIngredientName(@Param("num") int num, @Param("ingredientName") String ingredientName);
+
+
+
 
     List<BoardDTO> findByTitleContaining(String title);
     

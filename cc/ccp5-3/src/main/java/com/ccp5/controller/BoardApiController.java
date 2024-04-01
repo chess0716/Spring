@@ -1,5 +1,7 @@
 package com.ccp5.controller;
 
+
+
 import java.util.List;
 import java.util.Map;
 
@@ -21,12 +23,13 @@ import com.ccp5.dto.UpdatePriceRequest;
 import com.ccp5.repository.BoardRepository;
 import com.ccp5.service.BoardService;
 import com.ccp5.service.IngrListService;
-import com.ccp5.service.IngrListService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
+import lombok.extern.slf4j.Slf4j;
+@Slf4j
 @RestController
 @RequestMapping("/api/boards")
 public class BoardApiController {
@@ -41,13 +44,15 @@ public class BoardApiController {
     @GetMapping("/search")
     public ResponseEntity<List<BoardDTO>> searchBoards(@RequestParam String title) {
         // 검색 로직 구현
-        List<BoardDTO> searchResults =boardService.searchByTitle(title);
+        List<BoardDTO> searchResults = boardService.searchByTitle(title);
+        log.info("Search results: {}", searchResults);
         return ResponseEntity.ok(searchResults);
     }
-   
+
     @GetMapping("/list")
     public ResponseEntity<?> getAllBoards() {
         List<BoardDTO> boards = boardService.getAllBoards();
+        log.info("Retrieved all boards: {}", boards);
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
         objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
@@ -60,73 +65,69 @@ public class BoardApiController {
                 return ResponseEntity.notFound().build();
             }
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
+            log.error("Error occurred while processing JSON", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error occurred while processing JSON");
         }
     }
 
-
     @GetMapping("/{num}")
     public ResponseEntity<BoardDTO> getBoardByNum(@PathVariable int num) {
         BoardDTO board = boardService.getBoardByNum(num);
+        log.info("Retrieved board with number {}: {}", num, board);
         if (board != null) {
             return ResponseEntity.ok(board);
         } else {
             return ResponseEntity.notFound().build();
         }
     }
- // 모바일로 재료 리스트 데이터 보내기
- 	@GetMapping("/{num}/ingredients")
- 	public ResponseEntity<List<IngrBoard>> getIngredientsForBoard(@PathVariable int num) {
- 		BoardDTO board = boardService.getBoardByNum(num);
- 		List<IngrBoard> ingrBoards = ilService.findByTitle(board.getTitle());
- 		if (ingrBoards != null && !ingrBoards.isEmpty()) {
- 			return ResponseEntity.ok(ingrBoards);
- 		} else {
- 			return ResponseEntity.notFound().build();
- 		}
- 	}
 
-	// 모바일로 총 가격 데이터 보내기
-	@GetMapping("/{num}/totalPrice")
-	public ResponseEntity<Integer> getTotalPrice(@PathVariable int num) {
-		Integer totalPrice = boardRepository.calculateTotalPriceByNum(num);
-		if (totalPrice != null) {
-			return ResponseEntity.ok(totalPrice);
-		} else {
-			return ResponseEntity.notFound().build();
-		}
-	}
+    @GetMapping("/{num}/ingredients")
+    public ResponseEntity<List<IngrBoard>> getIngredientsForBoard(@PathVariable int num) {
+        BoardDTO board = boardService.getBoardByNum(num);
+        log.info("Retrieved board with number {}: {}", num, board);
+        List<IngrBoard> ingrBoards = ilService.findByTitle(board.getTitle());
+        log.info("Ingredients for board {}: {}", num, ingrBoards);
+        if (ingrBoards != null && !ingrBoards.isEmpty()) {
+            return ResponseEntity.ok(ingrBoards);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
-
-    @PostMapping
-    public ResponseEntity<Void> insertBoard(@RequestBody BoardDTO boardDTO) {
-        boardService.insertBoard(boardDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    @GetMapping("/{num}/totalPrice")
+    public ResponseEntity<Integer> getTotalPrice(@PathVariable int num) {
+        log.info("Calculating total price for board with number {}", num);
+        Integer totalPrice = boardRepository.calculateTotalPriceByNum(num);
+        log.info("Total price for board with number {}: {}", num, totalPrice);
+        if (totalPrice != null) {
+            return ResponseEntity.ok(totalPrice);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PostMapping("/{boardNum}/calculatePrice")
     @ResponseBody
-    public ResponseEntity<Integer> updatePrice(@RequestBody UpdatePriceRequest updatePriceRequest, @PathVariable int boardNum) {
-        String ingredientName = updatePriceRequest.getIngredientName();
-        boolean isOwned = updatePriceRequest.isOwned();
+    public Integer updatePrice(@RequestBody UpdatePriceRequest requestBody, @PathVariable int boardNum) {
+        // 요청으로부터 재료 이름과 보유 여부를 가져옴
+        String ingredientName = requestBody.getIngredientName();
+        boolean isOwned = requestBody.isOwned();
         System.out.println("ingredientName : " + ingredientName);
         System.out.println("isOwned : " + isOwned);
 
+        // 보유 여부에 따라 총 가격을 갱신하는 쿼리 실행
         Integer price;
         if (!isOwned) {
-            price = boardRepository.calculateTotalPriceByIngredientName(ingredientName, boardNum);
+            // 해당 재료의 가격을 총 가격에서 빼는 쿼리 실행
+            price = boardRepository.subtractPriceByIngredientName(boardNum,ingredientName);
         } else {
-            price = boardRepository.calculateTotalPriceByIngredientName(ingredientName, boardNum) * -1;
+            // 해당 재료의 가격을 총 가격에 더하는 쿼리 실행
+        	 price = boardRepository.addPriceByIngredientName(boardNum, ingredientName);
+
         }
-        System.out.println("totalprice : " + price);
-        return ResponseEntity.ok(price);
+
+        // 계산된 가격을 반환
+        return price;
     }
 
-
-
-    @GetMapping("/category/{categoryId}")
-    public List<BoardDTO> getBoardsByCategory(@PathVariable Long categoryId) {
-        return boardRepository.findByCategoryId(categoryId);
-    }
 }

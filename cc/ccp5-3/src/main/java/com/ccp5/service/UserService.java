@@ -1,6 +1,6 @@
 package com.ccp5.service;
 
-import org.apache.el.stream.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +14,6 @@ import com.ccp5.dto.Role;
 import com.ccp5.dto.User;
 import com.ccp5.repository.UserRepository;
 
-import jakarta.persistence.EntityNotFoundException;
 
 
 @Service
@@ -61,6 +60,8 @@ public class UserService implements UserDetailsService {
             user.getAuthorities()
         );
     }
+
+	
 
     }
 
