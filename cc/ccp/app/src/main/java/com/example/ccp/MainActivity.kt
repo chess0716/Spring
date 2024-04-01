@@ -162,7 +162,9 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.MyPage_set -> {
-                // MyPage 설정 메뉴 아이템 클릭 시 실행할 코드
+                val intent = Intent(this, MyPageActivity::class.java)
+                startActivity(intent)
+
                 true
             }
             R.id.Request_set -> {

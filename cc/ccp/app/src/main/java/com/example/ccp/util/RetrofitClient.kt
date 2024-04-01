@@ -2,6 +2,7 @@ package com.example.ccp.util
 
 import com.example.ccp.service.ApiService
 import com.example.ccp.service.IngrService
+import com.example.ccp.service.MyPageService
 import com.example.ccp.service.UserService
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -46,5 +47,9 @@ object RetrofitClient {
     val userService: UserService by lazy {
         userServiceRetrofit.create(UserService::class.java)
     }
+    val myPageService: MyPageService by lazy {
+        retrofit.create(MyPageService::class.java)
+    }
+
 }
 

@@ -1,9 +1,7 @@
 package com.example.ccp.service
 
 import com.example.ccp.model.BoardDTO
-import com.example.ccp.model.Category
 import com.example.ccp.model.IngrBoard
-import com.example.ccp.model.LoginRequest
 
 import com.example.ccp.model.User
 import com.example.ccp.model.UserResponse
@@ -24,13 +22,11 @@ interface ApiService : UserService {
     fun getImage(@Url imageUrl: String): Call<ResponseBody>
 
     @GET("/api/boards/{num}")
-    fun getBoardByNum(@Path("num") num: Int): Call<BoardDTO?>?
+    fun getBoardByNum(@Path("num") num: Int): Call<BoardDTO>
 
     @POST("/api/boards")
     fun insertBoard(@Body boardDTO: BoardDTO?): Call<Void?>?
 
-    @POST("/api/boards/{num}/calculatePrice")
-    fun updatePrice(@Path("num") boardNum: Int, @Body requestBody: Map<String?, Any?>?): Call<Int?>?
 
     @POST("/api/join")
     override fun join(@Body user: User?): Call<UserResponse?>?
@@ -45,5 +41,12 @@ interface ApiService : UserService {
     // 게시물 내 총 가격 데이터를 가져오기
     @GET("/api/boards/{num}/totalPrice")
     fun getTotalPrice(@Path("num") num: Int): Call<Int>
+    @POST("/api/boards/{num}/calculatePrice")
+    fun updatePrice(@Path("num") boardNum: Int, @Body requestBody: UpdatePriceRequest): Call<Int>
+
 
 }
+data class UpdatePriceRequest(
+    val ingredientName: String,
+    val isOwned: Boolean
+)
