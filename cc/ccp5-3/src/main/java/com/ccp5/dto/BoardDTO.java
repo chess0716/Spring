@@ -29,8 +29,10 @@ public class BoardDTO {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int num;
+    
     @ManyToOne
     private Category category;
+    
     private String title;
     
     @ManyToOne
@@ -93,6 +95,13 @@ public class BoardDTO {
         this.num = num;
     }
 
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
 
     public String getTitle() {
         return title;
@@ -134,7 +143,6 @@ public class BoardDTO {
         this.hitcount = hitcount;
     }
 
-    
     public Integer getReplyCnt() {
         return replyCnt;
     }
@@ -151,18 +159,24 @@ public class BoardDTO {
         this.totalprice = totalprice;
     }
 
+    // 작성자의 이름(writerName)을 가져오는 메서드
+    public String getWriterName() {
+        return writer != null ? writer.getName() : null;
+    }
+
     @Override
     public String toString() {
         return "BoardDTO{" +
                 "num=" + num +
-                ", category='" + category + '\'' +
+                ", category=" + category +
                 ", title='" + title + '\'' +
-                ", writer='" + writer.getUsername() + '\'' +
+                ", writer=" + writer +
                 ", content='" + content + '\'' +
                 ", regdate=" + regdate +
                 ", hitcount=" + hitcount +
                 ", replyCnt=" + replyCnt +
                 ", totalprice=" + totalprice +
+                ", imageUrl='" + imageUrl + '\'' +
                 '}';
     }
 }

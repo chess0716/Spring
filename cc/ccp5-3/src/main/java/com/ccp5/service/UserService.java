@@ -1,5 +1,6 @@
 package com.ccp5.service;
 
+import org.apache.el.stream.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,8 @@ import com.ccp5.dto.Role;
 import com.ccp5.dto.User;
 import com.ccp5.repository.UserRepository;
 
+import jakarta.persistence.EntityNotFoundException;
+
 
 @Service
 @Primary
@@ -22,6 +25,10 @@ public class UserService implements UserDetailsService {
     private  UserRepository userRepository;
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
     
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
+
     public void join(User user) {
         if (user.getRole() == null || user.getRole() == Role.USER) {
             user.setRole(Role.USER);

@@ -23,10 +23,12 @@ import com.ccp5.dto.BoardDTO;
 import com.ccp5.dto.Category;
 import com.ccp5.dto.DataDTO;
 import com.ccp5.dto.IngrBoard;
+import com.ccp5.dto.User;
 import com.ccp5.repository.BoardRepository;
 import com.ccp5.service.BoardService;
 import com.ccp5.service.CategoryService;
 import com.ccp5.service.IngrListService;
+import com.ccp5.service.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -44,6 +46,8 @@ public class IngrApiController {
     private BoardService boardService;
     @Autowired
     private CategoryService categoryService;
+    @Autowired
+    private UserService userService;
 
     @GetMapping(path = "/api/get_names", produces = MediaType.APPLICATION_JSON_VALUE)// 서버가 미디어타입을 text/plain 으로 받아서 수정
     public ResponseEntity<String> getNamesByCategory(@RequestParam(value = "categoryId", required = false) String categoryId) {
@@ -90,20 +94,28 @@ public class IngrApiController {
         }
         return ResponseEntity.ok(jsonResponse);
     }
-
     @PostMapping("/api/submit_recipe")
     public ResponseEntity<String> submitRecipe(@RequestParam("title") String title,
-                                               @RequestParam("content") String content,
-                                               @RequestParam("categoryId") Long categoryId,
-                                               @RequestParam("image") MultipartFile file) {
+            @RequestParam("content") String content, @RequestParam("categoryId") Long categoryId,
+            @RequestParam("image") MultipartFile file, @RequestParam("username") String username) {
         log.info("Received request to submit recipe: {}", title);
+
+        // 작성자의 이름으로 사용자 정보 가져오기
+        User writer = userService.findByUsername(username);
+        if (writer == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found with username: " + username);
+        }
 
         BoardDTO boardDTO = new BoardDTO();
         boardDTO.setTitle(title);
         boardDTO.setContent(content);
-        
+        boardDTO.setWriter(writer); // 작성자 정보 설정
+
         // 여기에서 카테고리 ID를 처리합니다.
         Category category = categoryService.findCategoryById(categoryId);
+        if (category == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Category not found with ID: " + categoryId);
+        }
         boardDTO.setCategory(category);
 
         try {
@@ -119,11 +131,7 @@ public class IngrApiController {
         try {
             boardService.insertBoard(boardDTO);
             log.info("Recipe submitted successfully: {}", title);
-            Map<String, String> responseMap = new HashMap<>();
-            responseMap.put("message", "Recipe submitted successfully");
-            ObjectMapper objectMapper = new ObjectMapper();
-            String jsonResponse = objectMapper.writeValueAsString(responseMap);
-            return ResponseEntity.ok(jsonResponse);
+            return ResponseEntity.ok("Recipe submitted successfully");
         } catch (Exception e) {
             log.error("Error occurred while submitting recipe", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error occurred while submitting recipe");
