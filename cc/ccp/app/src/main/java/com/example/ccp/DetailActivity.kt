@@ -22,6 +22,7 @@ class DetailActivity : AppCompatActivity() {
     private lateinit var apiService: ApiService
     private var totalPrice: Int = 0
     private val boards = mutableListOf<IngrBoard>()
+    private var boardNum: Int = -1 // 보드 번호 추가
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,13 +31,16 @@ class DetailActivity : AppCompatActivity() {
 
         apiService = RetrofitClient.apiService
 
-        val num = intent.getIntExtra("board_id", -1)
-        if (num != -1) {
-            loadData(num)
-            loadIngredients(num)
-            loadTotalPrice(num)
+        boardNum = intent.getIntExtra("board_id", -1) // 보드 번호 초기화
+
+        if (boardNum != -1) {
+            loadData(boardNum)
+
+            loadTotalPrice(boardNum)
+            loadIngredients(boardNum)
         }
 
+        setupRecyclerView()
         setupListeners()
     }
 
@@ -51,12 +55,12 @@ class DetailActivity : AppCompatActivity() {
                         binding.detailContent.text = Editable.Factory.getInstance().newEditable(it.content)
                     }
                 } else {
-                    Log.e("DetailActivity", "Failed to load board details, response code: ${response.code()}")
+                    Log.e("DetailActivity", "게시글 정보를 불러오는데 실패했습니다. 응답코드: ${response.code()}")
                 }
             }
 
             override fun onFailure(call: Call<BoardDTO>, t: Throwable) {
-                Log.e("DetailActivity", "Failed to load board details: ${t.message}", t)
+                Log.e("DetailActivity", "게시글 정보를 불러오는데 실패했습니다: ${t.message}", t)
             }
         })
     }
@@ -64,18 +68,23 @@ class DetailActivity : AppCompatActivity() {
     private fun loadIngredients(num: Int) {
         apiService.getIngredientsForBoard(num).enqueue(object : Callback<List<IngrBoard>> {
             override fun onResponse(call: Call<List<IngrBoard>>, response: Response<List<IngrBoard>>) {
-                response.body()?.let {
-                    boards.clear()
-                    boards.addAll(it)
-                    setupRecyclerView()
+                if (response.isSuccessful) {
+                    response.body()?.let {
+                        boards.clear()
+                        boards.addAll(it)
+                        binding.recyclerViewIngredients.adapter?.notifyDataSetChanged()
+                    }
+                } else {
+                    Log.e("DetailActivity", "재료 정보를 불러오는데 실패했습니다. 응답코드: ${response.code()}")
                 }
             }
 
             override fun onFailure(call: Call<List<IngrBoard>>, t: Throwable) {
-                Log.e("DetailActivity", "Failed to load ingredients: ${t.message}", t)
+                Log.e("DetailActivity", "재료 정보를 불러오는데 실패했습니다: ${t.message}", t)
             }
         })
     }
+
 
     private fun loadTotalPrice(num: Int) {
         apiService.getTotalPrice(num).enqueue(object : Callback<Int> {
@@ -87,42 +96,46 @@ class DetailActivity : AppCompatActivity() {
                         binding.totalPrice.text = Editable.Factory.getInstance().newEditable(formattedPrice)
                     }
                 } else {
-                    Log.e("DetailActivity", "Failed to load total price, response code: ${response.code()}")
+                    Log.e("DetailActivity", "총 가격을 불러오는데 실패했습니다. 응답코드: ${response.code()}")
                 }
             }
 
             override fun onFailure(call: Call<Int>, t: Throwable) {
-                Log.e("DetailActivity", "Failed to load total price: ${t.message}", t)
+                Log.e("DetailActivity", "총 가격을 불러오는데 실패했습니다: ${t.message}", t)
             }
         })
     }
 
     private fun setupRecyclerView() {
-
-        val onSwitchChanged: (String, Boolean) -> Unit = { ingredientName, isOwned ->
-            val boardNum = intent.getIntExtra("board_id", -1)
-            if (boardNum != -1) {
-                val requestBody = UpdatePriceRequest(ingredientName, isOwned)
+        val adapter = IngrBoardAdapter(
+            this@DetailActivity,
+            boards,
+            { ingredientName, isOwned ->
+                // 재료 상태 변경 시 로직 처리
+                val position = boards.indexOfFirst { it.name == ingredientName }
+                if (position != -1) {
+                    boards[position].isOwned = isOwned
+                }
+            },
+            { boardNum, requestBody ->
+                // 총 가격 업데이트 로직 호출
                 updateTotalPrice(boardNum, requestBody)
-            }
-        }
-
-        // 어댑터 인스턴스 생성 시 콜백 함수 전달
-        val adapter = IngrBoardAdapter(this, boards, onSwitchChanged)
+            },
+            boardNum
+        )
         binding.recyclerViewIngredients.adapter = adapter
         binding.recyclerViewIngredients.layoutManager = LinearLayoutManager(this)
     }
-
-
     private fun updateTotalPrice(boardNum: Int, requestBody: UpdatePriceRequest) {
+        Log.d("DetailActivity", "Updating price for board $boardNum with ${requestBody.ingredientName}, owned: ${requestBody.isOwned}")
         apiService.updatePrice(boardNum, requestBody).enqueue(object : Callback<Int> {
             override fun onResponse(call: Call<Int>, response: Response<Int>) {
                 if (response.isSuccessful) {
                     val updatedPrice = response.body() ?: return
-                    val formattedPrice = "$updatedPrice 원"
-                    binding.totalPrice.text = Editable.Factory.getInstance().newEditable(formattedPrice)
-                } else {
-                    Log.e("DetailActivity", "Failed to update total price, response code: ${response.code()}")
+                    runOnUiThread {
+                        // UI 업데이트
+                        binding.totalPrice.text = Editable.Factory.getInstance().newEditable("$updatedPrice 원")
+                    }
                 }
             }
 
@@ -132,14 +145,10 @@ class DetailActivity : AppCompatActivity() {
         })
     }
 
-
-
-
     private fun setupListeners() {
         binding.btnBack.setOnClickListener { finish() }
         binding.btnGoUpdate.setOnClickListener {
-            val intent = Intent(this, UpdateActivity::class.java)
-            // 필요한 데이터 인텐트에 추가
+            val intent = Intent(this@DetailActivity, UpdateActivity::class.java)
             startActivity(intent)
         }
     }

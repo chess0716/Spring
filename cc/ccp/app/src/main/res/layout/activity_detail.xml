@@ -64,13 +64,12 @@
                 android:gravity="start|top"
                 android:hint="Content"
                 android:longClickable="false" />
-
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerViewIngredients"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp" />
+                tools:listitem="@layout/item_ingredient" />
+
 
             <LinearLayout
                 android:id="@+id/totalPriceLayout"

@@ -41,8 +41,10 @@ interface ApiService : UserService {
     // 게시물 내 총 가격 데이터를 가져오기
     @GET("/api/boards/{num}/totalPrice")
     fun getTotalPrice(@Path("num") num: Int): Call<Int>
-    @POST("/api/boards/{num}/calculatePrice")
-    fun updatePrice(@Path("num") boardNum: Int, @Body requestBody: UpdatePriceRequest): Call<Int>
+    @POST("/api/boards/{boardNum}/calculatePrice")
+    fun updatePrice(@Path("boardNum") boardNum: Int, @Body requestBody: UpdatePriceRequest): Call<Int>
+
+
 
 
 }
