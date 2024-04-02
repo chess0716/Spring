@@ -4,12 +4,12 @@
     <item
         android:id="@+id/MyPage_set"
         android:orderInCategory="100"
-        android:title="Request"
+        android:title="MyPage"
         app:showAsAction="never" />
     <item
         android:id="@+id/Request_set"
         android:orderInCategory="100"
-        android:title="MyPage"
+        android:title="Request"
         app:showAsAction="never"
         />
     <item

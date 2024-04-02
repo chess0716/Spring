@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.ccp5.dto.BoardDTO;
+import com.ccp5.dto.Board;
 import com.ccp5.dto.IngrBoard;
 import com.ccp5.repository.BoardRepository;
 import com.ccp5.service.BoardService;
@@ -37,14 +37,14 @@ public class HomeController {
     
     @GetMapping({"/", "/index"})
     public String index(Model model) {
-        List<BoardDTO> boards = boardService.getAllBoards();
+        List<Board> boards = boardService.getAllBoards();
         model.addAttribute("boards", boards);
         return "index";
     }
 
     @GetMapping("/view/{num}")
     public String view(@PathVariable("num") int num, Model model) {
-        BoardDTO board = boardService.getBoardByNum(num);
+        Board board = boardService.getBoardByNum(num);
         List<IngrBoard> ingrBoards = ilService.findByTitle(board.getTitle());
         Integer totalPrice = boardRepository.calculateTotalPriceByNum(num);
         model.addAttribute("board", board);
@@ -52,7 +52,18 @@ public class HomeController {
         model.addAttribute("total", totalPrice); // "total" 키를 사용하여 총 가격을 전달
         return "view";
     }
-    
+   
+
+    @GetMapping("/ingredient/{num}")
+    public String  getIngredientByNum(@PathVariable("num") int num, Model model) {
+        Board board = boardService. getIngredientByNum(num);
+        List<IngrBoard> ingrBoards = ilService.findByTitle(board.getTitle());
+        Integer totalPrice = boardRepository.calculateTotalPriceByNum(num);
+        model.addAttribute("board", board);
+        model.addAttribute("ingrBoards", ingrBoards);
+        model.addAttribute("total", totalPrice); 
+        return "ingredient";
+    }
     // 레시피 등록
     @GetMapping("/insert")
     public String inerst(Model model) {
@@ -60,11 +71,11 @@ public class HomeController {
     	return "insert";
     }
     @PostMapping("/insert")
-    public String insertSubmit(@ModelAttribute BoardDTO boardDTO, @RequestParam("file") MultipartFile file) {
+    public String insertSubmit(@ModelAttribute Board Board, @RequestParam("file") MultipartFile file) {
         try {
             String imageUrl = boardService.uploadAndResizeImage(file); // 이미지 업로드 및 경로 반환
-            boardDTO.setImageUrl(imageUrl); // 이미지 경로 설정
-            boardService.insertBoard(boardDTO); // 게시글 등록
+            Board.setImageUrl(imageUrl); // 이미지 경로 설정
+            boardService.insertBoard(Board); // 게시글 등록
         } catch (IOException e) {
             // 이미지 업로드 중 오류 발생 시 예외 처리
             e.printStackTrace();
@@ -75,7 +86,7 @@ public class HomeController {
     // 레시피 수정폼
     @GetMapping("/update/{num}")
     public String update(@PathVariable int num, Model model) {
-        BoardDTO board = boardService.getBoardByNum(num);
+        Board board = boardService.getBoardByNum(num);
         List<IngrBoard> ingrBoards = ilService.findByTitle(board.getTitle());
         model.addAttribute("categories", ilService.category());
         model.addAttribute("iboard", ingrBoards);

@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.ccp5.dto.BoardDTO;
+import com.ccp5.dto.Board;
 import com.ccp5.dto.Favorite;
 import com.ccp5.dto.MypageDTO;
 import com.ccp5.dto.PaymentRequest;
@@ -33,7 +33,7 @@ public class MypageService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
         
-        List<BoardDTO> myBoards = boardRepository.findByWriter(user);
+        List<Board> myBoards = boardRepository.findByWriter(user);
         // Favorite 및 PaymentRequest 정보도 비슷한 방식으로 조회
         
         // MypageDTO 생성 및 반환
@@ -50,7 +50,7 @@ public class MypageService {
     }
 
     // 사용자가 작성한 게시글 목록 조회
-    public List<BoardDTO> getUserPosts(Long userId) {
+    public List<Board> getUserPosts(Long userId) {
         User user = userRepository.findById(userId).orElse(null);
         if (user == null) return null;
         return boardRepository.findByWriter(user);

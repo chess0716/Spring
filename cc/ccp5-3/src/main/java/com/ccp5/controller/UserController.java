@@ -49,7 +49,6 @@ public class UserController {
         return "member/login";
     }
     
-
     @PostMapping("/api/login")
     public ResponseEntity<?> loginProcess(@RequestBody Map<String, String> credentials, HttpSession session) {
         String username = credentials.get("username");
@@ -57,35 +56,40 @@ public class UserController {
 
         logger.info("Attempting login for username: {}", username);
         User user = userRepository.findByUsername(username);
-        
+
         if (user != null && password.equals(user.getPassword())) { // 비밀번호 비교
             session.setAttribute("username", username);
-            
+
+            // 사용자 ID를 가져와서 response에 추가
+            Long userId = user.getId();
+
             // 로그인 성공 시, 반환될 JSON 구조를 만듭니다.
             Map<String, Object> responseMap = new HashMap<>();
             responseMap.put("message", "Login successful");
             responseMap.put("username", username);
+            responseMap.put("id", userId); // 사용자 ID 추가
             // 실제 사용 시에는 JWT 토큰을 생성하고 반환합니다.
             String fakeToken = "generated-token-placeholder";
             responseMap.put("token", fakeToken);
-            
+
             String jsonResponse = "";
             try {
                 jsonResponse = objectMapper.writeValueAsString(responseMap);
                 logger.info("Login successful for username: {}", username);
+               
             } catch (JsonProcessingException e) {
                 logger.error("Error converting response to JSON", e);
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error converting response to JSON");
             }
-            
+
             return ResponseEntity.ok(jsonResponse);
         } else {
             logger.warn("Login attempt failed for username: {}", username);
-            
+
             // 로그인 실패 시, 반환될 JSON 구조를 만듭니다.
             Map<String, Object> responseMap = new HashMap<>();
             responseMap.put("message", "Invalid username or password");
-            
+
             String jsonResponse = "";
             try {
                 jsonResponse = objectMapper.writeValueAsString(responseMap);
@@ -93,10 +97,11 @@ public class UserController {
                 logger.error("Error converting response to JSON", e);
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error converting response to JSON");
             }
-            
+
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(jsonResponse);
         }
     }
+
 
 
     @GetMapping("/api/join")
@@ -107,25 +112,28 @@ public class UserController {
 
     @PostMapping("/api/join")
     public ResponseEntity<String> join(@RequestBody User user) {
-        logger.info("Attempting to join with username: {}", user.getUsername()); // 로그 출력
+        logger.info("Attempting to join with username: {}", user); // 로그 출력
+        
         if (userRepository.findByUsername(user.getUsername()) != null) {
             logger.warn("Username {} already exists", user.getUsername()); // 로그 출력
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username already exists"); // 이미 존재하는 사용자
         }
-        // 비밀번호를 암호화하여 저장
+   
 
         userService.join(user);
         logger.info("User {} successfully joined", user.getUsername()); // 로그 출력
 
         // 응답 데이터를 Map 형식으로 구성
         Map<String, Object> responseMap = new HashMap<>();
+        logger.info("responseMap", responseMap);
         responseMap.put("message", "User successfully joined");
         responseMap.put("username", user.getUsername());
-
+        
         // ObjectMapper를 사용하여 Map을 JSON 문자열로 변환
         String jsonResponse;
         try {
             jsonResponse = objectMapper.writeValueAsString(responseMap);
+            logger.info("jsonResponse",jsonResponse);
         } catch (JsonProcessingException e) {
             log.error("Error converting response to JSON", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error converting response to JSON");
@@ -135,4 +143,5 @@ public class UserController {
         return ResponseEntity.ok(jsonResponse);
     }
 }
+
 

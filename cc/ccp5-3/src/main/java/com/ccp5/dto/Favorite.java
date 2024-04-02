@@ -20,7 +20,7 @@ public class Favorite {
 
     @ManyToOne
     @JoinColumn(name = "board_id")
-    private BoardDTO board;
+    private Board board;
 
    
 }

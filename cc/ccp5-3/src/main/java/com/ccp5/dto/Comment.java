@@ -34,7 +34,7 @@ public class Comment {
     
     @ManyToOne
     @JoinColumn(name ="bnum")
-    private BoardDTO board;
+    private Board board;
 
     public Long getCnum() {
         return cnum;
@@ -68,11 +68,11 @@ public class Comment {
         this.regdate = regdate;
     }
 
-    public BoardDTO getBoard() {
+    public Board getBoard() {
         return board;
     }
 
-    public void setBoard(BoardDTO board) {
+    public void setBoard(Board board) {
         this.board = board;
     }    
 }

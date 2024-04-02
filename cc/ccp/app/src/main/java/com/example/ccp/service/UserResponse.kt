@@ -9,5 +9,7 @@ data class UserResponse(
 data class LoginResponse(
     @SerializedName("username") val username: String,
     @SerializedName("token") val token: String,
-    @SerializedName("message") val message: String
+    @SerializedName("message") val message: String,
+    @SerializedName("userId") val userId: Long
 )
+

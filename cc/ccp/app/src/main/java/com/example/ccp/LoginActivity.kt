@@ -1,6 +1,5 @@
 package com.example.ccp
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -50,9 +49,13 @@ class LoginActivity : AppCompatActivity() {
                     Log.d(TAG, "로그인 성공: ${loginResponse.message}")
 
 
-                    SharedPreferencesHelper.saveLoginInfo(applicationContext, loginResponse.username, loginResponse.token)
-                    SharedPreferencesHelper.saveUsername(applicationContext, loginResponse.username) // 사용자의 username을 SharedPreferences에 저장
+                    SharedPreferencesHelper.saveLoginInfo(applicationContext, loginResponse.userId, loginResponse.username, loginResponse.token)
+
+                    SharedPreferencesHelper.saveUsername(applicationContext, loginResponse.username)
+                    SharedPreferencesHelper.saveUserId(applicationContext, loginResponse.userId)
                     Log.d(TAG, "로그인 유저 네임: ${loginResponse.username}")
+                    Log.d(TAG, "로그인 유저 ID: ${loginResponse.userId}")
+
                     Toast.makeText(applicationContext, "로그인 성공!", Toast.LENGTH_SHORT).show()
 
                     // 메인 액티비티로 이동

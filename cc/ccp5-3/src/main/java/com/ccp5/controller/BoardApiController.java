@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ccp5.dto.BoardDTO;
+import com.ccp5.dto.Board;
 import com.ccp5.dto.IngrBoard;
 import com.ccp5.dto.UpdatePriceRequest;
 import com.ccp5.repository.BoardRepository;
@@ -42,16 +42,16 @@ public class BoardApiController {
 	private IngrListService ilService;
 
     @GetMapping("/search")
-    public ResponseEntity<List<BoardDTO>> searchBoards(@RequestParam String title) {
+    public ResponseEntity<List<Board>> searchBoards(@RequestParam String title) {
         // 검색 로직 구현
-        List<BoardDTO> searchResults = boardService.searchByTitle(title);
+        List<Board> searchResults = boardService.searchByTitle(title);
         log.info("Search results: {}", searchResults);
         return ResponseEntity.ok(searchResults);
     }
 
     @GetMapping("/list")
     public ResponseEntity<?> getAllBoards() {
-        List<BoardDTO> boards = boardService.getAllBoards();
+        List<Board> boards = boardService.getAllBoards();
         log.info("Retrieved all boards: {}", boards);
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
@@ -71,8 +71,8 @@ public class BoardApiController {
     }
 
     @GetMapping("/{num}")
-    public ResponseEntity<BoardDTO> getBoardByNum(@PathVariable int num) {
-        BoardDTO board = boardService.getBoardByNum(num);
+    public ResponseEntity<Board> getBoardByNum(@PathVariable int num) {
+        Board board = boardService.getBoardByNum(num);
         log.info("Retrieved board with number {}: {}", num, board);
         if (board != null) {
             return ResponseEntity.ok(board);
@@ -83,7 +83,7 @@ public class BoardApiController {
 
     @GetMapping("/{num}/ingredients")
     public ResponseEntity<List<IngrBoard>> getIngredientsForBoard(@PathVariable int num) {
-        BoardDTO board = boardService.getBoardByNum(num);
+        Board board = boardService.getBoardByNum(num);
         log.info("Retrieved board with number {}: {}", num, board);
         List<IngrBoard> ingrBoards = ilService.findByTitle(board.getTitle());
         log.info("Ingredients for board {}: {}", num, ingrBoards);

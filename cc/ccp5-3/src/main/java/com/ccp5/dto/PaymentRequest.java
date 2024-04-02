@@ -23,6 +23,6 @@ public class PaymentRequest {
 
     @ManyToOne
     @JoinColumn(name = "board_id")
-    private BoardDTO board;
+    private Board board;
 
 }

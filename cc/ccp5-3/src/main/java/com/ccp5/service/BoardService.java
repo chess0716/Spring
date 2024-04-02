@@ -18,7 +18,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.ccp5.dto.BoardDTO;
+import com.ccp5.dto.Board;
 import com.ccp5.dto.IngrBoard;
 import com.ccp5.dto.User;
 import com.ccp5.repository.BoardRepository;
@@ -41,19 +41,23 @@ public class BoardService {
 	 private String uploadDir;
 
 	// 메인
-	public List<BoardDTO> getAllBoards() {
+	public List<Board> getAllBoards() {
 		// JPA Repository 사용
 		return boardRepo.findAll();
 	}
 
 	// 뷰
-	public BoardDTO getBoardByNum(int num) {
+	public Board getBoardByNum(int num) {
 		// JPA Repository 사용
 		return boardRepo.findById(num).orElse(null);
 	}
-
+	public Board getIngredientByNum(int num) {
+		// JPA Repository 사용
+		return boardRepo.findById(num).orElse(null);
+	}
+	
 	// 레시피 작성
-	public void insertBoard(BoardDTO board) {
+	public void insertBoard(Board board) {
 	    Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String username = "";
         if (principal instanceof UserDetails) {
@@ -82,7 +86,7 @@ public class BoardService {
 		ilRepo.saveAll(filteredIngredientForms);
 	}
 	@Transactional
-	public void updateRecipeForm(BoardDTO recipeForm) {
+	public void updateRecipeForm(Board recipeForm) {
 		boardRepo.save(recipeForm);
 	}
 	// 레시피 삭제
@@ -127,7 +131,7 @@ public class BoardService {
 	        return "/images/" + fileName;
 	    }
 
-	  public List<BoardDTO> searchByTitle(String title) {
+	  public List<Board> searchByTitle(String title) {
 	 
 	        return boardRepo.findByTitleContaining(title);
 	    }

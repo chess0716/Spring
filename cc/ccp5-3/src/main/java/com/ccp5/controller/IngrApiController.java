@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.ccp5.dto.BoardDTO;
+import com.ccp5.dto.Board;
 import com.ccp5.dto.Category;
 import com.ccp5.dto.DataDTO;
 import com.ccp5.dto.IngrBoard;
@@ -105,22 +105,23 @@ public class IngrApiController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found with username: " + username);
         }
 
-        BoardDTO boardDTO = new BoardDTO();
-        boardDTO.setTitle(title);
-        boardDTO.setContent(content);
-        boardDTO.setWriter(writer); // 작성자 정보 설정
+        Board Board = new Board();
+        Board.setTitle(title);
+        Board.setContent(content);
+        Board.setWriter(writer); // 작성자 정보 설정
+        Board.setUsername(username); // 사용자 이름 설정
 
         // 여기에서 카테고리 ID를 처리합니다.
         Category category = categoryService.findCategoryById(categoryId);
         if (category == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Category not found with ID: " + categoryId);
         }
-        boardDTO.setCategory(category);
+        Board.setCategory(category);
 
         try {
             if (!file.isEmpty()) {
                 String imageUrl = boardService.uploadAndResizeImage(file);
-                boardDTO.setImageUrl(imageUrl);
+                Board.setImageUrl(imageUrl);
             }
         } catch (IOException e) {
             log.error("Error occurred while uploading image", e);
@@ -128,7 +129,7 @@ public class IngrApiController {
         }
 
         try {
-            boardService.insertBoard(boardDTO);
+            boardService.insertBoard(Board);
             log.info("Recipe submitted successfully: {}", title);
             return ResponseEntity.ok("Recipe submitted successfully");
         } catch (Exception e) {
@@ -147,7 +148,7 @@ public class IngrApiController {
     }
 
     @PutMapping("/api/submit_recipe_update")
-    public ResponseEntity<Void> submitRecipeUpdate(@RequestBody BoardDTO recipeForm) {
+    public ResponseEntity<Void> submitRecipeUpdate(@RequestBody Board recipeForm) {
         boardService.updateRecipeForm(recipeForm);
         return ResponseEntity.ok().build();
     }

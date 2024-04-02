@@ -27,7 +27,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor 
-public class User implements UserDetails {
+public class User  {
 
 	 @Id
 	    @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,7 +38,7 @@ public class User implements UserDetails {
 
 	    private String name;
 
-	    @JsonIgnore
+	   
 	    private String password;
 
 	    private String email;
@@ -48,43 +48,10 @@ public class User implements UserDetails {
 
 	    @OneToMany(mappedBy = "writer")
 	    @JsonIgnore
-	    private Collection<BoardDTO> boards;
+	    private Collection<Board> boards;
 
-	    // UserDetails methods
-	    @Override
-	    public Collection<? extends GrantedAuthority> getAuthorities() {
-	        return Collections.singletonList(new SimpleGrantedAuthority(role.name()));
-	    }
+	    
 
-    @Override
-    public String getPassword() {
-        return password;
-    }
-
-    @Override
-    public String getUsername() {
-        return username;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
 
     @Override
     public String toString() {

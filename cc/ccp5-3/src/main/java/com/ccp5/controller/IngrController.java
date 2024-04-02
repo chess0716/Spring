@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.ccp5.dto.BoardDTO;
+import com.ccp5.dto.Board;
 import com.ccp5.dto.DataDTO;
 import com.ccp5.dto.IngrBoard;
 import com.ccp5.service.BoardService;
@@ -67,21 +67,21 @@ public class IngrController {
     public String submitRecipe(@RequestParam("title") String title,
                                @RequestParam("content") String content,
                                @RequestParam("image") MultipartFile file) {
-        BoardDTO boardDTO = new BoardDTO();
-        boardDTO.setTitle(title);
-        boardDTO.setContent(content);
+        Board Board = new Board();
+        Board.setTitle(title);
+        Board.setContent(content);
 
         if (!file.isEmpty()) {
             try {
                 String imageUrl = boardService.uploadAndResizeImage(file);
-                boardDTO.setImageUrl(imageUrl);
+                Board.setImageUrl(imageUrl);
             } catch (IOException e) {
                 e.printStackTrace();
                 return "error";
             }
         }
 
-        boardService.insertBoard(boardDTO);
+        boardService.insertBoard(Board);
 
         return "redirect:/index";
     }
@@ -94,7 +94,7 @@ public class IngrController {
     }
     
     @PutMapping("/submit_recipe_update")
-    public void submitRecipeUpdate(@RequestBody BoardDTO recipeForm) {
+    public void submitRecipeUpdate(@RequestBody Board recipeForm) {
         boardService.updateRecipeForm(recipeForm);
     }
     

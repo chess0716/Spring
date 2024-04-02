@@ -32,8 +32,9 @@ class JoinActivity : AppCompatActivity() {
         binding.btnJoin.setOnClickListener {
             val username = binding.etIDJoin.text.toString()
             val name = binding.etNameJoin.text.toString()
-            val email = binding.etEmailJoin.text.toString()
+
             val password = binding.etPWJoin.text.toString()
+            val email = binding.etEmailJoin.text.toString()
 
             // 0329 - 유효성 검사 추가
             // 사용자 입력 유효성 검사 - 아이디
@@ -71,8 +72,13 @@ class JoinActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            val newUser = User(0, username, name, email, password, null)  // name 속성을 포함하여 객체 생성
+
+            Log.d("JoinActivity", "사용자가 입력한 회원 정보: username=$username, name=$name, password=$password, email=$email")
+
+            val newUser = User(0, username, name, password, email, null)  // name 속성을 포함하여 객체 생성
             joinUser(newUser)
+
+
         }
     }
 
