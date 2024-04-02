@@ -11,6 +11,7 @@ data class BoardDTO(
     val category: Category,
     val title: String,
     val writer: User,
+    val username: String,
     val content: String,
     val regdate: Date,
     val hitcount: Int,

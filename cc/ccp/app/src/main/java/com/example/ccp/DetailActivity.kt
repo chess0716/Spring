@@ -1,23 +1,27 @@
 package com.example.ccp
 
+import android.content.Intent
 import android.os.Bundle
-import android.support.annotation.Nullable
 import android.text.Editable
 import android.util.Log
-import android.webkit.WebViewClient
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.ccp.adapter.IngrBoardAdapter
 import com.example.ccp.databinding.ActivityDetailBinding
 import com.example.ccp.model.BoardDTO
+import com.example.ccp.model.IngrBoard
 import com.example.ccp.service.ApiService
+import com.example.ccp.service.UpdatePriceRequest
 import com.example.ccp.util.RetrofitClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-
 class DetailActivity : AppCompatActivity() {
     private lateinit var binding: ActivityDetailBinding
     private lateinit var apiService: ApiService
+    private var totalPrice: Int = 0
+    private val boards = mutableListOf<IngrBoard>()
     private var boardNum: Int = -1 // 보드 번호 추가
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,6 +64,6 @@ class DetailActivity : AppCompatActivity() {
         val webView = binding.webviewDetail
         webView.settings.javaScriptEnabled = true // JavaScript 활성화
         webView.webViewClient = WebViewClient()
-        webView.loadUrl("http://10.100.103.73:8005/ingredient/$num") // 해당 URL 로드
+        webView.loadUrl("http://59.28.155.218:8005/ingredient/$num") // 해당 URL 로드
     }
 }

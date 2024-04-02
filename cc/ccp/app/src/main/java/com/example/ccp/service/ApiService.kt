@@ -1,6 +1,7 @@
 package com.example.ccp.service
 
 import com.example.ccp.model.BoardDTO
+import com.example.ccp.model.Category
 import com.example.ccp.model.IngrBoard
 
 import com.example.ccp.model.User
@@ -43,7 +44,11 @@ interface ApiService : UserService {
     fun getTotalPrice(@Path("num") num: Int): Call<Int>
     @POST("/api/boards/{boardNum}/calculatePrice")
     fun updatePrice(@Path("boardNum") boardNum: Int, @Body requestBody: UpdatePriceRequest): Call<Int>
+    @GET("api/categories")
+    fun getAllCategories(): Call<List<Category>>
 
+    @GET("api/category/{id}")
+    fun getCategoryById(@Path("id") id: Long): Call<Category>
 
 
 

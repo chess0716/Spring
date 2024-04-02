@@ -16,15 +16,6 @@
         tools:context=".MainActivity">
 
         <!-- 나머지 뷰 요소들 -->
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/display"
-            android:layout_below="@id/toolbar"
-            tools:ignore="NotSibling" />
-
 
 
         <!-- 검색 상자 -->
@@ -32,6 +23,16 @@
         <!-- 검색 버튼 -->
 
         <!-- recyclerViewBoards -->
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_below="@id/toolbar"
+            android:layout_marginTop="40dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/display"
+            tools:ignore="NotSibling" />
 
         <EditText
             android:id="@+id/editTextSearch"

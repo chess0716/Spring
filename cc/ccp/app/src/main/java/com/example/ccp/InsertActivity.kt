@@ -384,28 +384,32 @@ class InsertActivity : AppCompatActivity() {
 
     private fun submitRecipe(categoryId: Long) {
         val username = SharedPreferencesHelper.getUsername(this@InsertActivity) ?: ""
-        Log.d("SubmitRecipe", "Username: $username")
+
+        val userId = SharedPreferencesHelper.getUserId(this@InsertActivity) ?: ""
+        Log.d("SubmitRecipe", "Username: $username, WriterId: $userId")
         imageUrl?.let { uri ->
             val titlePart = createPartFromString(binding.etTitle.text.toString())
             val contentPart = createPartFromString(binding.etContent.text.toString())
             val categoryIdPart = createPartFromString(categoryId.toString())
             val usernamePart = createPartFromString(username)
+            val writerIdPart = createPartFromString(userId.toString()) // writerId를 RequestBody로 변환
             val imagePart = prepareFilePart("image", uri)
-            Log.d("SubmitRecipe", "Usernamepart: $usernamePart")
-            RetrofitClient.ingrService.submitRecipe(titlePart, contentPart, categoryIdPart, imagePart,usernamePart)
-                .enqueue(object : Callback<String> {
-                    override fun onResponse(call: Call<String>, response: Response<String>) {
-                        if (response.isSuccessful) {
-                            Toast.makeText(this@InsertActivity, "Recipe submitted successfully", Toast.LENGTH_SHORT).show()
-                        } else {
-                            Toast.makeText(this@InsertActivity, "Failed to submit the recipe", Toast.LENGTH_SHORT).show()
-                        }
-                    }
 
-                    override fun onFailure(call: Call<String>, t: Throwable) {
-                        Log.e("InsertActivity", "Network error: ${t.message}", t)
+            RetrofitClient.ingrService.submitRecipe(
+                titlePart, contentPart, categoryIdPart, imagePart, usernamePart, writerIdPart
+            ).enqueue(object : Callback<String> {
+                override fun onResponse(call: Call<String>, response: Response<String>) {
+                    if (response.isSuccessful) {
+                        Toast.makeText(this@InsertActivity, "Recipe submitted successfully", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(this@InsertActivity, "Failed to submit the recipe", Toast.LENGTH_SHORT).show()
                     }
-                })
+                }
+
+                override fun onFailure(call: Call<String>, t: Throwable) {
+                    Log.e("InsertActivity", "Network error: ${t.message}", t)
+                }
+            })
         } ?: Toast.makeText(this, "Please select an image", Toast.LENGTH_SHORT).show()
     }
 

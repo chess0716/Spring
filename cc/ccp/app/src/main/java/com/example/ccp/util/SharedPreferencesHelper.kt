@@ -7,7 +7,7 @@
     object SharedPreferencesHelper {
 
         private const val PREFS_NAME = "userPrefs"
-        private const val USER_ID_KEY = "userId" // 사용자 ID에 대한 키
+        private const val USER_ID_KEY = "userId"
         private const val USERNAME_KEY = "username"
         private const val TOKEN_KEY = "token"
 

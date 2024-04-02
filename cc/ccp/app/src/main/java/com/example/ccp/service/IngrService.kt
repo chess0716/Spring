@@ -33,7 +33,8 @@ interface IngrService {
         @Part("content") content: RequestBody,
         @Part("categoryId") categoryId: RequestBody,
         @Part image: MultipartBody.Part,
-        @Part("username") username: RequestBody
+        @Part("username") username: RequestBody,
+        @Part("writer") writerId: RequestBody
     ): Call<String>
 
 

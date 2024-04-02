@@ -28,8 +28,9 @@ interface MyPageService {
     @GET("/api/mypage/{userId}")
     fun getMypageInfo(@Path("userId") userId: Long): Call<MypageDTO>
 
-    // 사용자가 작성한 게시글 목록 조회
-    @GET("/api/mypage/{userId}/posts")
-    fun getUserPosts(@Path("userId") userId: Long): Call<List<BoardDTO>>
+    // 사용자의 username을 이용하여 사용자가 작성한 게시글 목록을 조회
+    @GET("/api/mypage/posts/{username}")
+    fun getUserPostsByUsername(@Path("username") username: String): Call<List<BoardDTO>>
+
 
 }

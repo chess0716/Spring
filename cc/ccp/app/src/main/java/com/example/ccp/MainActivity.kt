@@ -22,6 +22,7 @@ import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.ccp.adapter.BoardAdapter
 import com.example.ccp.databinding.ActivityMainBinding
+
 import com.example.ccp.model.BoardDTO
 import com.example.ccp.model.Category
 import com.example.ccp.service.ApiService
