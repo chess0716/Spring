@@ -1,5 +1,7 @@
 package com.ccp5.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -8,9 +10,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ccp5.dto.Board;
 import com.ccp5.dto.MypageDTO;
 import com.ccp5.service.MypageService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 @RestController
 @RequestMapping("/api/mypage")
@@ -37,11 +41,13 @@ public class MypageApiController {
         }
     }
 
-    // 사용자가 작성한 게시글 목록 조회
-    @GetMapping("/{userId}/posts")
-    public ResponseEntity<String> getUserPosts(@PathVariable Long userId) {
+    @GetMapping("/posts/{username}")
+    public ResponseEntity<String> getUserPostsByUsername(@PathVariable String username) {
         try {
-            Object posts = mypageService.getUserPosts(userId);
+            List<Board> posts = mypageService.getUserPostsByUsername(username);
+            // ObjectMapper를 사용하여 LocalDateTime을 올바르게 직렬화
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.registerModule(new JavaTimeModule());
             String jsonResponse = objectMapper.writeValueAsString(posts);
             return ResponseEntity.ok(jsonResponse);
         } catch (Exception e) {
