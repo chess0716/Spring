@@ -51,7 +51,7 @@ interface IngrService {
     fun getAllCategories(): Call<List<Category>>
 
     // 특정 카테고리에 속하는 게시물들을 가져오는 메서드
-    @GET("/api/boards/category/{categoryId}")
+    @GET("/api/category/{categoryId}")
     fun getBoardsByCategory(@Path("categoryId") categoryId: Long): Call<List<BoardDTO>>
 
     @POST("/api/boards/updatePrice/{boardNum}")

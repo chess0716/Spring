@@ -75,7 +75,8 @@ class JoinActivity : AppCompatActivity() {
 
             Log.d("JoinActivity", "사용자가 입력한 회원 정보: username=$username, name=$name, password=$password, email=$email")
 
-            val newUser = User(0, username, name, password, email, null)  // name 속성을 포함하여 객체 생성
+            val newUser = User(username = username, name = name, password = password, email = email)
+
             joinUser(newUser)
 
 

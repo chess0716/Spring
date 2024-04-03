@@ -3,6 +3,7 @@ package com.example.ccp.service
 import com.example.ccp.model.LoginRequest
 import com.example.ccp.model.User
 import com.example.ccp.model.UserResponse
+import com.google.gson.annotations.SerializedName
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -19,10 +20,11 @@ interface UserService {
     fun getUserInfo(@Path("username") username: String): Call<User>
 }
 
-// UserInfo 모델 정의
-data class UserInfo(
-    val userId: String,
-    val name: String,
-    val email: String
+
+data class LoginResponse(
+    @SerializedName("userId") val userId: Long,
+    @SerializedName("username") val username: String,
+    @SerializedName("token") val token: String,
+    @SerializedName("message") val message: String
 
 )

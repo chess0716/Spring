@@ -32,5 +32,14 @@ interface MyPageService {
     @GET("/api/mypage/posts/{username}")
     fun getUserPostsByUsername(@Path("username") username: String): Call<List<BoardDTO>>
 
+    // 사용자의 찜하기 정보를 서버에 전송
+    @POST("/api/mypage/favorites")
+    fun addFavorite(@Body favoriteRequest: FavoriteRequest): Call<Void> // or Call<FavoriteResponse> if the server sends a response
+
+
 
 }
+data class FavoriteRequest(
+    val username: String,
+    val boardId: Int
+)

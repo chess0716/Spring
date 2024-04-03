@@ -28,6 +28,7 @@ import com.example.ccp.model.Category
 import com.example.ccp.service.ApiService
 import com.example.ccp.util.RetrofitClient
 import com.example.ccp.util.RetrofitClient.ingrService
+import com.example.ccp.util.SharedPreferencesHelper
 import com.google.android.material.navigation.NavigationView
 import retrofit2.Call
 import retrofit2.Callback
@@ -59,15 +60,16 @@ class MainActivity : AppCompatActivity() {
 
         loadCategoryMap() // 카테고리 맵 로딩
         loadBoards() // 기본 게시판 로딩
-        binding.appBarMain.fab.setOnClickListener {
-            val intent = Intent(this@MainActivity, InsertActivity::class.java)
-            insertActivityResultLauncher.launch(intent) // IntentActivity 시작
-        }
-        // 0329 로그인 후 로그아웃 버튼 변경 설정
-        // 이전에 저장된 로그인 상태를 가져와서 적용
-        isLoggedIn = intent.getBooleanExtra("isLoggedIn", false)
 
-        setSupportActionBar(binding.appBarMain.toolbar)
+        // 로그인 상태 확인 및 UI 업데이트
+        updateLoginStatus()
+        setupButtonListeners()
+
+
+
+
+
+
 
         binding.appBarMain.fab.setOnClickListener { view ->
             Toast.makeText(this@MainActivity, "FAB Clicked", Toast.LENGTH_SHORT).show()
@@ -81,20 +83,7 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        // 0329 로그인 후 로그아웃 버튼 변경 설정
-        // 로그인 버튼 클릭 리스너 설정
-        binding.appBarMain.loginButton.setOnClickListener {
-            val intent = Intent(this@MainActivity, LoginActivity::class.java)
-            startActivity(intent)
-        }
-        // 0329 로그인 후 로그아웃 버튼 변경 설정
-        // 로그아웃 버튼 클릭 리스너 설정
-        binding.appBarMain.logoutButton.setOnClickListener {
-            // 로그아웃 처리
-            isLoggedIn = false
-            // 갱신된 로그인 상태에 따라 버튼 표시 변경
-            updateButtonVisibility()
-        }
+
         val drawerLayout: DrawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
         val navController = findNavController(R.id.nav_host_fragment_content_main)
@@ -176,18 +165,40 @@ class MainActivity : AppCompatActivity() {
         }
 
     }
+    override fun onResume() {
+        super.onResume()
+        // 로그인 상태가 변경되었는지 확인하고 UI 업데이트
+        updateLoginStatus()
+    }
+    private fun setupButtonListeners() {
+        // 로그인 버튼 클릭 리스너
+        binding.appBarMain.loginButton.setOnClickListener {
+            // 로그인 액티비티를 시작
+            val loginIntent = Intent(this, LoginActivity::class.java)
+            startActivity(loginIntent)
+        }
+
+        // 로그아웃 버튼 클릭 리스너
+        binding.appBarMain.logoutButton.setOnClickListener {
+            // SharedPreferences를 사용하여 로그인 정보를 제거하고 로그아웃 처리
+            SharedPreferencesHelper.clearLoginInfo(this)
+            isLoggedIn = false
+            updateButtonVisibility()
+            Toast.makeText(this, "로그아웃 되었습니다.", Toast.LENGTH_SHORT).show()
+            // 선택적으로 로그인 화면으로 이동하거나, 현재 액티비티를 새로고침 할 수 있습니다.
+        }
+    }
+
     // 0329 로그인 후 로그아웃 버튼 변경 설정
     // 로그인 상태에 따라 버튼 표시 변경 함수
     private fun updateButtonVisibility() {
-        if (isLoggedIn) {
-            // 로그인 상태일 때
-            binding.appBarMain.loginButton.visibility = View.GONE
-            binding.appBarMain.logoutButton.visibility = View.VISIBLE
-        } else {
-            // 로그아웃 상태일 때
-            binding.appBarMain.loginButton.visibility = View.VISIBLE
-            binding.appBarMain.logoutButton.visibility = View.GONE
-        }
+        binding.appBarMain.loginButton.visibility = if (isLoggedIn) View.GONE else View.VISIBLE
+        binding.appBarMain.logoutButton.visibility = if (isLoggedIn) View.VISIBLE else View.GONE
+    }
+
+    private fun updateLoginStatus() {
+        isLoggedIn = SharedPreferencesHelper.isLoggedIn(this)
+        updateButtonVisibility()
     }
     private fun loadCategoryMap() {
         ingrService.getAllCategories().enqueue(object : Callback<List<Category>> {

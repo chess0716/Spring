@@ -46,10 +46,12 @@ class LoginActivity : AppCompatActivity() {
             override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
                 if (response.isSuccessful && response.body() != null) {
                     val loginResponse = response.body()!!
+                    Log.d(TAG, "서버 응답 - 사용자 ID: ${loginResponse.userId}")
                     Log.d(TAG, "로그인 성공: ${loginResponse.message}")
 
 
-                    SharedPreferencesHelper.saveLoginInfo(applicationContext, loginResponse.userId, loginResponse.username, loginResponse.token)
+                    SharedPreferencesHelper.saveLoginInfo(applicationContext, loginResponse.userId.toLong(), loginResponse.username, loginResponse.token)
+
 
                     SharedPreferencesHelper.saveUsername(applicationContext, loginResponse.username)
                     SharedPreferencesHelper.saveUserId(applicationContext, loginResponse.userId)
