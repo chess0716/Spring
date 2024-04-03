@@ -28,7 +28,7 @@ import lombok.Setter;
 public class Board {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int num;
+    private Integer num;
     
     @ManyToOne
     private Category category;

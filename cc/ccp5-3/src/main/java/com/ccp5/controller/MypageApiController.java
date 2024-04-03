@@ -7,10 +7,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ccp5.dto.Board;
+import com.ccp5.dto.Favorite;
 import com.ccp5.dto.MypageDTO;
 import com.ccp5.service.MypageService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -62,10 +65,48 @@ public class MypageApiController {
     public ResponseEntity<?> getUserFavorites(@PathVariable Long userId) {
         return ResponseEntity.ok(mypageService.getUserFavorites(userId));
     }
+    // 클라이언트로부터 받은 찜하기 요청 처리
+    @PostMapping("/favorites")
+    public ResponseEntity<?> addFavorite(@RequestBody FavoriteRequest favoriteRequest) {
+        try {
+            // FavoriteRequest는 클라이언트로부터 username과 boardId를 받기 위한 DTO입니다.
+            // favoriteRequest 객체를 사용하여 username과 boardId를 서비스 메서드에 전달합니다.
+            Favorite favorite = mypageService.addFavorite(favoriteRequest.getUsername(), favoriteRequest.getBoardId());
+            return ResponseEntity.ok().body(favorite);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body("Failed to add favorite: " + e.getMessage());
+        }
+    }
 
     // 결제 요청이 온 게시글 목록 조회
     @GetMapping("/{userId}/payment-requests")
     public ResponseEntity<?> getPaymentRequests(@PathVariable Long userId) {
         return ResponseEntity.ok(mypageService.getPaymentRequests(userId));
+    }
+    
+    
+    
+    //FavoriteRequest DTO를 사용함으로써 클라이언트로부터 필요한 데이터(username, boardId)를
+    //	구조화된 형태로 효율적으로 전달받고 처리하는 것을 목적
+    private static class FavoriteRequest {
+        private String username;
+        private Integer boardId;
+
+        // Getter와 Setter
+        public String getUsername() {
+            return username;
+        }
+
+        public void setUsername(String username) {
+            this.username = username;
+        }
+
+        public Integer getBoardId() {
+            return boardId;
+        }
+
+        public void setBoardId(Integer boardId) {
+            this.boardId = boardId;
+        }
     }
 }

@@ -71,6 +71,7 @@ public class UserController {
             // 실제 사용 시에는 JWT 토큰을 생성하고 반환합니다.
             String fakeToken = "generated-token-placeholder";
             responseMap.put("token", fakeToken);
+            logger.info("Login successful for username: {}, userId: {}", username, userId);
 
             String jsonResponse = "";
             try {
@@ -101,6 +102,7 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(jsonResponse);
         }
     }
+
 
 
 

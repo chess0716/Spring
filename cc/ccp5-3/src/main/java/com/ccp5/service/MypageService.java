@@ -63,7 +63,17 @@ public class MypageService {
         if (user == null) return null;
         return favoriteRepository.findByUser(user);
     }
+    // 찜하기 저장
+    public Favorite addFavorite(String username, Integer boardId) {
+        User user = userRepository.findByUsername(username);
+        Board board = boardRepository.findById(boardId).orElseThrow(() -> new RuntimeException("Board not found"));
 
+        Favorite favorite = new Favorite();
+        favorite.setUser(user);
+        favorite.setBoard(board);
+
+        return favoriteRepository.save(favorite);
+    }
     // 결제 요청이 온 게시글 목록 조회
     public List<PaymentRequest> getPaymentRequests(Long userId) {
         User user = userRepository.findById(userId).orElse(null);
