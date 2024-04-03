@@ -1,26 +1,40 @@
-<!-- item_my_page_content.xml -->
+<?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <data>
-        <variable
-            name="board"
-            type="com.example.ccp.model.BoardDTO" />
-    </data>
-
-    <LinearLayout
+    <GridLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:columnCount="2"
+        android:rowCount="1"
+        android:padding="8dp">
 
-        <!-- Title TextView -->
-        <TextView
-            android:id="@+id/tvTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@{board.title}" />
+        <!-- 아이템 뷰 -->
+        <FrameLayout
+            android:layout_width="155dp"
+            android:layout_height="183dp"
+            android:layout_columnWeight="1">
 
-        <!-- Add other views for your item layout -->
+            <!-- 이미지를 표시할 ImageView -->
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:contentDescription="이미지 설명"
+                android:scaleType="centerCrop" />
 
-    </LinearLayout>
+            <!-- 제목을 표시할 TextView -->
+            <TextView
+                android:id="@+id/tvTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|top"
+                android:layout_marginTop="100dp"
+                android:textColor="@android:color/black"
+                android:textSize="24sp"
+                android:textStyle="bold" />
 
+        </FrameLayout>
+
+    </GridLayout>
 </layout>

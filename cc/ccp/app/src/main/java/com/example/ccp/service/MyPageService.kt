@@ -13,8 +13,8 @@ interface MyPageService {
     @GET("/api/my/mycontent")
     fun myContent(@Query("userId") userId: Long): Call<List<BoardDTO>>
 
-    @GET("/api/my/myHeartContent")
-    fun myHeartContent(@Query("userId") userId: Long): Call<List<Favorite>>
+    @GET("/api/mypage/{userId}/favorites")
+    fun getUserFavorites(@Path("userId") userId: Long): Call<List<BoardDTO>>
 
     @GET("/api/my/myPayment")
     fun myPayment(@Query("userId") userId: Long): Call<List<PaymentRequest>>

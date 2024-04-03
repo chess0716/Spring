@@ -19,6 +19,8 @@ import com.ccp5.service.MypageService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
+import jakarta.persistence.EntityNotFoundException;
+
 @RestController
 @RequestMapping("/api/mypage")
 public class MypageApiController {
@@ -60,11 +62,27 @@ public class MypageApiController {
     }
 
 
-    // 사용자가 찜한 게시글 목록 조회
     @GetMapping("/{userId}/favorites")
     public ResponseEntity<?> getUserFavorites(@PathVariable Long userId) {
-        return ResponseEntity.ok(mypageService.getUserFavorites(userId));
+        try {
+            List<Board> favoriteBoards = mypageService.getUserFavorites(userId);
+            // ObjectMapper를 사용하여 List<Board>을 JSON 문자열로 변환
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.registerModule(new JavaTimeModule());
+            String jsonResponse = objectMapper.writeValueAsString(favoriteBoards);
+            return ResponseEntity.ok(jsonResponse);
+        } catch (EntityNotFoundException e) {
+            // 사용자를 찾을 수 없는 경우
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        } catch (Exception e) {
+            // 그 외의 예외 발생 시
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("JSON processing error");
+        }
     }
+
+
+
     // 클라이언트로부터 받은 찜하기 요청 처리
     @PostMapping("/favorites")
     public ResponseEntity<?> addFavorite(@RequestBody FavoriteRequest favoriteRequest) {

@@ -1,9 +1,11 @@
 package com.example.ccp
 
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.ccp.databinding.ActivityMyPageBinding
+
 
 class MyPageActivity : AppCompatActivity() {
 
@@ -20,16 +22,19 @@ class MyPageActivity : AppCompatActivity() {
         binding.btnContent.setOnClickListener {
             // Content 버튼 클릭 시 MyPostsFragment로 교체
             replaceFragment(MyPostsFragment())
+            Log.d("MyPageActivity", "Content 버튼 클릭됨")
         }
 
         binding.btnHeart.setOnClickListener {
             // Heart 버튼 클릭 시 FavoritePostsFragment로 교체
             replaceFragment(FavoritePostsFragment())
+            Log.d("MyPageActivity", "Heart 버튼 클릭됨")
         }
 
         binding.btnMoney.setOnClickListener {
             // Money 버튼 클릭 시 PaymentHistoryFragment로 교체
             replaceFragment(PaymentHistoryFragment())
+            Log.d("MyPageActivity", "Money 버튼 클릭됨")
         }
     }
 
@@ -40,5 +45,6 @@ class MyPageActivity : AppCompatActivity() {
             addToBackStack(null)
             commit()
         }
+        Log.d("MyPageActivity", "프래그먼트 교체됨: $fragment")
     }
 }

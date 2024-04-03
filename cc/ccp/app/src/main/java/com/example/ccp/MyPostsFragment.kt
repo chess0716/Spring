@@ -81,16 +81,15 @@ class MyPostsFragment : Fragment() {
     // RecyclerView에 사용자 게시물을 표시하는 함수
     private fun displayUserPosts(posts: List<BoardDTO>) {
         // BoardAdapter 초기화 및 설정
-        adapter = BoardAdapter(requireContext(), posts, object : BoardAdapter.OnItemClickListener {
-            override fun onItemClick(num: Int) {
-                // 클릭된 항목의 동작 정의
-                // 예: 해당 게시물을 상세페이지로 이동
-            }
-        })
+        if (!::adapter.isInitialized) {
+            adapter = BoardAdapter(requireContext(), posts.toMutableList()) { num ->
 
-        // RecyclerView 설정
-        binding.recyclerViewMyPosts.layoutManager = LinearLayoutManager(requireContext())
-        binding.recyclerViewMyPosts.adapter = adapter
+            }
+            binding.recyclerViewMyPosts.layoutManager = LinearLayoutManager(requireContext())
+            binding.recyclerViewMyPosts.adapter = adapter
+        } else {
+            adapter.setData(posts) // 이 부분은 변경 없음
+        }
     }
 
     // Fragment의 뷰가 소멸될 때 호출되는 함수

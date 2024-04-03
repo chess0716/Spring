@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.ccp5.dto.Board;
+import com.ccp5.dto.Favorite;
 import com.ccp5.dto.User;
 
 @Repository
@@ -33,4 +34,7 @@ public interface BoardRepository extends JpaRepository<Board, Integer> {
     List<Board> findByCategoryId(Long categoryId);
     
     List<Board> findByWriter(User writer);
+    
+	
+    
 }

@@ -47,12 +47,7 @@ interface IngrService {
     @DELETE("/api/delete/{num}")
     fun deleteRecipe(@Path("num") num: Int, @Body requestBody: Map<String, String>): Call<Int>
 
-    @GET("/api/categories")
-    fun getAllCategories(): Call<List<Category>>
 
-    // 특정 카테고리에 속하는 게시물들을 가져오는 메서드
-    @GET("/api/category/{categoryId}")
-    fun getBoardsByCategory(@Path("categoryId") categoryId: Long): Call<List<BoardDTO>>
 
     @POST("/api/boards/updatePrice/{boardNum}")
     fun updatePrice(

@@ -89,7 +89,7 @@ class InsertActivity : AppCompatActivity() {
 
     }
     private fun loadRecipeCategories() {
-        RetrofitClient.ingrService.getAllCategories().enqueue(object : Callback<List<Category>> {
+        RetrofitClient.apiService.getAllCategories().enqueue(object : Callback<List<Category>> {
             override fun onResponse(call: Call<List<Category>>, response: Response<List<Category>>) {
                 if (response.isSuccessful) {
                     // 서버로부터 카테고리 목록 받아옴
@@ -194,38 +194,29 @@ class InsertActivity : AppCompatActivity() {
     }
 
     private fun addNewForm() {
-        // NewFormLayoutBinding 인스턴스 생성
         val newFormBinding = NewFormLayoutBinding.inflate(layoutInflater)
         binding.newFormsSection.addView(newFormBinding.root)
 
-        // 카테고리 스피너에 어댑터 설정
+        // 카테고리 스피너에 서버로부터 가져온 카테고리 목록을 설정
         loadCategoriesForNewForm(newFormBinding.spinnerCategory)
 
-        // 새 폼의 카테고리 스피너 선택 리스너 설정
-        newFormBinding.spinnerCategory.onItemSelectedListener =
-            object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(
-                    parent: AdapterView<*>,
-                    view: View,
-                    position: Int,
-                    id: Long
-                ) {
-                    // 기본값이 선택되면 아무 작업도 수행하지 않음
-                    if (position > 0) {
-                        val selectedCategory = parent.getItemAtPosition(position).toString()
-                        loadIngredientsForNewForm(selectedCategory, newFormBinding.spinnerName)
-                    }
-                }
-
-                override fun onNothingSelected(parent: AdapterView<*>) {
-                }
+        newFormBinding.spinnerCategory.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                val selectedCategory = parent.getItemAtPosition(position).toString()
+                // 선택된 카테고리에 따라 재료 목록 로드
+                loadIngredientsForNewForm(selectedCategory, newFormBinding.spinnerName)
             }
 
-        // 폼 제거 버튼 리스너 설정
+            override fun onNothingSelected(parent: AdapterView<*>) {}
+        }
+
+        // 폼 제거 버튼의 리스너 설정
         newFormBinding.btnRemoveForm.setOnClickListener {
             binding.newFormsSection.removeView(newFormBinding.root)
         }
     }
+
+
 
 
 

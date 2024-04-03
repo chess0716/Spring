@@ -10,9 +10,12 @@ import com.example.ccp.model.BoardDTO
 import com.example.ccp.databinding.ItemBoardBinding
 import com.squareup.picasso.Picasso
 
-class BoardAdapter(private val context: Context, private var boards: List<BoardDTO>, private val itemClickListener: OnItemClickListener? = null) : RecyclerView.Adapter<BoardAdapter.BoardViewHolder>() {
+class BoardAdapter(private val context: Context,
+                   private var boards: MutableList<BoardDTO>,
+                   private val itemClickListener: OnItemClickListener? = null)
+    : RecyclerView.Adapter<BoardAdapter.BoardViewHolder>() {
 
-    interface OnItemClickListener {
+    fun interface OnItemClickListener {
         fun onItemClick(num: Int)
     }
 
@@ -32,7 +35,7 @@ class BoardAdapter(private val context: Context, private var boards: List<BoardD
 
             // 이미지 URL에 타임스탬프 추가
             val imageUrl = board.imageUrl?.let {
-                "http://10.100.103.73:8005$it?timestamp=${System.currentTimeMillis()}" // 서버 주소와 이미지 경로 수정, 타임스탬프 추가
+                "http://211.220.34.225:8005$it?timestamp=${System.currentTimeMillis()}" // 서버 주소와 이미지 경로 수정, 타임스탬프 추가
             }
 
             if (!imageUrl.isNullOrEmpty()) {
@@ -71,7 +74,8 @@ class BoardAdapter(private val context: Context, private var boards: List<BoardD
     }
 
     fun setData(newBoards: List<BoardDTO>) {
-        boards = newBoards
+        boards.clear()
+        boards.addAll(newBoards)
         notifyDataSetChanged()
     }
 

@@ -22,7 +22,7 @@ interface UserService {
 
 
 data class LoginResponse(
-    @SerializedName("userId") val userId: Long,
+    @SerializedName("id") val userId: Long,
     @SerializedName("username") val username: String,
     @SerializedName("token") val token: String,
     @SerializedName("message") val message: String

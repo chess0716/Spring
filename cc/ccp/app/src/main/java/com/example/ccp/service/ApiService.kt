@@ -3,7 +3,6 @@ package com.example.ccp.service
 import com.example.ccp.model.BoardDTO
 import com.example.ccp.model.Category
 import com.example.ccp.model.IngrBoard
-
 import com.example.ccp.model.User
 import com.example.ccp.model.UserResponse
 import okhttp3.ResponseBody
@@ -14,6 +13,7 @@ import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
 import retrofit2.http.Url
+
 
 interface ApiService : UserService {
     @GET("/api/boards/list")
@@ -47,12 +47,13 @@ interface ApiService : UserService {
     @GET("api/categories")
     fun getAllCategories(): Call<List<Category>>
 
-    @GET("api/category/{id}")
-    fun getCategoryById(@Path("id") id: Long): Call<Category>
-
-
-
+    // 특정 카테고리에 속하는 게시물들을 가져오는 메서드
+    @GET("/api/category/{categoryId}/boards")
+    fun getBoardsByCategory(@Path("categoryId") categoryId: Long): Call<List<BoardDTO>>
 }
+
+
+
 data class UpdatePriceRequest(
     val ingredientName: String,
     val isOwned: Boolean

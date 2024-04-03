@@ -201,7 +201,7 @@ class MainActivity : AppCompatActivity() {
         updateButtonVisibility()
     }
     private fun loadCategoryMap() {
-        ingrService.getAllCategories().enqueue(object : Callback<List<Category>> {
+        apiService.getAllCategories().enqueue(object : Callback<List<Category>> {
             override fun onResponse(
                 call: Call<List<Category>>,
                 response: Response<List<Category>>
@@ -224,7 +224,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun loadBoardsByCategory(categoryId: Long) {
         Log.d("MainActivity", "Loading boards for category ID: $categoryId")
-        ingrService.getBoardsByCategory(categoryId).enqueue(object : Callback<List<BoardDTO>> {
+        apiService.getBoardsByCategory(categoryId).enqueue(object : Callback<List<BoardDTO>> {
             override fun onResponse(
                 call: Call<List<BoardDTO>>,
                 response: Response<List<BoardDTO>>
@@ -254,7 +254,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun initRecyclerView() {
         binding.recyclerViewBoards.layoutManager = GridLayoutManager(this, 2)
-        boardAdapter = BoardAdapter(this, emptyList(), object : BoardAdapter.OnItemClickListener {
+        boardAdapter = BoardAdapter(this, mutableListOf(), object : BoardAdapter.OnItemClickListener {
             override fun onItemClick(num: Int) {
                 val intent = Intent(this@MainActivity, DetailActivity::class.java)
                 intent.putExtra("board_id", num)

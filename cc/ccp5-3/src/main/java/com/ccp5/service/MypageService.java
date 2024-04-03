@@ -2,6 +2,7 @@ package com.ccp5.service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -58,11 +59,22 @@ public class MypageService {
     }
 
     // 사용자가 찜한 게시글 목록 조회
-    public List<Favorite> getUserFavorites(Long userId) {
-        User user = userRepository.findById(userId).orElse(null);
-        if (user == null) return null;
-        return favoriteRepository.findByUser(user);
+    public List<Board> getUserFavorites(Long userId) {
+        // 사용자 ID를 기반으로 해당 사용자를 조회
+        User user = userRepository.findById(userId)
+                                  .orElseThrow(() -> new EntityNotFoundException("User not found"));
+        
+        // 사용자 객체를 이용하여 해당 사용자가 찜한 favorite 목록을 조회
+        List<Favorite> favorites = favoriteRepository.findByUser(user);
+        
+        // 조회된 favorite 목록에서 게시글을 추출하여 리스트에 담음
+        List<Board> favoriteBoards = favorites.stream()
+                                              .map(Favorite::getBoard)
+                                              .collect(Collectors.toList());
+        
+        return favoriteBoards;
     }
+
     // 찜하기 저장
     public Favorite addFavorite(String username, Integer boardId) {
         User user = userRepository.findByUsername(username);
