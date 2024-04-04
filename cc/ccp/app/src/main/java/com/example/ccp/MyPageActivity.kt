@@ -7,18 +7,19 @@ import androidx.fragment.app.Fragment
 import com.example.ccp.databinding.ActivityMyPageBinding
 
 
-class MyPageActivity : AppCompatActivity() {
+class MyPageActivity : BaseActivity() {
 
     private lateinit var binding: ActivityMyPageBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         binding = ActivityMyPageBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         // 처음에는 MyPostsFragment를 표시
         replaceFragment(MyPostsFragment())
-
+        setupToolbar()
         binding.btnContent.setOnClickListener {
             // Content 버튼 클릭 시 MyPostsFragment로 교체
             replaceFragment(MyPostsFragment())

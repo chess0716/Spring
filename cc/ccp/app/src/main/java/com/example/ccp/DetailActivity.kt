@@ -28,17 +28,20 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class DetailActivity : AppCompatActivity() {
+class DetailActivity : BaseActivity() {
     private lateinit var binding: ActivityDetailBinding
     private lateinit var apiService: ApiService
     private var totalPrice: Int = 0
     private val boards = mutableListOf<IngrBoard>()
     private var boardNum: Int = -1 // 보드 번호 추가
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        setupToolbar()
 
         apiService = RetrofitClient.apiService
 

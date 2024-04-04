@@ -15,7 +15,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.io.IOException
 
-class JoinActivity : AppCompatActivity() {
+class JoinActivity : BaseActivity() {
 
     private lateinit var userService: UserService
     private lateinit var binding: ActivityJoinBinding
@@ -23,12 +23,14 @@ class JoinActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+
+
         binding = ActivityJoinBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         // UserService 초기화
         userService = RetrofitClient.apiService
-
+        setupToolbar()
         // 회원가입 버튼 클릭 이벤트 처리
         binding.btnJoin.setOnClickListener {
             val username = binding.etIDJoin.text.toString()

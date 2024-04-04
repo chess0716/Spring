@@ -38,7 +38,7 @@ import retrofit2.Response
 import java.io.File
 import java.io.IOException
 
-class InsertActivity : AppCompatActivity() {
+class InsertActivity : BaseActivity() {
 
     private lateinit var binding: ActivityInsertBinding
     private var imageUrl: Uri? = null
@@ -49,6 +49,8 @@ class InsertActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityInsertBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        setupToolbar()
 
         getContent = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
             uri?.let { uploadImage(it) }

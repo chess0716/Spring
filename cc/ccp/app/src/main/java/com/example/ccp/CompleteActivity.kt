@@ -6,13 +6,13 @@ import android.os.Bundle
 import android.widget.Toast
 import com.example.ccp.databinding.ActivityCompleteBinding
 
-class CompleteActivity : AppCompatActivity() {
+class CompleteActivity : BaseActivity() {
 
     private lateinit var binding: ActivityCompleteBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        setupToolbar()
         binding = ActivityCompleteBinding.inflate(layoutInflater)
         setContentView(binding.root)
 

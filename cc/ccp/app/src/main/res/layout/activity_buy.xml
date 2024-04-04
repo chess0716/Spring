@@ -8,6 +8,9 @@
     android:orientation="vertical"
     tools:context=".BuyActivity">
 
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar_layout"/>
 
     <TextView
         android:id="@+id/Tv_Buy"
