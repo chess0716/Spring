@@ -15,8 +15,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import lombok.Data;
 
 @Entity (name="tbl_comment4")
+@Data
 public class CommentDTO {
 
     @Id
@@ -27,7 +29,8 @@ public class CommentDTO {
     @JoinColumn(name="userId")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private User writer;
-    
+    @Column(name="username", nullable=true)
+    private String username;
     private String content;
     
     @CreationTimestamp

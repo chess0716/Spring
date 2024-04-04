@@ -17,6 +17,7 @@ import com.example.ccp.model.CommentDTO
 import com.example.ccp.model.IngrBoard
 import com.example.ccp.model.User
 import com.example.ccp.service.ApiService
+import com.example.ccp.service.CommentService
 import com.example.ccp.service.FavoriteRequest
 import com.example.ccp.service.UpdatePriceRequest
 import com.example.ccp.util.RetrofitClient
@@ -84,17 +85,16 @@ class DetailActivity : AppCompatActivity() {
         val inputComment: EditText = findViewById(R.id.inputComment)
 
         // 댓글 작성 버튼 클릭 이벤트 처리
+
         addCommentButton.setOnClickListener {
             val commentContent = inputComment.text.toString().trim()
             if (commentContent.isNotEmpty()) {
-                // 댓글 내용이 비어 있지 않은 경우에만 서버로 전송
-                if (username != null) {
-                    addCommentToServer(commentContent, num, username)
-                }
+                // SharedPreferences에서 사용자 이름 가져오기
+                val username = SharedPreferencesHelper.getUsername(this) ?: "Unknown"
+                addCommentToServer(commentContent, num, username)
             }
             inputComment.text = null
         }
-
 
 
         binding.checkLike.setOnCheckedChangeListener { _, isChecked ->
@@ -178,72 +178,49 @@ class DetailActivity : AppCompatActivity() {
         })
     }
 
-    // 서버로 댓글 추가 요청을 보내는 함수
-    private fun addCommentToServer(commentContent: String, boardNum: Int, username: String) {
-        // 게시글 번호를 사용하여 게시글 정보를 가져오기
-        val board = apiService.getBoardByNum(boardNum)
-        board?.enqueue(object : Callback<BoardDTO?> {
-            override fun onResponse(call: Call<BoardDTO?>, response: Response<BoardDTO?>) {
-                val boardData = response.body()
-                if (boardData != null) {
-                    // 댓글 작성 시 필요한 데이터 생성 (예: 작성자 이름, 내용)
-                    val commentDTO = CommentDTO(
-                        writerUsername = username, // 사용자명이 없을 경우 기본값으로 설정
-                        content = commentContent,
-                        boardBnum = boardData.num
-                    )
-                    Log.d("commnetDTO출력", "$commentDTO")
-                    // 서버로 댓글 추가 요청 보내기
-                    commentService.addComments(commentDTO, boardNum, username)
-                        .enqueue(object : Callback<Void> {
-                            override fun onResponse(call: Call<Void>, response: Response<Void>) {
-                                if (response.isSuccessful) {
-                                    // 성공적으로 댓글이 서버에 추가된 경우
-                                    // 필요한 작업 수행 (예: 성공 메시지 표시, 화면 갱신 등)
-                                    Log.d("comment", commentDTO.toString())
-                                    Log.d("DetailActivity", "댓글이 성공적으로 추가되었습니다.")
-                                    loadComments(boardNum)
-                                    // 예시: 댓글 추가 후 화면을 갱신하거나 다른 작업 수행
-                                } else {
-                                    // 서버로부터 실패 응답을 받은 경우
-                                    // 오류 처리 (예: 실패 메시지 표시)
-                                    Log.e("DetailActivity", "댓글 추가 실패: ${response.message()}")
-                                }
-                            }
+    private fun addCommentToServer(content: String, boardNum: Int, username: String) {
+        // 댓글 작성 시 필요한 데이터 생성
+        val commentDTO = CommentDTO(
+            username = username,
+            content = content,
+            boardBnum = boardNum
+        )
 
-                            override fun onFailure(call: Call<Void>, t: Throwable) {
-                                // 통신 실패 시의 처리
-                                // 오류 처리 (예: 네트워크 오류 메시지 표시)
-                                Log.e("DetailActivity", "댓글 추가 실패: ${t.message}")
-                            }
-                        })
+        // 서버로 댓글 추가 요청 보내기
+        commentService.addComments(commentDTO, boardNum, username).enqueue(object : Callback<Void> {
+            override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                if (response.isSuccessful) {
+                    // 성공적으로 댓글이 서버에 추가된 경우
+                    Log.d("DetailActivity", "댓글이 성공적으로 추가되었습니다.")
+                    loadComments(boardNum)
                 } else {
-                    Log.e("DetailActivity", "Failed to load board data")
+                    // 서버로부터 실패 응답을 받은 경우
+                    Log.e("DetailActivity", "댓글 추가 실패: ${response.message()}")
                 }
             }
 
-            override fun onFailure(call: Call<BoardDTO?>, t: Throwable) {
-                Log.e("DetailActivity", "Failed to load board data: ${t.message}")
+            override fun onFailure(call: Call<Void>, t: Throwable) {
+                // 통신 실패 시의 처리
+                Log.e("DetailActivity", "댓글 추가 실패: ${t.message}")
             }
         })
     }
 
-    // 댓글창 불러오기
     private fun loadComments(boardNum: Int) {
+        val currentUser = SharedPreferencesHelper.getUsername(applicationContext) // 현재 사용자 이름 가져오기
+
         commentService.getAllComments(boardNum).enqueue(object : Callback<List<CommentDTO>> {
-            override fun onResponse(
-                call: Call<List<CommentDTO>>,
-                response: Response<List<CommentDTO>>
-            ) {
+            override fun onResponse(call: Call<List<CommentDTO>>, response: Response<List<CommentDTO>>) {
                 val comments = response.body()
                 if (comments != null) {
                     for (comment in comments) {
-                        val writer = comment.writerUsername ?: "Unknown"
+                        val writer = comment.username ?: "Unknown"
                         val time = comment.regdate.toString() // LocalDateTime을 String으로 변환
                         val content = comment.content
-                        Log.d("comments", "$writer//$content//$time")
-                        displayComments(comments)
+                        // 현재 사용자 이름과 함께 댓글 정보 로그에 출력
+                        Log.d("comments", "CurrentUser: $currentUser, Writer: $writer, Content: $content, Time: $time")
                     }
+                    displayComments(comments) // 댓글 표시 함수 호출
                 } else {
                     Log.e("CommentList", "작성된 댓글이 없거나 댓글을 불러오지 못했습니다.")
                 }
@@ -254,6 +231,7 @@ class DetailActivity : AppCompatActivity() {
             }
         })
     }
+
 
     // 댓글창 불러오기
     private fun displayComments(comment: List<CommentDTO>) {
@@ -269,6 +247,6 @@ class DetailActivity : AppCompatActivity() {
         val webView = binding.webviewDetail
         webView.settings.javaScriptEnabled = true // JavaScript 활성화
         webView.webViewClient = WebViewClient()
-        webView.loadUrl("http://211.220.34.225:8005/ingredient/$num") // 해당 URL 로드
+        webView.loadUrl("http://10.100.103.73:8005/ingredient/$num") // 해당 URL 로드
     }
 }

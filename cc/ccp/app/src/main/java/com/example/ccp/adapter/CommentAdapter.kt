@@ -48,8 +48,8 @@ class CommentAdapter(
         private val editText: EditText = commentView.findViewById(R.id.editComment)
 
         fun bind(comment: CommentDTO) {
-            commentWriterTextView.text = comment.writerUsername
-            Log.d("comment.writerUsername","${comment.writerUsername}")
+            commentWriterTextView.text = "작성자명: ${comment.username ?: "알 수 없음"}" // 수정된 부분
+            Log.d("comment.username", "${comment.username}") // 수정된 부분
             Log.d("commentWriterTextView","${commentWriterTextView.text}")
             commentContentTextView.text = comment.content
             Log.d("commentContentTextView","${commentContentTextView.text}")

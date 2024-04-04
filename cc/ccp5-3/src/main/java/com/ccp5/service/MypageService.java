@@ -86,11 +86,21 @@ public class MypageService {
 
         return favoriteRepository.save(favorite);
     }
-    // 결제 요청이 온 게시글 목록 조회
-    public List<PaymentRequest> getPaymentRequests(Long userId) {
-        User user = userRepository.findById(userId).orElse(null);
-        if (user == null) return null;
-        return paymentRequestRepository.findByUser(user);
+ // 결제 요청이 온 게시글 목록 조회
+    public List<Board> getPaymentRequests(Long userId) {
+        // 사용자 ID를 기반으로 해당 사용자를 조회
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+
+        // 사용자 객체를 이용하여 해당 사용자의 결제 요청 목록을 조회
+        List<PaymentRequest> paymentRequests = paymentRequestRepository.findByUser(user);
+
+        // 조회된 결제 요청 목록에서 게시글을 추출하여 리스트에 담음
+        List<Board> paymentBoards = paymentRequests.stream()
+                .map(PaymentRequest::getBoard)
+                .collect(Collectors.toList());
+
+        return paymentBoards;
     }
     
 }

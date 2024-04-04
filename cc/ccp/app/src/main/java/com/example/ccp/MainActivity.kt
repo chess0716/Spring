@@ -72,7 +72,7 @@ class MainActivity : AppCompatActivity() {
 
 
         binding.appBarMain.fab.setOnClickListener { view ->
-            Toast.makeText(this@MainActivity, "FAB Clicked", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@MainActivity, "레시피 등록 클릭", Toast.LENGTH_SHORT).show()
             val intent = Intent(this@MainActivity, InsertActivity::class.java)
             startActivity(intent)
         }

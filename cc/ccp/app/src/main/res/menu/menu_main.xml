@@ -12,8 +12,5 @@
         android:title="Request"
         app:showAsAction="never"
         />
-    <item
-        android:id="@+id/menu_my_page_posts"
-        android:title="마이 페이지 포스트"
-        app:showAsAction="never" />
+
 </menu>

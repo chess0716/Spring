@@ -1,5 +1,6 @@
 package com.example.ccp
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -85,40 +86,28 @@ class JoinActivity : AppCompatActivity() {
 
     private fun joinUser(newUser: User) {
         userService.join(newUser)?.enqueue(object : Callback<UserResponse?> {
-            override fun onResponse(call: Call<UserResponse?>?, response: Response<UserResponse?>) {
+            override fun onResponse(call: Call<UserResponse?>, response: Response<UserResponse?>) {
                 if (response.isSuccessful) {
-                    val userResponse = response.body()
-                    if (userResponse != null && userResponse.isSuccess()) {
-                        // 회원가입 성공
-                        Toast.makeText(this@JoinActivity, "회원가입에 성공했습니다.", Toast.LENGTH_SHORT)
-                            .show()
-                        finish() // 회원가입 액티비티 종료
-                    } else {
-                        // 회원가입 실패
-                        Toast.makeText(this@JoinActivity, "회원가입에 실패했습니다.", Toast.LENGTH_SHORT)
-                            .show()
-                    }
+                    // 회원가입 성공
+                    Toast.makeText(this@JoinActivity, "회원가입에 성공했습니다.", Toast.LENGTH_SHORT).show()
+
+                    // 메인 액티비티로 이동
+                    val intent = Intent(this@JoinActivity, MainActivity::class.java)
+                    startActivity(intent)
+                    finish() // 현재 액티비티 종료하여 메인 화면으로 이동
                 } else {
-                    // 서버로부터 응답을 받지 못한 경우
-                    try {
-                        val errorBody = response.errorBody()
-                        if (errorBody != null) {
-                            val errorMessage = errorBody.string()
-                            Log.e("JoinActivity", "onResponse: $errorMessage")
-                            Toast.makeText(this@JoinActivity, errorMessage, Toast.LENGTH_SHORT)
-                                .show()
-                        }
-                    } catch (e: IOException) {
-                        e.printStackTrace()
-                    }
+                    // 서버로부터 응답을 받지 못한 경우의 처리
+                    val errorMessage = response.errorBody()?.string()
+                    Log.e("JoinActivity", "onResponse: $errorMessage")
+                    Toast.makeText(this@JoinActivity, "회원가입에 실패했습니다. 에러 메시지: $errorMessage", Toast.LENGTH_SHORT).show()
                 }
             }
 
             override fun onFailure(call: Call<UserResponse?>, t: Throwable) {
-                runOnUiThread {
-                    Toast.makeText(applicationContext, "네트워크 오류", Toast.LENGTH_SHORT).show()
-                }
+                // 네트워크 오류 등의 경우의 처리
+                Toast.makeText(applicationContext, "네트워크 오류: ${t.message}", Toast.LENGTH_SHORT).show()
             }
         })
     }
+
 }

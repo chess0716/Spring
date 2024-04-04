@@ -96,12 +96,26 @@ public class MypageApiController {
         }
     }
 
+  
     // 결제 요청이 온 게시글 목록 조회
     @GetMapping("/{userId}/payment-requests")
     public ResponseEntity<?> getPaymentRequests(@PathVariable Long userId) {
-        return ResponseEntity.ok(mypageService.getPaymentRequests(userId));
+        try {
+            List<Board> paymentBoards = mypageService.getPaymentRequests(userId);
+            // ObjectMapper를 사용하여 List<Board>을 JSON 문자열로 변환
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.registerModule(new JavaTimeModule());
+            String jsonResponse = objectMapper.writeValueAsString(paymentBoards);
+            return ResponseEntity.ok(jsonResponse);
+        } catch (EntityNotFoundException e) {
+            // 사용자를 찾을 수 없는 경우
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        } catch (Exception e) {
+            // 그 외의 예외 발생 시
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("JSON processing error");
+        }
     }
-    
     
     
     //FavoriteRequest DTO를 사용함으로써 클라이언트로부터 필요한 데이터(username, boardId)를

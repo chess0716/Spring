@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.ccp.adapter.BoardAdapter
 import com.example.ccp.databinding.FragmentFavoritePostsBinding
@@ -72,16 +73,14 @@ class FavoritePostsFragment : Fragment() {
 
     // RecyclerView에 사용자가 찜한 게시물을 표시하는 함수
     private fun displayFavoritePosts(posts: List<BoardDTO>) {
-        Log.d("FavoritePostsFragment", "Displaying favorite posts in RecyclerView. Posts count: ${posts.size}")
+        // BoardAdapter 초기화 및 설정
         if (!::adapter.isInitialized) {
-            Log.d("FavoritePostsFragment", "Initializing adapter for the first time.")
             adapter = BoardAdapter(requireContext(), posts.toMutableList()) { num ->
-                // 항목 클릭 시 수행할 동작
+
             }
-            binding.recyclerViewFavorite.layoutManager = LinearLayoutManager(requireContext())
+            binding.recyclerViewFavorite.layoutManager = GridLayoutManager(requireContext(), 2) // grid 2로 변경
             binding.recyclerViewFavorite.adapter = adapter
         } else {
-            Log.d("FavoritePostsFragment", "Adapter already initialized. Updating data.")
             adapter.setData(posts) // 이 부분은 변경 없음
         }
     }

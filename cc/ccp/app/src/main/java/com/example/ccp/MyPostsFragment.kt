@@ -7,10 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.ccp.adapter.BoardAdapter
 import com.example.ccp.adapter.MyPageAdapter
 import com.example.ccp.databinding.FragmentMyPostsBinding
+
 import com.example.ccp.model.BoardDTO
 import com.example.ccp.service.ApiService
 import com.example.ccp.service.MyPageService
@@ -78,19 +80,21 @@ class MyPostsFragment : Fragment() {
         })
     }
 
-    // RecyclerView에 사용자 게시물을 표시하는 함수
+
+
     private fun displayUserPosts(posts: List<BoardDTO>) {
         // BoardAdapter 초기화 및 설정
         if (!::adapter.isInitialized) {
             adapter = BoardAdapter(requireContext(), posts.toMutableList()) { num ->
 
             }
-            binding.recyclerViewMyPosts.layoutManager = LinearLayoutManager(requireContext())
+            binding.recyclerViewMyPosts.layoutManager = GridLayoutManager(requireContext(), 2) // grid 2로 변경
             binding.recyclerViewMyPosts.adapter = adapter
         } else {
             adapter.setData(posts) // 이 부분은 변경 없음
         }
     }
+
 
     // Fragment의 뷰가 소멸될 때 호출되는 함수
     override fun onDestroyView() {

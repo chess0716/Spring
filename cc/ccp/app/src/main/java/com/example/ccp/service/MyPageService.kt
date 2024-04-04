@@ -37,6 +37,9 @@ interface MyPageService {
     fun addFavorite(@Body favoriteRequest: FavoriteRequest): Call<Void> // or Call<FavoriteResponse> if the server sends a response
 
 
+    // 사용자의 결제내역 조회
+    @GET("/api/mypage/{userId}/payment-requests")
+    fun getPaymentRequests(@Path("userId") userId: Long): Call<List<BoardDTO>>
 
 }
 data class FavoriteRequest(

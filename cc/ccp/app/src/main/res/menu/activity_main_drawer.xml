@@ -7,7 +7,7 @@
         <item
             android:id="@+id/nav_category1"
             android:icon="@drawable/ic_menu_camera"
-            android:title="찜/찌개" />
+            android:title="밥류" />
         <item
             android:id="@+id/nav_category2"
             android:icon="@drawable/ic_menu_gallery"
@@ -15,6 +15,6 @@
         <item
             android:id="@+id/nav_category3"
             android:icon="@drawable/ic_menu_slideshow"
-            android:title="밥류" />
+            android:title="반찬류" />
     </group>
 </menu>

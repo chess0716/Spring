@@ -48,20 +48,24 @@ public class CommentApiController {
 		}
 	}
 
-	// 댓글 작성
+
+	//댓글작성
+
 	@PostMapping
 	public ResponseEntity<CommentDTO> createComment(@RequestBody CommentDTO comment,
-			@RequestParam("boardNum") int boardNum, @RequestParam("username") String username) {
-		Board board = boardRepository.findByNum(boardNum);
-		User user = userRepository.findByUsername(username);
-		if (board == null) {
-			return ResponseEntity.notFound().build(); // 해당 boardNum에 해당하는 게시글을 찾을 수 없을 경우, 404 응답 반환
-		}
-		comment.setBoard(board);
-		comment.setWriter(user);
-		commentService.createComment(comment);
-		return ResponseEntity.status(HttpStatus.CREATED).body(comment);
+	        @RequestParam("boardNum") int boardNum, @RequestParam("username") String username) {
+	    Board board = boardRepository.findByNum(boardNum);
+	    User user = userRepository.findByUsername(username);
+	    if (board == null || user == null) {
+	        return ResponseEntity.notFound().build();
+	    }
+	    comment.setBoard(board);
+	    comment.setWriter(user);
+	    comment.setUsername(user.getName()); // 유저의 이름을 CommentDTO에 설정
+	    commentService.createComment(comment);
+	    return ResponseEntity.status(HttpStatus.CREATED).body(comment);
 	}
+
 
 	// 댓글 수정
 	@PutMapping("/{cnum}")
