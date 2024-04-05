@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.ccp.databinding.ActivityMyPageBinding
+import com.example.ccp.util.SharedPreferencesHelper
 
 
 class MyPageActivity : BaseActivity() {
@@ -20,6 +21,11 @@ class MyPageActivity : BaseActivity() {
         // 처음에는 MyPostsFragment를 표시
         replaceFragment(MyPostsFragment())
         setupToolbar()
+        // 사용자 아이디 가져오기
+        val userId = SharedPreferencesHelper.getUsername(this)
+
+        // 가져온 아이디를 TextView에 설정
+        binding.MyName.text = userId.toString()
         binding.btnContent.setOnClickListener {
             // Content 버튼 클릭 시 MyPostsFragment로 교체
             replaceFragment(MyPostsFragment())

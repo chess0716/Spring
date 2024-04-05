@@ -3,12 +3,14 @@ package com.example.ccp
 
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -29,6 +31,7 @@ import com.example.ccp.service.ApiService
 import com.example.ccp.util.RetrofitClient
 import com.example.ccp.util.RetrofitClient.ingrService
 import com.example.ccp.util.SharedPreferencesHelper
+import com.example.ex03sqlite.util.hideKeyboard
 import com.google.android.material.navigation.NavigationView
 import retrofit2.Call
 import retrofit2.Callback
@@ -64,7 +67,7 @@ class MainActivity : AppCompatActivity() {
         // 로그인 상태 확인 및 UI 업데이트
         updateLoginStatus()
         setupButtonListeners()
-
+        hideKeyboard(activity = this)
 
 
 
@@ -326,4 +329,5 @@ class MainActivity : AppCompatActivity() {
             Log.e("MainActivity", "EditTextSearch is null")
         }
     }
+
 }

@@ -7,6 +7,7 @@ import android.util.Log
 import android.webkit.WebViewClient
 import android.widget.Button
 import android.widget.EditText
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.ccp.adapter.CommentAdapter
@@ -74,11 +75,23 @@ class DetailActivity : BaseActivity() {
         binding.btnDeleteDatail.setOnClickListener {
             val intent = Intent(this@DetailActivity, MainActivity::class.java)
             // 댓글 삭제 함수 실행
-            if (num != -1) {
-                deleteDetail(num)
+            // 경고창 띄우기
+            val alertDialogBuilder = AlertDialog.Builder(this@DetailActivity)
+            alertDialogBuilder.setMessage("게시글을을 삭제하시겠습니까?")
+            alertDialogBuilder.setPositiveButton("삭제") { _, _ ->
+                // 확인 버튼을 누르면 삭제 함수 호출
+                if (num != -1) {
+                    deleteDetail(num)
+                    // 게시글 삭제 후 메인 액티비티로 이동
+                    startActivity(intent)
+                }
             }
-            // 댓글 삭제 후 메인 액티비티로 이동
-            startActivity(intent)
+            alertDialogBuilder.setNegativeButton("취소") { dialog, _ ->
+                // 취소 버튼을 누르면 아무런 동작도 하지 않음
+                dialog.dismiss()
+            }
+            val alertDialog = alertDialogBuilder.create()
+            alertDialog.show()
         }
         // 뒤로가기
         binding.btnBack.setOnClickListener { finish() }
