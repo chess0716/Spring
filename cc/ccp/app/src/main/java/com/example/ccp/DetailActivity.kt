@@ -33,7 +33,7 @@ class DetailActivity : BaseActivity() {
     private lateinit var apiService: ApiService
     private var totalPrice: Int = 0
     private val boards = mutableListOf<IngrBoard>()
-    private var boardNum: Int = -1 // 보드 번호 추가
+    private var num: Int = -1 // 보드 번호 추가
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -105,7 +105,7 @@ class DetailActivity : BaseActivity() {
                 // 찜하기를 체크한 경우
                 val username = SharedPreferencesHelper.getUsername(applicationContext)
                 if (username != null) {
-                    val favoriteRequest = FavoriteRequest(username = username, boardId = boardNum)
+                    val favoriteRequest = FavoriteRequest(username = username, boardId = num)
                     myPageService.addFavorite(favoriteRequest).enqueue(object : Callback<Void> {
                         override fun onResponse(call: Call<Void>, response: Response<Void>) {
                             if (response.isSuccessful) {
@@ -163,20 +163,47 @@ class DetailActivity : BaseActivity() {
         binding.detailContent.text = Editable.Factory.getInstance().newEditable(content)
     }
 
-    // 작성글을 삭제
+    // 2024.04.05 작성글을 삭제
     private fun deleteDetail(num: Int) {
+        // 게시글을 가져오는 요청
         val board: Call<BoardDTO> = apiService.getBoardByNum(num)
-        board?.enqueue(object : Callback<BoardDTO> {
+        board.enqueue(object : Callback<BoardDTO> {
             override fun onResponse(call: Call<BoardDTO>, response: Response<BoardDTO>) {
-                val boardData: BoardDTO? = response.body()
-                Log.d("게시글 삭제 과정", "$boardData")
-                if (boardData != null){
-//                    apiService.
+                if (response.isSuccessful) {
+                    val boardData: BoardDTO? = response.body()
+                    Log.d("게시글 삭제 과정", "$boardData")
+                    // 게시글을 가져온 후 삭제 요청
+                    if (boardData != null) {
+                        val deleteCall: Call<Void> = apiService.deleteBoard(num, boardData.title)
+                        deleteCall.enqueue(object : Callback<Void> {
+                            override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                                if (response.isSuccessful) {
+                                    // 게시글 삭제 성공
+                                    Log.d("게시글 삭제", "게시글이 성공적으로 삭제되었습니다.")
+                                } else {
+                                    // 게시글 삭제 실패
+                                    Log.e("게시글 삭제", "게시글 삭제에 실패했습니다.")
+                                }
+                            }
+
+                            override fun onFailure(call: Call<Void>, t: Throwable) {
+                                // 통신 실패
+                                Log.e("게시글 삭제", "통신 실패: ${t.message}")
+                            }
+                        })
+                    } else {
+                        // 가져온 게시글이 null인 경우
+                        Log.e("게시글 삭제", "게시글이 존재하지 않습니다.")
+                    }
+                } else {
+                    // 서버 응답이 실패인 경우
+                    Log.e("게시글 삭제", "게시글 가져오기 실패: ${response.code()}")
                 }
             }
 
             override fun onFailure(call: Call<BoardDTO>, t: Throwable) {
-                TODO("Not yet implemented")
+                // 통신 실패
+                Log.e("게시글 삭제", "통신 실패: ${t.message}")
             }
         })
     }

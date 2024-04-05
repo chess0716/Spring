@@ -20,14 +20,17 @@
         android:textSize="60sp"
         android:textStyle="bold"
         android:layout_marginTop="60dp"
-        android:layout_marginBottom="40dp"
+        android:layout_marginBottom="30dp"
         android:textAlignment="center" />
 
+    <!-- 아이디 입력란 -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginBottom="50dp">
+        android:layout_marginBottom="50dp"
+        android:layout_margin="30dp"
+        android:background="@drawable/edit_text_bg">
 
         <TextView
             android:id="@+id/tvID_join"
@@ -48,11 +51,14 @@
             android:text="" />
     </LinearLayout>
 
+    <!-- 이름 입력란 -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginBottom="50dp">
+        android:layout_marginBottom="20dp"
+        android:layout_margin="30dp"
+        android:background="@drawable/edit_text_bg">
 
         <TextView
             android:id="@+id/tvName_join"
@@ -74,12 +80,14 @@
 
     </LinearLayout>
 
+    <!-- 이메일 입력란 -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
         android:orientation="horizontal"
-        android:layout_marginBottom="50dp">
+        android:layout_marginBottom="20dp"
+        android:layout_margin="30dp"
+        android:background="@drawable/edit_text_bg">
 
         <TextView
             android:id="@+id/tvEmail_join"
@@ -100,11 +108,14 @@
             android:text="" />
     </LinearLayout>
 
+    <!-- 비밀번호 입력란 -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginBottom="40dp">
+        android:layout_marginBottom="40dp"
+        android:layout_margin="30dp"
+        android:background="@drawable/edit_text_bg">
 
         <TextView
             android:id="@+id/tvPW_join"
@@ -112,7 +123,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Password"
-            android:textSize="30sp"
+            android:textSize="27sp"
             android:textStyle="italic"/>
 
         <EditText
@@ -125,11 +136,13 @@
             android:text="" />
     </LinearLayout>
 
+    <!-- 회원가입 버튼 -->
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:orientation="horizontal"
+        android:layout_marginRight="20dp"
         android:layout_gravity="right">
 
         <Button

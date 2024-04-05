@@ -33,14 +33,23 @@
             android:scaleType="centerCrop"
             android:src="@drawable/display"
             tools:ignore="NotSibling" />
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_below="@id/imageView"
+
+            android:scaleType="centerCrop"
+            android:src="@drawable/img2" />
 
         <EditText
             android:id="@+id/editTextSearch"
             android:layout_width="317dp"
             android:layout_height="wrap_content"
-            android:layout_below="@id/imageView"
+            android:layout_below="@id/imageView2"
             android:layout_margin="20dp"
             android:layout_marginTop="30dp"
+
             android:hint="검색어를 입력하세요"
             android:padding="16dp" />
 
@@ -61,7 +70,7 @@
             android:id="@+id/recyclerViewBoards"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/editTextSearch"
+            android:layout_below="@id/btnSearch"
             android:layout_marginTop="20dp"
             android:padding="16dp" />
 

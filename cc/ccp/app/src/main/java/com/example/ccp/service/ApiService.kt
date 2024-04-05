@@ -8,6 +8,7 @@ import com.example.ccp.model.UserResponse
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
@@ -22,6 +23,9 @@ interface ApiService : UserService {
     @GET
     fun getImage(@Url imageUrl: String): Call<ResponseBody>
 
+    // 2024.04.05 게시글 삭제
+    @DELETE("/api/delete/{num}")
+    fun deleteBoard(@Path("num") num: Int, @Query("title") title: String): Call<Void>
     @GET("/api/boards/{num}")
     fun getBoardByNum(@Path("num") num: Int): Call<BoardDTO>
 

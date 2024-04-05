@@ -71,6 +71,7 @@ class MainActivity : AppCompatActivity() {
 
 
 
+
         binding.appBarMain.fab.setOnClickListener { view ->
             Toast.makeText(this@MainActivity, "레시피 등록 클릭", Toast.LENGTH_SHORT).show()
             val intent = Intent(this@MainActivity, InsertActivity::class.java)
@@ -105,7 +106,7 @@ class MainActivity : AppCompatActivity() {
             when (menuItem.itemId) {
                 R.id.nav_category1 -> {
                     // 예: 카테고리 이름이 "찜/찌개"인 경우
-                    val categoryId = categoryMap["찜/찌개"]
+                    val categoryId = categoryMap["밥류"]
                     categoryId?.let {
                         loadBoardsByCategory(it)
 
@@ -113,21 +114,31 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
                 R.id.nav_category2 -> {
-                    // 카테고리 이름이 "면류"인 경우
+
                     val categoryId = categoryMap["면류"]
                     categoryId?.let {
                         loadBoardsByCategory(it)
                     }
                     true
                 }
-                // 다른 카테고리에 대한 처리...
+                R.id.nav_category3 -> {
+
+                    val categoryId = categoryMap["반찬류"]
+                    categoryId?.let {
+                        loadBoardsByCategory(it)
+                    }
+                    true
+                }
                 else -> false
             }
             drawerLayout.closeDrawer(GravityCompat.START)
             true
         }
 
+        binding.imageView2.setOnClickListener {
 
+            loadBoardsByCategory(4)
+        }
         // 검색 버튼 클릭 리스너 설정
         binding.btnSearch.setOnClickListener {
             val searchQuery = binding.editTextSearch.text.toString()
@@ -157,10 +168,13 @@ class MainActivity : AppCompatActivity() {
 
                 true
             }
-            R.id.Request_set -> {
-                // Request 설정 메뉴 아이템 클릭 시 실행할 코드
-                true
-            }
+
+           R.id.Request_set -> {
+                val intent = Intent(this, RequestActivity::class.java)
+                startActivity(intent)
+
+               true
+           }
             else -> super.onOptionsItemSelected(item)
         }
 
@@ -171,6 +185,12 @@ class MainActivity : AppCompatActivity() {
         updateLoginStatus()
     }
     private fun setupButtonListeners() {
+        binding.appBarMain.homeButton.setOnClickListener {
+            // 현재 액티비티를 종료
+            finish()
+            // 현재 액티비티를 재시작
+            startActivity(intent)
+        }
         // 로그인 버튼 클릭 리스너
         binding.appBarMain.loginButton.setOnClickListener {
             // 로그인 액티비티를 시작
