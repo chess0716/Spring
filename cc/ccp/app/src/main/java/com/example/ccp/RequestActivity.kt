@@ -1,6 +1,6 @@
 package com.example.ccp
 
-import androidx.appcompat.app.AppCompatActivity
+
 import android.os.Bundle
 import android.webkit.WebSettings
 import android.webkit.WebView
@@ -14,12 +14,12 @@ class RequestActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityRequestBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        setupToolbar()
         setupWebView()
     }
 
     override fun onBackPressed() {
-        if (::webView.isInitialized && webView.url == "http://10.100.103.42:8005/request/request_list") {
+        if (::webView.isInitialized && webView.url == "http://10.100.103.73:8005/request/request_list") {
             super.onBackPressed() // 웹뷰에서 뒤로가기 동작
         } else {
             binding.requestWebview.goBack() // 액티비티에서 뒤로가기 동작
@@ -31,6 +31,6 @@ class RequestActivity : BaseActivity() {
         val webSettings: WebSettings = webView.settings
         webSettings.javaScriptEnabled = true // 자바스크립트 사용 허용
         webView.webViewClient = WebViewClient()
-        webView.loadUrl("http://10.100.103.42:8005/request/request_list")
+        webView.loadUrl("http://10.100.103.73:8005/request/request_list")
     }
 }

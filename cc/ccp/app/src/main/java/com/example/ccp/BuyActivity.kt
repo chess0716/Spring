@@ -14,7 +14,7 @@ class BuyActivity : BaseActivity() {
         setupToolbar()
         binding = ActivityBuyBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        setupToolbar()
         binding.btnBuy.setOnClickListener {
             val intent = Intent(this@BuyActivity, CompleteActivity::class.java)
             startActivity(intent)
