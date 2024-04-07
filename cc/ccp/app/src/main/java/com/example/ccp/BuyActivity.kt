@@ -11,7 +11,7 @@ class BuyActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        setupToolbar()
         binding = ActivityBuyBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setupToolbar()

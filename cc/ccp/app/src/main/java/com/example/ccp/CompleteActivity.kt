@@ -12,10 +12,10 @@ class CompleteActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        setupToolbar()
         binding = ActivityCompleteBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setupToolbar()
+
         binding.btn.setOnClickListener {
             val intent = Intent(this@CompleteActivity, MainActivity::class.java)
             startActivity(intent)
