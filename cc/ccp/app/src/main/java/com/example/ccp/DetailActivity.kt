@@ -290,6 +290,6 @@ class DetailActivity : BaseActivity() {
         val webView = binding.webviewDetail
         webView.settings.javaScriptEnabled = true // JavaScript 활성화
         webView.webViewClient = WebViewClient()
-        webView.loadUrl("http://10.100.103.73:8005/ingredient/$num") // 해당 URL 로드
+        webView.loadUrl("http://222.96.80.188:8005/ingredient/$num") // 해당 URL 로드
     }
 }

@@ -67,7 +67,7 @@ class MainActivity : AppCompatActivity() {
         // 로그인 상태 확인 및 UI 업데이트
         updateLoginStatus()
         setupButtonListeners()
-        hideKeyboard(activity = this)
+
 
 
 
@@ -146,7 +146,9 @@ class MainActivity : AppCompatActivity() {
         binding.btnSearch.setOnClickListener {
             val searchQuery = binding.editTextSearch.text.toString()
             searchBoards(searchQuery)
+            hideKeyboard(this) // 사용자가 검색 버튼을 클릭했을 때 키보드를 숨깁니다.
         }
+
         // 0329 로그인 후 로그아웃 버튼 변경 설정
         // 앱이 최초로 시작될 때 로그인 상태에 따라 버튼 표시 변경
         updateButtonVisibility()
