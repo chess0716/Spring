@@ -123,7 +123,7 @@ class BoardAdapter(
                 BoardViewHolder(binding)
             }
             TYPE_LIST -> {
-                val binding = ItemBoardListBinding.inflate(inflater, parent, false) // 가정한 바인딩 클래스
+                val binding = ItemBoardListBinding.inflate(inflater, parent, false)
                 BoardListViewHolder(binding)
             }
             else -> throw IllegalArgumentException("Invalid view type")

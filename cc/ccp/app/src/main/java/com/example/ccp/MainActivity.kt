@@ -198,11 +198,14 @@ class MainActivity : AppCompatActivity() {
         isGrid = !isGrid
         if (isGrid) {
             binding.recyclerViewBoards.layoutManager = GridLayoutManager(this, 2) // 그리드 레이아웃으로 변경
+            boardAdapter.isGridLayout = true // 어댑터에 그리드 레이아웃으로 변경되었음을 알림
         } else {
             binding.recyclerViewBoards.layoutManager = LinearLayoutManager(this) // 리스트 레이아웃으로 변경
+            boardAdapter.isGridLayout = false // 어댑터에 리스트 레이아웃으로 변경되었음을 알림
         }
         boardAdapter.notifyDataSetChanged() // 어댑터에 데이터셋 변경 알림
     }
+
 
 
     private fun setupButtonListeners() {
