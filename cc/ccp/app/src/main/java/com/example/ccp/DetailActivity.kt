@@ -67,7 +67,7 @@ class DetailActivity : BaseActivity() {
         // 수정페이지로 이동하기
         binding.btnGoUpdate.setOnClickListener {
             val intent = Intent(this@DetailActivity, UpdateActivity::class.java)
-            intent.putExtra("board_id", num)
+            // 필요하다면 업데이트에 필요한 데이터를 추가할 수 있습니다.
             startActivity(intent)
         }
 
@@ -290,6 +290,6 @@ class DetailActivity : BaseActivity() {
         val webView = binding.webviewDetail
         webView.settings.javaScriptEnabled = true // JavaScript 활성화
         webView.webViewClient = WebViewClient()
-        webView.loadUrl("http://10.100.103.73:8005/ingredient/$num") // 해당 URL 로드
+        webView.loadUrl("http://222.96.80.188:8005/ingredient/$num") // 해당 URL 로드
     }
 }

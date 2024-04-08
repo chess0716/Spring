@@ -321,7 +321,7 @@ class InsertActivity : BaseActivity() {
                     // 서버 응답이 성공적으로 처리된 경우
                     Toast.makeText(
                         this@InsertActivity,
-                        "레시피가 등록 되었습니다!",
+                        "All forms submitted successfully!",
                         Toast.LENGTH_LONG
                     ).show()
                     Log.d("SubmitRecipe", "Response: ${response.body()}")
@@ -363,7 +363,7 @@ class InsertActivity : BaseActivity() {
 
     private fun uploadImage(uri: Uri) {
         imageUrl = uri
-        Toast.makeText(this, "이미지가 등록되었", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, "Image uploaded successfully", Toast.LENGTH_SHORT).show()
     }
 
     private fun handleNetworkError(message: String, throwable: Throwable) {
