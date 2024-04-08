@@ -22,6 +22,7 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.ccp.adapter.BoardAdapter
 import com.example.ccp.databinding.ActivityMainBinding
 
@@ -72,7 +73,9 @@ class MainActivity : AppCompatActivity() {
 
 
 
-
+        binding.btnSort.setOnClickListener {
+            toggleLayout()
+        }
 
 
         binding.appBarMain.fab.setOnClickListener { view ->
@@ -189,6 +192,19 @@ class MainActivity : AppCompatActivity() {
         // 로그인 상태가 변경되었는지 확인하고 UI 업데이트
         updateLoginStatus()
     }
+    var isGrid = true // 초기값은 그리드 레이아웃
+
+    private fun toggleLayout() {
+        isGrid = !isGrid
+        if (isGrid) {
+            binding.recyclerViewBoards.layoutManager = GridLayoutManager(this, 2) // 그리드 레이아웃으로 변경
+        } else {
+            binding.recyclerViewBoards.layoutManager = LinearLayoutManager(this) // 리스트 레이아웃으로 변경
+        }
+        boardAdapter.notifyDataSetChanged() // 어댑터에 데이터셋 변경 알림
+    }
+
+
     private fun setupButtonListeners() {
         binding.appBarMain.homeButton.setOnClickListener {
             // 현재 액티비티를 종료
