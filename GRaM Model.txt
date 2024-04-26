@@ -1,0 +1,52 @@
+엔티티
+
+사용자(User)
+필드: id (Long), 사용자명 (String), 비밀번호 (String), 이메일 (String), 선호도 (Preferences)
+관계: 선호도(Preferences)와 1:1 관계, 리뷰(Reviews)와 1:N 관계
+
+선호도(Preferences)
+필드: id (Long), 스포츠 종류 (Enum: 클라이밍, 볼링 등), 실내외 구분 (Enum: 실내, 실외), 가격대 (String)
+관계: 사용자(User)와 1:1 관계
+
+스포츠 시설(SportFacility)
+필드: id (Long), 이름 (String), 위치 (Location), 유형 (Enum: 클라이밍, 볼링 등), 실내외 구분 (Enum: 실내, 실외), 가격대 (String), 평점 (Float)
+관계: 리뷰(Reviews)와 1:N 관계
+
+리뷰(Review)
+필드: id (Long), 사용자 id (Long), 스포츠 시설 id (Long), 평점 (Float), 내용 (String)
+관계: 사용자(User)와 N:1 관계, 스포츠 시설(SportFacility)과 N:1 관계
+
+위치(Location)
+필드: id (Long), 위도 (Double), 경도 (Double), 주소 (String)
+이 엔티티는 스포츠 시설의 위치 정보를 저장하는 데 사용됩니다.//사용안할 가능성이 높음
+
+예약(Reservation)
+필드: id (Long), 사용자 id (Long), 스포츠 시설 id (Long), 예약 날짜 (LocalDate), 시작 시간 (LocalTime), 종료 시간 (LocalTime), 상태 (Enum: 예약됨, 취소됨)
+관계: 사용자(User)와 N:1 관계, 스포츠 시설(SportFacility)과 N:1 관계
+
+데이터 전송 객체(DTO) 설계
+
+SportFacilityDTO
+필드: id (Long), 이름 (String), 위치 정보 (LocationDTO), 유형 (String), 실내외 구분 (String), 가격대 (String), 평점 (Float)
+LocationDTO
+
+필드: 위도 (Double), 경도 (Double), 주소 (String)
+ReviewDTO
+
+필드: id (Long), 사용자 id (Long), 스포츠 시설 id (Long), 평점 (Float), 내용 (String)
+
+ReservationDTO
+필드: id (Long), 사용자 id (Long), 스포츠 시설 id (Long), 예약 날짜 (String), 시작 시간 (String), 종료 시간 (String), 상태 (String)
+
+FacilityFilterDTO
+필드:
+스포츠 종류 (List<String>): 사용자가 관심 있는 스포츠 종류를 선택할 수 있습니다.
+실내외 구분 (String): '실내', '실외', 또는 '무관'을 선택할 수 있습니다.
+가격대 (String): 사용자가 선호하는 가격대를 선택할 수 있습니다. 예를 들어, '저가', '중가', '고가' 등으로 구분할 수 있습니다.
+위치 (LocationDTO): 사용자의 현재 위치 또는 선택한 위치를 기준으로 검색합니다.
+평점 기준 (Float): 최소한의 평점을 기준으로 설정할 수 있습니다.
+
+
+동적 쿼리 생성: 사용자가 다양한 조건을 선택할 수 있으므로, 이러한 조건에 맞는
+ 결과를 반환하기 위해 동적으로 SQL 쿼리를 생성해야 합니다.
+ 이를 위해 JPA Criteria API나 Querydsl과 같은 기술을 사용할 수 있습니다.
