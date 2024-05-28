@@ -1,0 +1,108 @@
+import pandas as pd
+data = pd.read_csv('2023날씨.csv', encoding='cp949')
+print(data)
+print(f'{"데이터 전처리":=^20}')
+data = data[['지점명','일시','기온(°C)']]
+print(data['지점명']=='서울')
+is_seoul = data['지점명']=='서울'
+seoul = data[is_seoul]
+print(seoul, len(seoul))
+is_busan = data['지점명']=='부산'
+busan = data[is_busan]
+print(busan, len(busan))
+
+temp = []
+for i in seoul['일시']:
+    temp.append(i.split(' ')[0])
+lack_seoul = []
+unique_temp = set(temp)
+for i in unique_temp:
+    if temp.count(i) != 24:
+        lack_seoul.append(i)
+print(lack_seoul)
+
+temp = []
+for i in seoul['일시']:
+    temp.append(i.split(' ')[0])
+lack_busan = []
+unique_temp = set(temp)
+for i in unique_temp:
+    if temp.count(i) != 24:
+        lack_busan.append(i)
+print(lack_busan)
+
+lack_data = list(set(lack_seoul+lack_busan))
+for i in lack_data:
+    seoul = seoul[seoul['일시'].str.split('').str[0] !=i]
+    busan = busan[busan['일시'].str.split('').str[0] !=i]
+
+print(len(seoul))
+print(len(busan))
+
+import pandas as pd
+data = pd.read_csv('2023날씨.csv', encoding='cp949')
+print(data)
+print(data.dtypes)
+
+print(f'{"데이터 전처리":=^20}')
+data = data[['지점명', '일시', '기온(°C)']]
+# print(data['지점명']=='서울')
+is_seoul = data['지점명']=='서울'
+seoul = data[is_seoul]
+# print(seoul, len(seoul))
+is_busan = data['지점명']=='부산'
+busan = data[is_busan]
+# print(busan, len(busan))
+
+temp = []
+for i in seoul['일시']:
+  temp.append(i.split(' ')[0])
+lack_seoul = []
+unique_temp = set(temp)
+for i in unique_temp:
+  if temp.count(i) != 24:
+    lack_seoul.append(i)
+# print(lack_seoul)
+
+temp = []
+for i in busan['일시']:
+  temp.append(i.split(' ')[0])
+lack_busan = []
+unique_temp = set(temp)
+for i in unique_temp:
+  if temp.count(i) != 24:
+    lack_busan.append(i)
+# print(lack_busan)
+
+lack_data = list(set(lack_seoul+lack_busan))
+for i in lack_data:
+  seoul = seoul[seoul['일시'].str.split(' ').str[0] != i]
+  busan = busan[busan['일시'].str.split(' ').str[0] != i]
+
+print(len(seoul))
+print(len(busan))
+
+
+
+unique_dates = seoul['일시'].str.slice(0, 10).unique()
+hottest_times = []
+
+for date in unique_dates:
+    daily_data = seoul[seoul['일시'].str.startswith(date)]
+    if len(daily_data) == 24:
+        max_idx = daily_data['기온(°C)'].idxmax()
+        max_time = daily_data.loc[max_idx, '일시']
+        max_temp = daily_data.loc[max_idx, '기온(°C)']
+        hottest_times.append((date, max_time, max_temp))
+
+# 결과 출력
+for record in hottest_times:
+    print(f"날짜: {record[0]}, 최고 기온 시간: {record[1]}, 기온: {record[2]}°C")
+
+
+
+
+
+
+
+https://forms.gle/VB5eRR7zpSV6Gdxj6

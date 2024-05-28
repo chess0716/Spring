@@ -1,0 +1,32 @@
+Error fetching balance: 
+AxiosError {message: 'Network Error', name: 'AxiosError', code: 'ERR_NETWORK', config: {…}, request: XMLHttpRequest, …}
+CreditService.js:24 
+ GET http://localhost:8005/credit/balance/2 net::ERR_CONNECTION_REFUSED
+ChatService.js:66 
+ DELETE http://10.100.103.73:8005/chat/4/leave/-1 500 (Internal Server Error)
+ChatRoom.jsx:223 Error leaving room: 
+AxiosError {message: 'Request failed with status code 500', name: 'AxiosError', code: 'ERR_BAD_RESPONSE', config: {…}, request: XMLHttpRequest, …}
+code
+: 
+"ERR_BAD_RESPONSE"
+config
+: 
+{transitional: {…}, adapter: Array(3), transformRequest: Array(1), transformResponse: Array(1), timeout: 0, …}
+message
+: 
+"Request failed with status code 500"
+name
+: 
+"AxiosError"
+request
+: 
+XMLHttpRequest {onreadystatechange: null, readyState: 4, timeout: 0, withCredentials: false, upload: XMLHttpRequestUpload, …}
+response
+: 
+{data: {…}, status: 500, statusText: '', headers: AxiosHeaders, config: {…}, …}
+stack
+: 
+"AxiosError: Request failed with status code 500\n    at settle (http://10.100.103.73:3000/eram/static/js/bundle.js:135859:12)\n    at XMLHttpRequest.onloadend (http://10.100.103.73:3000/eram/static/js/bundle.js:134525:66)\n    at Axios.request (http://10.100.103.73:3000/eram/static/js/bundle.js:135012:41)\n    at async leaveChatRoom (http://10.100.103.73:3000/eram/static/js/bundle.js:6280:20)\n    at async handleLeaveRoom (http://10.100.103.73:3000/eram/static/js/bundle.js:557:11)"
+[[Prototype]]
+: 
+Error

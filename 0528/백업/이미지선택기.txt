@@ -1,0 +1,146 @@
+const json = {
+  "elements": [
+    {
+      "type": "imagepicker",
+      "name": "sports",
+      "title": "선호하는 스포츠를 골라주세요",
+      "description": "Please select all that apply.",
+      "isRequired": true,
+      "choices": [
+        {
+          "value": "아이스링크",
+          "imageLink": "assets/images/sport1.jpg",
+          "text": "아이스링크"
+        },
+        {
+          "value": "볼더링",
+          "imageLink": "assets/images/sport2.jpg",
+          "text": "볼더링"
+        },
+        {
+          "value": "양궁",
+          "imageLink": "assets/images/sport3.jpg",
+          "text": "양궁"
+        },
+        {
+          "value": "사격",
+          "imageLink": "assets/images/sport4.jpg",
+          "text": "사격"
+        },
+        {
+          "value": "스쿼시",
+          "imageLink": "assets/images/sport5.jpg",
+          "text": "스쿼시"
+        },
+        {
+          "value": "플라잉요가",
+          "imageLink": "assets/images/sport6.jpg",
+          "text": "플라잉요가"
+        },
+        {
+          "value": "바둑",
+          "imageLink": "assets/images/sport7.jpg",
+          "text": "바둑"
+        },
+        {
+          "value": "체스",
+          "imageLink": "assets/images/sport8.jpg",
+          "text": "체스"
+        },
+        {
+          "value": "홀덤",
+          "imageLink": "assets/images/sport9.jpg",
+          "text": "홀덤"
+        },
+        {
+          "value": "트릭킹",
+          "imageLink": "assets/images/sport10.jpg",
+          "text": "트릭킹"
+        },
+        {
+          "value": "폴댄스",
+          "imageLink": "assets/images/sport11.jpg",
+          "text": "폴댄스"
+        },
+        {
+          "value": "실내서바이벌",
+          "imageLink": "assets/images/sport12.jpg",
+          "text": "실내서바이벌"
+        },
+        {
+          "value": "스쿠버다이빙",
+          "imageLink": "assets/images/sport13.jpg",
+          "text": "스쿠버다이빙"
+        },
+        {
+          "value": "프리다이빙",
+          "imageLink": "assets/images/sport14.jpg",
+          "text": "프리다이빙"
+        },
+        {
+          "value": "스노클링",
+          "imageLink": "assets/images/sport15.jpg",
+          "text": "스노클링"
+        },
+        {
+          "value": "비치 발리볼",
+          "imageLink": "assets/images/sport16.jpg",
+          "text": "비치 발리볼"
+        },
+        {
+          "value": "서핑",
+          "imageLink": "assets/images/sport17.jpg",
+          "text": "서핑"
+        },
+        {
+          "value": "게이트볼",
+          "imageLink": "assets/images/sport18.jpg",
+          "text": "게이트볼"
+        },
+        {
+          "value": "승마",
+          "imageLink": "assets/images/sport19.jpg",
+          "text": "승마"
+        },
+        {
+          "value": "패러글라이딩",
+          "imageLink": "assets/images/sport20.jpg",
+          "text": "패러글라이딩"
+        },
+        {
+          "value": "카누",
+          "imageLink": "assets/images/sport21.jpg",
+          "text": "카누"
+        },
+        {
+          "value": "카약",
+          "imageLink": "assets/images/sport22.jpg",
+          "text": "카약"
+        },
+        {
+          "value": "산악자전거",
+          "imageLink": "assets/images/sport23.jpg",
+          "text": "산악자전거"
+        },
+        {
+          "value": "스케이트보드",
+          "imageLink": "assets/images/sport24.jpg",
+          "text": "스케이트보드"
+        }
+        ],
+        "showLabel": true,
+        "multiSelect": true
+      }
+   ],
+   "showQuestionNumbers": "off"
+};
+function SurveyComponent() {
+    const survey = new Survey.Model(json);
+    survey.onComplete.add((sender, options) => {
+        console.log(JSON.stringify(sender.data, null, 3));
+    });
+    return (<SurveyReact.Survey model={survey} />);
+}
+
+const root = ReactDOM.createRoot(document.getElementById("surveyElement"));
+root.render(<SurveyComponent />);

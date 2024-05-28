@@ -1,0 +1,34 @@
+@PostMapping(value = "/login", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+public ResponseEntity<Map<String, String>> getToken(HttpServletResponse response, @RequestBody Map<String, Object> mapObj) {
+  String email = mapObj.get("email") != null ? mapObj.get("email").toString() : null;
+  String pass = mapObj.get("pass") != null ? mapObj.get("pass").toString() : null;
+
+  if (email == null || pass == null) {
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                         .body(Collections.singletonMap("error", "Email or password is null in login request"));
+  }
+
+  log.info("Login attempt with email: " + email);
+
+  // 사용자 인증 로직 (올바른 비밀번호 비교)
+  if (membersService.checkPassword(email, pass, passwordEncoder)) {
+    String token = jwtUtil.generateToken(email);  // 토큰 생성
+    if (token != null) {
+      Map<String, String> map = new HashMap<>();
+      map.put("token", token);
+      return ResponseEntity.ok(map);
+    } else {
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                           .body(Collections.singletonMap("error", "Failed to generate token"));
+    }
+  } else {
+    return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                         .body(Collections.singletonMap("error", "Invalid email or password"));
+  }
+}
+//MemberService
+public boolean checkPassword(String email, String rawPassword, PasswordEncoder passwordEncoder) {
+  // 데이터베이스에서 사용자 정보 가져오기 (예: findByEmail)
+  Members member = membersRepository.findByEmail(email);
+  return member != null && passwordEncoder.matches(rawPassword, member.getPassword());
+}

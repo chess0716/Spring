@@ -1,0 +1,39 @@
+import axios from "./axios";
+
+interface LoginData {
+  email: string;
+  pass: string;  // 'password' 대신 'pass'를 사용
+}
+
+interface SignupData extends LoginData {
+  name?: string;
+}
+
+const login = async (data: LoginData) => {
+  try {
+    console.log("Logging in with email:", data.email); // 이메일 로그
+    console.log("Logging in with password:", data.pass); // 비밀번호 로그
+
+    const response = await axios.post("/auth/login", data);
+    if (response.data.accessToken) {
+      localStorage.setItem("user", JSON.stringify(response.data));
+    }
+    return response.data;
+  } catch (error) {
+    throw new Error("Login failed");
+  }
+};
+
+const signup = async (data: SignupData) => {
+  try {
+    const response = await axios.post("/auth/join", data);
+    return response.data; // 가입 후 바로 로그인이 아니라면 이 부분은 조정 가능
+  } catch (error) {
+    throw new Error("Signup failed");
+  }
+};
+
+export default {
+  login,
+  signup,
+};

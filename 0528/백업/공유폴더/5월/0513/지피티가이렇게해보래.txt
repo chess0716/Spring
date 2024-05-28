@@ -1,0 +1,237 @@
+원래 내 회원가입 폼
+
+import React, { useState } from "react";
+import authService from "./authService";
+import "./SignupForm.css"; // 폼에 대한 스타일을 포함하는 CSS 파일
+
+const SignupForm = () => {
+  const [id, setId] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
+  const [mobile, setMobile] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleSignup = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      await authService.signup({ id, email, password, name, mobile });
+      window.location.href = "/login";
+    } catch (err) {
+      setError("Signup failed");
+      setLoading(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSignup} className="signup-form">
+      <div className="form-group">
+        <label htmlFor="id">ID:</label>
+        <input
+          type="text"
+          id="id"
+          value={id}
+          onChange={(e) => setId(e.target.value)}
+          required
+        />
+      </div>
+      <div className="form-group">
+        <label htmlFor="email">Email:</label>
+        <input
+          type="email"
+          id="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+      </div>
+      <div className="form-group">
+        <label htmlFor="password">Password:</label>
+        <input
+          type="password"
+          id="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
+      </div>
+      <div className="form-group">
+        <label htmlFor="name">Name:</label>
+        <input
+          type="text"
+          id="name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+      </div>
+      <div className="form-group">
+        <label htmlFor="mobile">Mobile:</label>
+        <input
+          type="text"
+          id="mobile"
+          value={mobile}
+          onChange={(e) => setMobile(e.target.value)}
+        />
+      </div>
+      <button type="submit" disabled={loading} className="submit-btn">
+        Sign Up
+      </button>
+      {error && <p>{error}</p>}
+    </form>
+  );
+};
+
+export default SignupForm;
+
+원래 회원가입 css
+
+.signup-form {
+  max-width: 1000px; /* 가로폭을 1000px로 늘립니다. */
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+label {
+  display: block;
+  margin-bottom: 10px;
+  color: #333; /* 라벨의 텍스트 색상을 진한 회색(#333)으로 지정합니다. */
+  font-family: Arial, sans-serif; /* 폰트를 Arial로 설정합니다. */
+  font-size: 16px; /* 라벨의 폰트 크기를 16px로 지정합니다. */
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="submit"] {
+  width: calc(100% - 20px);
+  padding: 10px;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 20px;
+  background-color: #c8c8c8;
+  color: #fff;
+  cursor: pointer;
+}
+
+.submit-btn:hover {
+  background-color: #c0c0c0;
+}
+
+원래 로그인 폼
+
+import React, { useState } from "react";
+import authService from "./authService";
+import "./LoginForm.css"; // LoginForm에 대한 스타일을 포함하는 CSS 파일
+
+const LoginForm = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      await authService.login({ email, password });
+      // 로그인 성공 후 페이지 리디렉션 또는 상태 업데이트
+      window.location.href = "/home"; // 예: 홈 페이지로 리다이렉트
+    } catch (err) {
+      setError("Login failed");
+      setLoading(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handleLogin} className="login-form">
+      <div className="form-group">
+        <label htmlFor="email">Email:</label>
+        <input
+          type="email"
+          id="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+      </div>
+      <div className="form-group">
+        <label htmlFor="password">Password:</label>
+        <input
+          type="password"
+          id="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
+      </div>
+      <button type="submit" disabled={loading} className="submit-btn">
+        Login
+      </button>
+      {error && <p>{error}</p>}
+    </form>
+  );
+};
+
+export default LoginForm;
+
+원래 로그인 css
+
+.login-form {
+  max-width: 1000px; /* 가로폭을 1000px로 늘립니다. */
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+label {
+  display: block;
+  margin-bottom: 10px;
+  color: #333; /* 라벨의 텍스트 색상을 진한 회색(#333)으로 지정합니다. */
+  font-family: Arial, sans-serif; /* 폰트를 Arial로 설정합니다. */
+  font-size: 16px; /* 라벨의 폰트 크기를 16px로 지정합니다. */
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="submit"] {
+  width: calc(100% - 20px);
+  padding: 10px;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 20px;
+  background-color: #c8c8c8;
+  color: #fff;
+  cursor: pointer;
+}
+
+.submit-btn:hover {
+  background-color: #c0c0c0;
+}

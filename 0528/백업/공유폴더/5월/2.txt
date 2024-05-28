@@ -1,0 +1,24 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+from matplotlib import font_manager, rc
+
+data = pd.read_csv('연도별_고용률_통계표.csv', encoding='cp949')
+
+# 한글 폰트 설정
+font_path = "C:/Windows/Fonts/malgun.ttf"
+font_name = font_manager.FontProperties(fname=font_path).get_name()
+rc('font', family=font_name)
+
+# 2023년 나이별 고용비율을 파이 그래프로 출력하시오
+employment_rate_2023 = data[(data['Unnamed: 0'] != '고용률(15세?이상)') & (data['Unnamed: 0'] != '남자') & (data['Unnamed: 0'] != '여자')][['Unnamed: 0', '2023']]
+
+total_rate = employment_rate_2023['2023'].sum()
+employment_rate_2023['2023'] = employment_rate_2023['2023'] / total_rate * 100
+
+employment_rate_2023.set_index('Unnamed: 0', inplace=True)
+
+# 파이 그래프 출력
+plt.figure(figsize=(5, 5))
+plt.pie(employment_rate_2023['2023'], labels=employment_rate_2023.index, autopct='%1.2f%%', startangle=140)
+plt.title('2023년 나이별 고용률 (백분율)')
+plt.show()

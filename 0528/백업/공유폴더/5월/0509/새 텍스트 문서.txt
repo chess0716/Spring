@@ -1,0 +1,149 @@
+// src/types/MemberTypes.ts
+export interface Member {
+  id: string;
+  password: string;
+  email: string;
+  name?: string;
+  mobile?: string;
+  fromSocial?: boolean;
+  regDate?: Date;
+  modDate?: Date;
+  roleSet?: MembersRole[];
+}
+
+export enum MembersRole {
+  USER = 'USER',
+  ADMIN = 'ADMIN',
+}
+// src/api/axios.ts
+import axios from 'axios';
+
+const API_URL = "http://localhost:8080/api"; // 스프링 서버 주소
+
+export default axios.create({
+  baseURL: API_URL,
+  headers: {
+    "Content-Type": "application/json"
+  }
+});
+// src/services/authService.ts
+import axios from '../api/axios';
+
+interface LoginData {
+  email: string;
+  password: string;
+}
+
+interface SignupData extends LoginData {
+  name?: string;
+}
+
+const login = async (data: LoginData) => {
+  try {
+    const response = await axios.post('/auth/login', data);
+    if (response.data.accessToken) {
+      localStorage.setItem('user', JSON.stringify(response.data));
+    }
+    return response.data;
+  } catch (error) {
+    throw new Error('Login failed');
+  }
+};
+
+const signup = async (data: SignupData) => {
+  try {
+    const response = await axios.post('/auth/signup', data);
+    return response.data; // 가입 후 바로 로그인이 아니라면 이 부분은 조정 가능
+  } catch (error) {
+    throw new Error('Signup failed');
+  }
+};
+
+export default {
+  login,
+  signup
+};
+// src/components/LoginForm.tsx
+import React, { useState } from 'react';
+import authService from '../services/authService';
+
+const LoginForm = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      await authService.login({ email, password });
+      // 로그인 성공 후 페이지 리디렉션 또는 상태 업데이트
+      window.location.href = '/home'; // 예: 홈 페이지로 리다이렉트
+    } catch (err) {
+      setError('Login failed');
+      setLoading(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handleLogin}>
+      <div>
+        <label>Email:</label>
+        <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+      </div>
+      <div>
+        <label>Password:</label>
+        <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+      </div>
+      <button type="submit" disabled={loading}>Login</button>
+      {error && <p>{error}</p>}
+    </form>
+  );
+};
+
+export default LoginForm;
+// src/components/SignupForm.tsx
+import React, { useState } from 'react';
+import authService from '../services/authService';
+
+const SignupForm = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleSignup = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      await authService.signup({ email, password, name });
+      window.location.href = '/login'; // 회원가입 후 로그인 페이지로 리다이렉트
+    } catch (err) {
+      setError('Signup failed');
+      setLoading(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSignup}>
+      <div>
+        <label>Email:</label>
+        <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+      </div>
+      <div>
+        <label>Password:</label
+        <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+      </div>
+      <div>
+        <label>Name:</label
+        <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
+      </div>
+      <button type="submit" disabled={loading}>Sign Up</button>
+      {error && <p>{error}</p>}
+    </form>
+  );
+};
+
+export default SignupForm;

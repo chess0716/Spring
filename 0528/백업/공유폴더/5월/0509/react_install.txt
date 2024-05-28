@@ -1,0 +1,5 @@
+npx create-react-app 프로젝트명 --template typescript
+npm i chance luxon @fontsource/material-icons
+npm i -D @types/chance @types/luxon
+
+하고 .prettiercc 복붙

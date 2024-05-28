@@ -1,0 +1,29 @@
+html = """
+    <ul>
+        <li><a href="hoge.html">hoge</li>
+        <li><a href="https://example.com/fuga">fuga*</li>
+        <li><a href="https://example.com/foo">foo*</li>
+        <li><a href="shttps://example.com/foobbb">foobbb*</li>
+        <li><a href="http://example.com/aaa">aaa</li>
+    </ul>
+"""
+-----------
+txt = "Phoebe: Just, 'cause, I don't want her to go through what I went through with Carl- oh!"
+txt += "Monica: Okay, everybody relax."
+txt += "This is not even a date."
+txt += "It's just two people going out to dinner and- not having sex."
+txt += "Chandler: Sounds like a date to me."
+txt += "Chandler: Alright, so I'm back in high school, I'm standing in the middle of the cafeteria, and I realize I am totally naked."
+----------
+html = """
+    <html><body>
+        <div id="meigen">
+            <h1>위키북스 도서</h1>
+            <ul class="items">
+                <li>유니티 게임 이펙트 입문</li>
+                <li>스위프트로 시작하는 아이폰 앱 개발 교과서</li>
+                <li>모던 웹사이트 디자인의 정석</li>
+            </ul>
+        </div>
+    </body></html>
+"""

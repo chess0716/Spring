@@ -1,0 +1,82 @@
+import axios from "./axios";
+
+interface LoginData {
+  email: string;
+  password: string; // 'password' 대신 'pass'를 사용
+}
+
+interface SignupData extends LoginData {
+  id: string;
+  password: string;
+  email: string;
+  name?: string;
+  mobile?: string;
+}
+
+// 로그인 함수
+const login = async (data: LoginData) => {
+  try {
+    console.log("Logging in with email:", data.email); // 이메일 로그
+    console.log("Logging in with password:", data.password); // 비밀번호 로그
+
+    // 서버로 로그인 요청을 보냄
+    const response = await axios.post("/auth/login", data);
+
+    // 서버로부터 토큰이 유효하게 발급된 경우
+    if (response.data.accessToken) {
+      // 받은 토큰을 로컬 스토리지에 저장
+      localStorage.setItem("accessToken", response.data.accessToken);
+      // 사용자 정보도 저장할 수 있음
+      localStorage.setItem("user", JSON.stringify(response.data.user));
+    }
+
+    // 로그인 결과 반환
+    return response.data;
+  } catch (error) {
+    // 로그인 실패 시 에러 처리
+    throw new Error("Login failed");
+  }
+};
+
+// 가입 함수
+const signup = async (data: SignupData) => {
+  try {
+    const response = await axios.post("/auth/join", data);
+    return response.data; // 가입 후 바로 로그인이 아니라면 이 부분은 조정 가능
+  } catch (error) {
+    throw new Error("Signup failed");
+  }
+};
+
+// 토큰을 사용하여 인증된 요청 보내는 함수
+const authenticatedRequest = async (url: string, data: any) => {
+  try {
+    // localStorage에서 토큰 가져오기
+    const accessToken = localStorage.getItem("accessToken");
+
+    // 헤더에 토큰 추가
+    const config = {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    };
+
+    // 서버에 요청 보내기
+    const response = await axios.post(url, data, config);
+    return response.data;
+  } catch (error) {
+    throw new Error("Authenticated request failed");
+  }
+};
+
+// 예시: 인증된 요청 보내기
+const fetchData = async () => {
+  try {
+    const data = await authenticatedRequest("/api/data", {});
+    console.log("Data:", data);
+  } catch (error) {
+    console.error("Failed to fetch data:", error);
+  }
+};
+
+export default { login, signup, fetchData };
