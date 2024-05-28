@@ -2,8 +2,10 @@ package com.demo.gram.service;
 
 
 import com.demo.gram.dto.MembersDTO;
+import com.demo.gram.entity.ChatRoom;
 import com.demo.gram.entity.Members;
 import com.demo.gram.entity.MembersRole;
+import com.demo.gram.entity.Post;
 import com.demo.gram.security.util.JWTUtil;
 
 import java.util.List;
@@ -66,6 +68,16 @@ public interface MembersService {
   List<MembersDTO> getAll();
 
   String login(String email, String password, JWTUtil jwtUtil);
+
+  Members getCurrentLoggedInUser(String token) throws Exception;
+
+  List<Post> getUserPosts(Long mno);
+
+  List<ChatRoom> getUserChatRooms(Long mno);
+
+  Long getUserIdFromToken(String token) throws Exception;
+
+  MembersDTO getUserByEmail(String email);
   List<MembersDTO> getChatRoomMembers(Long chatRoomId);
   Members findByEmail(String email);
   void joinChatRoom(String email, Long chatRoomId);

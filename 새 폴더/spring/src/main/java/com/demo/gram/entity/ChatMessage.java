@@ -1,5 +1,6 @@
 package com.demo.gram.entity;
 
+import com.demo.gram.dto.ChatMessageDTO;
 import jakarta.persistence.*;
 import lombok.Data;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -27,4 +28,8 @@ public class ChatMessage {
 
   @Column(nullable = false)
   private LocalDateTime sentAt;
+
+  public ChatMessageDTO toDTO() {
+    return new ChatMessageDTO(this.id, this.message, this.sentAt, this.user.getName());
+  }
 }

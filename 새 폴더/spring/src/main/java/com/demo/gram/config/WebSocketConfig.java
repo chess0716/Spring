@@ -1,5 +1,6 @@
 package com.demo.gram.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.converter.MessageConverter;
@@ -14,6 +15,12 @@ import java.util.List;
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
+  private final ObjectMapper objectMapper;
+
+  public WebSocketConfig(ObjectMapper objectMapper) {
+    this.objectMapper = objectMapper;
+  }
+
   @Override
   public void registerStompEndpoints(StompEndpointRegistry registry) {
     registry.addEndpoint("/ws").setAllowedOriginPatterns("*").withSockJS();
@@ -27,7 +34,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
   @Override
   public boolean configureMessageConverters(List<MessageConverter> messageConverters) {
-    messageConverters.add(new MappingJackson2MessageConverter());
+    MappingJackson2MessageConverter converter = new MappingJackson2MessageConverter();
+    converter.setObjectMapper(objectMapper);
+    messageConverters.add(converter);
     return false;
   }
 }

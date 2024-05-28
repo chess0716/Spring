@@ -1,5 +1,6 @@
 package com.demo.gram.controller;
 
+
 import com.demo.gram.dto.MembersDTO;
 import com.demo.gram.dto.ResponseDTO;
 import com.demo.gram.security.util.JWTUtil;
@@ -35,15 +36,22 @@ public class AuthController {
   // 회원가입
   @PostMapping(value = "/join")
   public ResponseEntity<Long> register(@RequestBody MembersDTO membersDTO) {
-    log.info("register..." + membersDTO);
+    log.info("register..."+membersDTO);
 
     long num = membersService.registMembersDTO(membersDTO);
     return new ResponseEntity<>(num, HttpStatus.OK);
   }
 
-  // 로그인
-  @PostMapping("/login")
-  public ResponseEntity<Map<String, String>> login(@RequestBody Map<String, String> loginRequest) {
+  // 회원가입 폼 읽어오기
+  @GetMapping(value = "/join2")
+  public String register() {
+    log.info("register 읽어옴");
+    return "auth/join";
+  }
+
+  // 로그인 (로그인 성공 후 토큰 발행)
+  @PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<Map<String, Object>> getToken(@RequestBody Map<String, String> loginRequest) {
     String email = loginRequest.get("email");
     String password = loginRequest.get("password");
 
@@ -53,13 +61,18 @@ public class AuthController {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Collections.singletonMap("error", errorMessage));
     }
 
-    try {
-      // 사용자 인증
-      String token = membersService.login(email, password, jwtUtil);
+    log.info("Login attempt with email: " + email);
 
-      if (token != null && !token.isEmpty()) {
+    try {
+      String token = membersService.login(email, password, jwtUtil);
+      MembersDTO user = membersService.getUserByEmail(email); // 사용자 정보를 가져오는 메서드 추가
+
+      if (token != null && !token.isEmpty() && user != null) {
         log.info("Login successful. Generating token...");
-        return ResponseEntity.ok(Collections.singletonMap("token", token));
+        Map<String, Object> response = new HashMap<>();
+        response.put("token", token);
+        response.put("user", user);
+        return ResponseEntity.ok(response);
       } else {
         String errorMessage = "Login failed. Invalid email or password.";
         log.error(errorMessage);
@@ -72,13 +85,17 @@ public class AuthController {
     }
   }
 
+  // 로그인 폼 읽어오기
+  @GetMapping(value = "/login2")
+  public String getToken() {
+    log.info("login 읽어옴");
+    return "auth/login";
+  }
+
   // 로그아웃
   @PostMapping("/logout")
   public ResponseEntity<ResponseDTO> logout(HttpServletRequest request, HttpServletResponse response) {
     try {
-      log.info(request);
-      log.info(response);
-      log.info(SecurityContextHolder.getContext().getAuthentication());
       new SecurityContextLogoutHandler().logout(request, response, SecurityContextHolder.getContext().getAuthentication());
       return new ResponseEntity<>(new ResponseDTO("success", true), HttpStatus.OK);
     } catch (Exception e) {

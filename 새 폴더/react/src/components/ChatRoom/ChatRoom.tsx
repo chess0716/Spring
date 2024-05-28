@@ -19,7 +19,6 @@ import {
 import {
   getChatRoomByPostId,
   getMessagesByRoomId,
-  sendMessageToRoom,
   getMembersByRoomId,
 } from "../../service/ChatService";
 import "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
@@ -42,17 +41,15 @@ function ChatRoom() {
   useEffect(() => {
     const loadChatRoom = async () => {
       try {
-        console.log("Fetching chat room for postId:", postId);
         const roomResponse = await getChatRoomByPostId(postId!);
         const data = roomResponse.data;
         if (data.chatRoomId) {
-          console.log("Chat room found:", data.chatRoomId);
           setChatRoomId(data.chatRoomId);
           const messagesResponse = await getMessagesByRoomId(data.chatRoomId);
           setMessages(
             messagesResponse.data.map((msg: any) => ({
               ...msg,
-              direction: msg.senderName === currentUser?.name ? "outgoing" : "incoming",
+              direction: msg.senderId === currentUser?.mno ? "outgoing" : "incoming",
             }))
           );
           const membersResponse = await getMembersByRoomId(data.chatRoomId);
@@ -82,18 +79,30 @@ function ChatRoom() {
         clientRef.current.deactivate();
       }
     };
-  }, [postId, currentUser?.name]);
+  }, [postId]);
+
+  useEffect(() => {
+    if (chatRoomId) {
+      setupWebSocket(chatRoomId);
+    }
+    return () => {
+      if (clientRef.current) {
+        clientRef.current.deactivate();
+      }
+    };
+  }, [chatRoomId]);
 
   const setupWebSocket = (roomId: string) => {
-    console.log("Setting up WebSocket...");
+    if (clientRef.current) {
+      clientRef.current.deactivate();
+    }
+
     const socket = new SockJS("http://localhost:8005/ws");
     const stompClient = new Client({
       webSocketFactory: () => socket,
       reconnectDelay: 10000,
-      onConnect: (frame) => {
-        console.log("Connected to WebSocket", frame);
+      onConnect: () => {
         stompClient.subscribe(`/topic/chat/${roomId}`, (message) => {
-          console.log("Received message:", message.body);
           const receivedMessage = JSON.parse(message.body);
           setMessages((prev) => [
             ...prev,
@@ -102,7 +111,6 @@ function ChatRoom() {
         });
 
         stompClient.subscribe(`/topic/chat/${roomId}/members`, (message) => {
-          console.log("Received members update:", message.body);
           const updatedMembers = JSON.parse(message.body);
           setMembers(updatedMembers);
         });
@@ -111,21 +119,9 @@ function ChatRoom() {
         if (token) {
           stompClient.publish({
             destination: `/app/chat/${roomId}/join`,
-            body: token,
+            body: JSON.stringify({ token }),
           });
-        } else {
-          console.error("User token is missing");
         }
-      },
-      onStompError: (frame) => {
-        console.error(`Broker reported error: ${frame.headers.message}`);
-        console.error(`Additional details: ${frame.body}`);
-      },
-      onWebSocketClose: (event) => {
-        console.log("WebSocket connection closed", event);
-      },
-      onWebSocketError: (event) => {
-        console.error("WebSocket error", event);
       },
     });
 
@@ -136,7 +132,7 @@ function ChatRoom() {
   const sendMessage = async (input: string) => {
     if (input.trim() && clientRef.current && clientRef.current.connected && chatRoomId && currentUser) {
       const token = localStorage.getItem("accessToken") || "";
-      const messageData = { message: input, token: token };
+      const messageData = { message: input, token };
       try {
         clientRef.current.publish({
           destination: `/app/chat/${chatRoomId}/send`,
@@ -149,8 +145,6 @@ function ChatRoom() {
       } catch (error) {
         console.error("Error sending message:", error);
       }
-    } else {
-      console.error("Cannot send message. WebSocket connection is not active.");
     }
   };
 

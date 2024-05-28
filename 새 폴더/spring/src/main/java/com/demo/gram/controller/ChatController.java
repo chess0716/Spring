@@ -1,5 +1,6 @@
 package com.demo.gram.controller;
 
+import com.demo.gram.dto.ChatMessageDTO;
 import com.demo.gram.dto.MembersDTO;
 import com.demo.gram.entity.ChatMessage;
 import com.demo.gram.entity.ChatRoom;
@@ -11,6 +12,7 @@ import com.demo.gram.repository.MembersRepository;
 import com.demo.gram.security.util.JWTUtil;
 import com.demo.gram.service.MembersService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -39,60 +41,41 @@ public class ChatController {
 
   @MessageMapping("/chat/{chatRoomId}/send")
   @SendTo("/topic/chat/{chatRoomId}")
-  public String sendChatMessageViaWebSocket(@DestinationVariable Long chatRoomId, @Payload String payload) throws Exception {
-    PayloadMessage payloadMessage = objectMapper.readValue(payload, PayloadMessage.class);
+  public ChatMessageDTO sendChatMessageViaWebSocket(@DestinationVariable Long chatRoomId, @Payload PayloadMessage payloadMessage) throws Exception {
     ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
-            .orElseThrow(() -> new RuntimeException("Chat room not found"));
+        .orElseThrow(() -> new RuntimeException("Chat room not found"));
     String email = jwtUtil.validateAndExtract(payloadMessage.getToken());
     Members user = membersRepository.findByEmail(email)
-            .orElseThrow(() -> new RuntimeException("User not found"));
+        .orElseThrow(() -> new RuntimeException("User not found"));
     ChatMessage chatMessage = new ChatMessage();
     chatMessage.setChatRoom(chatRoom);
     chatMessage.setUser(user);
     chatMessage.setMessage(payloadMessage.getMessage());
     chatMessage.setSentAt(LocalDateTime.now());
     chatMessageRepository.save(chatMessage);
-    return convertToJson(chatMessage);
+    return chatMessage.toDTO();
   }
 
   @PostMapping("/{chatRoomId}/send")
-  public ResponseEntity<String> sendChatMessageViaPost(@PathVariable Long chatRoomId, @RequestBody PayloadMessage payloadMessage) throws Exception {
+  public ResponseEntity<ChatMessageDTO> sendChatMessageViaPost(@PathVariable Long chatRoomId, @RequestBody PayloadMessage payloadMessage) throws Exception {
     ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
-            .orElseThrow(() -> new RuntimeException("ChatRoom not found"));
+        .orElseThrow(() -> new RuntimeException("ChatRoom not found"));
     String email = jwtUtil.validateAndExtract(payloadMessage.getToken());
     Members user = membersRepository.findByEmail(email)
-            .orElseThrow(() -> new RuntimeException("User not found"));
+        .orElseThrow(() -> new RuntimeException("User not found"));
     ChatMessage chatMessage = new ChatMessage();
     chatMessage.setChatRoom(chatRoom);
     chatMessage.setUser(user);
     chatMessage.setMessage(payloadMessage.getMessage());
     chatMessage.setSentAt(LocalDateTime.now());
     chatMessageRepository.save(chatMessage);
-    return ResponseEntity.ok(convertToJson(chatMessage));
-  }
-
-  @MessageMapping("/message/{postId}")
-  @SendTo("/topic/messages/{postId}")
-  public String sendChatMessageForPost(@DestinationVariable Long postId, @Payload String payload) throws Exception {
-    PayloadMessage payloadMessage = objectMapper.readValue(payload, PayloadMessage.class);
-    ChatRoom chatRoom = chatRoomRepository.findByPostId(postId)
-            .orElseThrow(() -> new RuntimeException("No chat room associated with the provided post ID"));
-    String email = jwtUtil.validateAndExtract(payloadMessage.getToken());
-    Members user = membersRepository.findByEmail(email)
-            .orElseThrow(() -> new RuntimeException("User not found"));
-    ChatMessage chatMessage = new ChatMessage();
-    chatMessage.setChatRoom(chatRoom);
-    chatMessage.setUser(user);
-    chatMessage.setMessage(payloadMessage.getMessage());
-    chatMessage.setSentAt(LocalDateTime.now());
-    chatMessageRepository.save(chatMessage);
-    return convertToJson(chatMessage);
+    return ResponseEntity.ok(chatMessage.toDTO());
   }
 
   @GetMapping("/room/by-post/{postId}")
   public ResponseEntity<String> getChatRoomByPostId(@PathVariable Long postId) {
     ChatRoom chatRoom = chatRoomRepository.findByPostId(postId)
-            .orElseThrow(() -> new RuntimeException("No chat room associated with the provided post ID"));
+        .orElseThrow(() -> new RuntimeException("No chat room associated with the provided post ID"));
     ChatRoomResponse response = new ChatRoomResponse(chatRoom.getId(), postId);
     return ResponseEntity.ok(convertToJson(response));
   }
@@ -106,9 +89,8 @@ public class ChatController {
 
   @MessageMapping("/chat/{chatRoomId}/join")
   @SendTo("/topic/chat/{chatRoomId}/members")
-  public String joinChatRoom(@DestinationVariable Long chatRoomId, @Payload String payload) {
+  public List<MembersDTO> joinChatRoom(@DestinationVariable Long chatRoomId, @Payload PayloadMessage payloadMessage) {
     try {
-      PayloadMessage payloadMessage = objectMapper.readValue(payload, PayloadMessage.class);
       String email = jwtUtil.validateAndExtract(payloadMessage.getToken());
       membersService.joinChatRoom(email, chatRoomId);
     } catch (Exception e) {
@@ -116,7 +98,7 @@ public class ChatController {
       throw new RuntimeException("Invalid token", e);
     }
     List<MembersDTO> members = membersService.getChatRoomMembers(chatRoomId);
-    return convertToJson(members);
+    return members;
   }
 
   private String convertToJson(Object object) {
@@ -127,24 +109,16 @@ public class ChatController {
     }
   }
 
-  static class PayloadMessage {
+  @Data
+  public static class PayloadMessage {
     private String message;
     private String token;
 
-    // Getters and setters
-    public String getMessage() {
-      return message;
-    }
+    // 기본 생성자가 필요함
+    public PayloadMessage() {}
 
-    public void setMessage(String message) {
+    public PayloadMessage(String message, String token) {
       this.message = message;
-    }
-
-    public String getToken() {
-      return token;
-    }
-
-    public void setToken(String token) {
       this.token = token;
     }
   }

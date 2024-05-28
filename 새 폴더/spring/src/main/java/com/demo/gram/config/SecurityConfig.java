@@ -47,9 +47,10 @@ public class SecurityConfig {
     return new JWTUtil();
   }
 
+
   @Bean
   public ApiCheckFilter apiCheckFilter() {
-    List<String> pattern = List.of("/api/**"); // 보호할 경로 패턴
+    String[] pattern = {"/auth/**", "/members/**", "/mypage/**"};
     return new ApiCheckFilter(pattern, jwtUtil());
   }
 

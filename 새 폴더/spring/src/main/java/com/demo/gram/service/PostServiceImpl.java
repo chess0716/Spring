@@ -1,6 +1,7 @@
 package com.demo.gram.service;
 
 
+import com.demo.gram.dto.PostDTO;
 import com.demo.gram.entity.Post;
 import com.demo.gram.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,5 +28,11 @@ public class PostServiceImpl implements PostService {
   @Override
   public Optional<Post> findPostById(Long id) {
     return postRepository.findById(id);
+  }
+
+  @Override
+  public void writePost(PostDTO postDTO) {
+    postRepository.save(dtoToEntity(postDTO));
+
   }
 }
